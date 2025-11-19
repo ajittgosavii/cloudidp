@@ -275,18 +275,46 @@ def main():
         
         # Anthropic API Configuration (from secrets)
         st.markdown("### 🤖 Claude AI")
+        
+        # Try to read API key from secrets
+        api_key_found = False
+        error_message = None
+        
         try:
-            # Read API key from Streamlit secrets
-            if 'anthropic' in st.secrets and 'api_key' in st.secrets['anthropic']:
-                st.session_state.anthropic_api_key = st.secrets['anthropic']['api_key']
-                st.success("✅ Claude AI connected")
+            # Check if secrets exist
+            if hasattr(st, 'secrets'):
+                # Check if anthropic section exists
+                if 'anthropic' in st.secrets:
+                    # Check if api_key exists in anthropic section
+                    if 'api_key' in st.secrets['anthropic']:
+                        api_key = st.secrets['anthropic']['api_key']
+                        if api_key and len(api_key) > 0:
+                            st.session_state.anthropic_api_key = api_key
+                            api_key_found = True
+                            st.success("✅ Claude AI connected")
+                        else:
+                            error_message = "API key is empty"
+                    else:
+                        error_message = "Key 'api_key' not found in [anthropic] section"
+                else:
+                    error_message = "Section [anthropic] not found in secrets"
             else:
-                st.session_state.anthropic_api_key = None
-                st.warning("⚠️ API key not found in secrets")
-                st.caption("Add to secrets.toml: [anthropic] api_key = 'your-key'")
+                error_message = "Secrets not available (running locally without secrets.toml?)"
         except Exception as e:
+            error_message = f"Error reading secrets: {str(e)}"
+        
+        # Show status
+        if not api_key_found:
             st.session_state.anthropic_api_key = None
-            st.info("ℹ️ Configure API key in Streamlit Cloud secrets for AI features")
+            st.warning(f"⚠️ API key not configured")
+            if error_message:
+                with st.expander("🔍 Debug Info", expanded=False):
+                    st.code(error_message)
+            st.caption("""Add to Streamlit Cloud secrets:
+[anthropic]
+api_key = "sk-ant-your-key"
+
+Then REBOOT the app!""")
         
         st.markdown("---")
         st.caption("v1.0.0 | CloudIDP - Multi-Cloud Infrastructure Platform")
