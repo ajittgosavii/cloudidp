@@ -1025,7 +1025,7 @@ tags = {
             if example_category == "Web Application":
                 st.markdown("#### 3-Tier Web Application")
                 
-                st.code("""
+                st.code(r"""
 # main.tf - 3-Tier Web Application
 
 # VPC Configuration
@@ -1181,7 +1181,7 @@ output "static_assets_bucket" {
             elif example_category == "Serverless":
                 st.markdown("#### Serverless REST API")
                 
-                st.code("""
+                st.code(r"""
 # main.tf - Serverless REST API with Lambda & API Gateway
 
 # Lambda Function
