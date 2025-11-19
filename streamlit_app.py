@@ -12,6 +12,9 @@ from finops_module import FinOpsModule
 from security_compliance import SecurityComplianceModule
 from policy_guardrails import PolicyGuardrailsModule
 from module_07_abstraction import AbstractionReusabilityModule
+from module_08_multicloud_hybrid import MultiCloudHybridModule
+from module_09_developer_experience import DeveloperExperienceModule
+from module_10_observability import ObservabilityIntegrationModule
 from config import initialize_session_state
 from anthropic_helper import AnthropicHelper
 
@@ -155,6 +158,28 @@ def main():
                 "Parameterization & Defaults",
                 "Multi-Environment Support",
                 "Lifecycle Management",
+                "─────── MODULE 08: MULTI-CLOUD & HYBRID ───────",
+                "Module 08 Overview",
+                "Cloud & On-Prem Provisioning",
+                "Unified Policy Framework",
+                "Cloud-Specific Optimization",
+                "Private+Public Connectivity",
+                "Global Environment Management",
+                "─────── MODULE 09: DEVELOPER EXPERIENCE ───────",
+                "Module 09 Overview",
+                "Governed Self-Service Portals",
+                "GitOps Integration",
+                "Drift Notification & Feedback Loop",
+                "Documentation & Examples",
+                "InfraSecOps",
+                "User Community",
+                "─────── MODULE 10: OBSERVABILITY & INTEGRATION ───────",
+                "Module 10 Overview",
+                "Standard Logging Stack via IaC",
+                "Cloud Native Log/Metric Collection",
+                "Change Tracking & CMDB Sync",
+                "Policy Violation Reporting",
+                "Event Tools for Alerting",
                 "─────── POLICY & GUARDRAILS ───────",
                 "Policy & Guardrails Overview",
                 "Policy as Code Engine",
@@ -299,6 +324,49 @@ def main():
         AbstractionReusabilityModule.render_multi_environment()
     elif page == "Lifecycle Management":
         AbstractionReusabilityModule.render_lifecycle_management()
+    elif page == "Module 08 Overview":
+        show_module_08_overview()
+    elif page == "Cloud & On-Prem Provisioning":
+        module = MultiCloudHybridModule()
+        module._render_provisioning()
+    elif page == "Unified Policy Framework":
+        module = MultiCloudHybridModule()
+        module._render_policy_framework()
+    elif page == "Cloud-Specific Optimization":
+        module = MultiCloudHybridModule()
+        module._render_optimization()
+    elif page == "Private+Public Connectivity":
+        module = MultiCloudHybridModule()
+        module._render_connectivity()
+    elif page == "Global Environment Management":
+        module = MultiCloudHybridModule()
+        module._render_global_management()
+    elif page == "Module 09 Overview":
+        DeveloperExperienceModule.render_overview()
+    elif page == "Governed Self-Service Portals":
+        DeveloperExperienceModule.render_self_service_portals()
+    elif page == "GitOps Integration":
+        DeveloperExperienceModule.render_gitops_integration()
+    elif page == "Drift Notification & Feedback Loop":
+        DeveloperExperienceModule.render_drift_notification()
+    elif page == "Documentation & Examples":
+        DeveloperExperienceModule.render_documentation_examples()
+    elif page == "InfraSecOps":
+        DeveloperExperienceModule.render_infrasecops()
+    elif page == "User Community":
+        DeveloperExperienceModule.render_user_community()
+    elif page == "Module 10 Overview":
+        ObservabilityIntegrationModule.render_overview()
+    elif page == "Standard Logging Stack via IaC":
+        ObservabilityIntegrationModule.render_logging_stack()
+    elif page == "Cloud Native Log/Metric Collection":
+        ObservabilityIntegrationModule.render_metrics_collection()
+    elif page == "Change Tracking & CMDB Sync":
+        ObservabilityIntegrationModule.render_change_tracking()
+    elif page == "Policy Violation Reporting":
+        ObservabilityIntegrationModule.render_policy_violations()
+    elif page == "Event Tools for Alerting":
+        ObservabilityIntegrationModule.render_event_alerting()
     elif page == "Policy & Guardrails Overview":
         show_policy_guardrails_overview()
     elif page == "Policy as Code Engine":
@@ -727,6 +795,115 @@ def show_ondemand_operations_overview():
     
     # Call the actual overview rendering
     OnDemandOperationsModule.render_ondemand_overview()
+
+def show_module_08_overview():
+    """Display Module 08: Multi-Cloud & Hybrid Support overview"""
+    
+    st.markdown("## ☁️ Module 08: Multi-Cloud & Hybrid Support")
+    
+    st.markdown("""
+    Comprehensive multi-cloud and hybrid cloud management platform. Unify policies across clouds,
+    optimize workloads for each provider, and seamlessly connect on-premises to cloud environments.
+    """)
+    
+    st.markdown("---")
+    
+    # Module cards
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("#### 🌐 Cloud & On-Prem Provisioning")
+        st.markdown("Multi-cloud and hybrid provisioning")
+        st.markdown("- AWS, Azure, GCP, Oracle, IBM support")
+        st.markdown("- On-premises integration (VMware, Hyper-V)")
+        st.markdown("- Hybrid connectivity (Direct Connect, ExpressRoute)")
+        st.markdown("- Cloud bursting capabilities")
+        st.markdown("- Unified IaC (Terraform, CloudFormation)")
+        
+        st.markdown("#### 📋 Unified Policy Framework")
+        st.markdown("Cross-cloud policy management")
+        st.markdown("- Policy translation engine")
+        st.markdown("- Compliance mapping (ISO, SOC 2, PCI DSS, GDPR)")
+        st.markdown("- Real-time enforcement")
+        st.markdown("- Auto-remediation")
+        st.markdown("- Comprehensive audit trails")
+        
+        st.markdown("#### ⚡ Cloud-Specific Optimization")
+        st.markdown("Tailored optimization per cloud")
+        st.markdown("- Multi-cloud cost analysis")
+        st.markdown("- Performance tuning recommendations")
+        st.markdown("- Resource right-sizing")
+        st.markdown("- Cloud-native best practices")
+        st.markdown("- Savings opportunity tracking")
+    
+    with col2:
+        st.markdown("#### 🔗 Private + Public Connectivity")
+        st.markdown("Secure hybrid networking")
+        st.markdown("- Network topology design (Hub-Spoke, Mesh)")
+        st.markdown("- Direct Connect / ExpressRoute / VPN")
+        st.markdown("- Security zones & microsegmentation")
+        st.markdown("- Global load balancing")
+        st.markdown("- Traffic management & QoS")
+        
+        st.markdown("#### 🌍 Global Environment Management")
+        st.markdown("Worldwide deployment orchestration")
+        st.markdown("- Multi-region active-active/passive")
+        st.markdown("- Global traffic distribution")
+        st.markdown("- Data residency compliance")
+        st.markdown("- Disaster recovery automation")
+        st.markdown("- Latency-based routing")
+    
+    st.markdown("---")
+    
+    # Key capabilities
+    st.markdown("### 🎯 Key Capabilities")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("**Multi-Cloud Strategy**")
+        st.markdown("""
+        - Unified provisioning
+        - Cross-cloud policies
+        - Cost comparison
+        - Workload distribution
+        - Vendor flexibility
+        """)
+    
+    with col2:
+        st.markdown("**Hybrid Integration**")
+        st.markdown("""
+        - On-premises connectivity
+        - Data synchronization
+        - Hybrid governance
+        - Cloud bursting
+        - Seamless migration
+        """)
+    
+    with col3:
+        st.markdown("**Global Scale**")
+        st.markdown("""
+        - Multi-region deployments
+        - Data residency compliance
+        - Global load balancing
+        - DR automation
+        - Latency optimization
+        """)
+    
+    st.markdown("---")
+    
+    # Stats
+    st.markdown("### 📊 Platform Coverage")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Cloud Providers", "6+", "+2")
+    with col2:
+        st.metric("Global Regions", "35+", "+5")
+    with col3:
+        st.metric("Unified Policies", "87", "+12")
+    with col4:
+        st.metric("Compliance Frameworks", "8", "+2")
 
 def show_ai_assistant():
     """Display AI Assistant"""
