@@ -783,11 +783,7 @@ jobs:
         run: aws s3 sync build/ s3://bucket-name/"""
             }
         ]
-"""
-Add these methods to demo_data.py DemoDataProvider class
-Copy and paste into demo_data.py after the existing methods
-"""
-
+    
     # ============= ON-DEMAND PROVISIONING & OPERATIONS DATA =============
     
     @staticmethod
