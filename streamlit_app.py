@@ -72,30 +72,37 @@ def main():
     
     # Sidebar configuration
     with st.sidebar:
-        # Dynamic CloudIDP Logo
+        # AWS-Style CloudIDP Logo
         st.markdown("""
             <div style="text-align: center; padding: 20px 0;">
                 <div style="
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    border-radius: 20px;
-                    padding: 20px;
-                    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+                    background: linear-gradient(180deg, #232F3E 0%, #1a252f 100%);
+                    border-radius: 8px;
+                    padding: 25px 20px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
                     margin-bottom: 10px;
+                    border: 2px solid #FF9900;
                 ">
-                    <div style="font-size: 48px; margin-bottom: 5px;">☁️</div>
                     <div style="
-                        color: white;
-                        font-size: 28px;
+                        color: #FF9900;
+                        font-size: 36px;
                         font-weight: bold;
-                        letter-spacing: 2px;
-                        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                        letter-spacing: 3px;
+                        margin-bottom: 8px;
                     ">CloudIDP</div>
                     <div style="
-                        color: rgba(255,255,255,0.9);
-                        font-size: 11px;
-                        margin-top: 5px;
-                        letter-spacing: 1px;
-                    ">INFRASTRUCTURE DEVELOPMENT</div>
+                        color: #FFFFFF;
+                        font-size: 10px;
+                        letter-spacing: 1.5px;
+                        font-weight: 500;
+                    ">INFRASTRUCTURE DEVELOPMENT PLATFORM</div>
+                    <div style="
+                        width: 60px;
+                        height: 3px;
+                        background: #FF9900;
+                        margin: 12px auto 0 auto;
+                        border-radius: 2px;
+                    "></div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
