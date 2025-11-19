@@ -5,6 +5,13 @@ Streamlit Cloud Compatible - Flat File Structure
 
 import streamlit as st
 from design_planning import DesignPlanningModule
+from provisioning_deployment import ProvisioningDeploymentModule
+from ondemand_operations import OnDemandOperationsModule
+from ondemand_operations_part2 import OnDemandOperationsModule2
+from finops_module import FinOpsModule
+from security_compliance import SecurityComplianceModule
+from policy_guardrails import PolicyGuardrailsModule
+from module_07_abstraction import AbstractionReusabilityModule
 from config import initialize_session_state
 from anthropic_helper import AnthropicHelper
 
@@ -99,6 +106,7 @@ def main():
             "Select Module:",
             [
                 "Home",
+                "─────── DESIGN & PLANNING ───────",
                 "Design & Planning Overview",
                 "Blueprint Definition",
                 "Tagging Standards",
@@ -106,6 +114,55 @@ def main():
                 "Image/Artifact Versioning",
                 "IaC Module Registry",
                 "Design-Time Validation",
+                "─────── PROVISIONING & DEPLOYMENT ───────",
+                "Provisioning & Deployment Overview",
+                "Multi-Cloud Provisioning",
+                "Environment Promotion",
+                "CI/CD Pipeline Integration",
+                "─────── ON-DEMAND OPERATIONS ───────",
+                "On-Demand Operations Overview",
+                "Provisioning API",
+                "Guardrail Validation",
+                "Deployment Templates",
+                "Compute Right-Sizing",
+                "Storage Re-Tiering",
+                "Auto-Scaling & Scheduling",
+                "Patch Automation (SSM)",
+                "Drift Detection",
+                "Backup & Recovery",
+                "Lifecycle Hooks",
+                "Idle Resource Detection",
+                "Continuous Availability",
+                "Continuous Deployment",
+                "─────── FINOPS ───────",
+                "FinOps Overview",
+                "Tag-Based Cost Tracking",
+                "Budget Policy Enforcement",
+                "Forecasting & Chargebacks",
+                "Scheduled Infrastructure",
+                "Spot Instance Orchestration",
+                "Cost Anomaly Detection",
+                "Reporting & Dashboards",
+                "PMO vs FMO",
+                "RI Recommendations",
+                "Use Case Tracking",
+                "─────── SECURITY & COMPLIANCE ───────",
+                "Security & Compliance Overview",
+                "─────── MODULE 07: ABSTRACTION & REUSABILITY ───────",
+                "Module 07 Overview",
+                "Composable Modules",
+                "App-Centric Packaging",
+                "Parameterization & Defaults",
+                "Multi-Environment Support",
+                "Lifecycle Management",
+                "─────── POLICY & GUARDRAILS ───────",
+                "Policy & Guardrails Overview",
+                "Policy as Code Engine",
+                "Cross-Cloud Policy Consistency",
+                "Tag Policy Enforcement",
+                "Naming & Placement Enforcement",
+                "Quota Guardrails",
+                "─────── AI ASSISTANT ───────",
                 "AI Assistant"
             ]
         )
@@ -152,6 +209,9 @@ def main():
     # Main content area - Route to appropriate page
     if page == "Home":
         show_home_page()
+    elif page.startswith("───────"):
+        # Skip separator entries
+        st.info("Please select a specific page from the navigation menu.")
     elif page == "Design & Planning Overview":
         show_design_planning_overview()
     elif page == "Blueprint Definition":
@@ -166,6 +226,91 @@ def main():
         DesignPlanningModule.render_iac_registry()
     elif page == "Design-Time Validation":
         DesignPlanningModule.render_design_validation()
+    elif page == "Provisioning & Deployment Overview":
+        show_provisioning_deployment_overview()
+    elif page == "Multi-Cloud Provisioning":
+        ProvisioningDeploymentModule.render_multi_cloud_provisioning()
+    elif page == "Environment Promotion":
+        ProvisioningDeploymentModule.render_environment_promotion()
+    elif page == "CI/CD Pipeline Integration":
+        ProvisioningDeploymentModule.render_cicd_integration()
+    elif page == "On-Demand Operations Overview":
+        show_ondemand_operations_overview()
+    elif page == "Provisioning API":
+        OnDemandOperationsModule.render_provisioning_api()
+    elif page == "Guardrail Validation":
+        OnDemandOperationsModule.render_guardrail_validation()
+    elif page == "Deployment Templates":
+        OnDemandOperationsModule.render_deployment_templates()
+    elif page == "Compute Right-Sizing":
+        OnDemandOperationsModule.render_rightsizing()
+    elif page == "Storage Re-Tiering":
+        OnDemandOperationsModule.render_storage_tiering()
+    elif page == "Auto-Scaling & Scheduling":
+        OnDemandOperationsModule.render_autoscaling()
+    elif page == "Patch Automation (SSM)":
+        OnDemandOperationsModule2.render_patch_automation()
+    elif page == "Drift Detection":
+        OnDemandOperationsModule2.render_drift_detection()
+    elif page == "Backup & Recovery":
+        OnDemandOperationsModule2.render_backup_recovery()
+    elif page == "Lifecycle Hooks":
+        OnDemandOperationsModule2.render_lifecycle_hooks()
+    elif page == "Idle Resource Detection":
+        OnDemandOperationsModule2.render_idle_detection()
+    elif page == "Continuous Availability":
+        OnDemandOperationsModule2.render_continuous_availability()
+    elif page == "Continuous Deployment":
+        OnDemandOperationsModule2.render_continuous_deployment()
+    elif page == "FinOps Overview":
+        FinOpsModule.render_finops_overview()
+    elif page == "Tag-Based Cost Tracking":
+        FinOpsModule.render_tag_based_cost_tracking()
+    elif page == "Budget Policy Enforcement":
+        FinOpsModule.render_budget_policy_enforcement()
+    elif page == "Forecasting & Chargebacks":
+        FinOpsModule.render_forecasting_chargebacks()
+    elif page == "Scheduled Infrastructure":
+        FinOpsModule.render_scheduled_infrastructure_policies()
+    elif page == "Spot Instance Orchestration":
+        FinOpsModule.render_spot_instance_orchestration()
+    elif page == "Cost Anomaly Detection":
+        FinOpsModule.render_cost_anomaly_detection()
+    elif page == "Reporting & Dashboards":
+        FinOpsModule.render_reporting_dashboards()
+    elif page == "PMO vs FMO":
+        FinOpsModule.render_pmo_vs_fmo()
+    elif page == "RI Recommendations":
+        FinOpsModule.render_ri_recommendations()
+    elif page == "Use Case Tracking":
+        FinOpsModule.render_use_case_tracking()
+    elif page == "Security & Compliance Overview":
+        security_module = SecurityComplianceModule(demo_mode=st.session_state.demo_mode)
+        security_module.render()
+    elif page == "Module 07 Overview":
+        AbstractionReusabilityModule.render_overview()
+    elif page == "Composable Modules":
+        AbstractionReusabilityModule.render_composable_modules()
+    elif page == "App-Centric Packaging":
+        AbstractionReusabilityModule.render_app_centric_packaging()
+    elif page == "Parameterization & Defaults":
+        AbstractionReusabilityModule.render_parameterization()
+    elif page == "Multi-Environment Support":
+        AbstractionReusabilityModule.render_multi_environment()
+    elif page == "Lifecycle Management":
+        AbstractionReusabilityModule.render_lifecycle_management()
+    elif page == "Policy & Guardrails Overview":
+        show_policy_guardrails_overview()
+    elif page == "Policy as Code Engine":
+        show_policy_as_code()
+    elif page == "Cross-Cloud Policy Consistency":
+        show_cross_cloud_policy()
+    elif page == "Tag Policy Enforcement":
+        show_tag_enforcement()
+    elif page == "Naming & Placement Enforcement":
+        show_naming_enforcement()
+    elif page == "Quota Guardrails":
+        show_quota_guardrails()
     elif page == "AI Assistant":
         show_ai_assistant()
 
@@ -186,25 +331,69 @@ def show_home_page():
         """)
     
     with col2:
-        st.markdown("### 🔒 Compliance & Security")
+        st.markdown("### 🚀 Provisioning & Deployment")
         st.markdown("""
-        - PCI DSS Compliance
-        - HIPAA Requirements
-        - GDPR Controls
-        - Security Baselines
-        - Audit Trails
-        - Risk Assessment
+        - Multi-Cloud Provisioning
+        - Environment Promotion
+        - CI/CD Integration
+        - Build Monitoring
+        - Deployment Tracking
+        - Pipeline Templates
         """)
     
     with col3:
-        st.markdown("### 🤖 AI-Powered")
+        st.markdown("### ⚡ On-Demand Operations")
         st.markdown("""
-        - Claude AI Assistant
-        - Automated Reviews
-        - Documentation Gen
+        - API Provisioning
+        - Guardrail Validation
+        - Right-Sizing
+        - Storage Tiering
+        - Auto-Scaling
+        - Patch Automation
+        - Drift Detection
+        - Backup Management
+        - Lifecycle Hooks
+        - Continuous Deployment
+        """)
+    
+    st.markdown("---")
+    
+    # Second row of modules
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("### 💰 FinOps")
+        st.markdown("""
+        - Cost Tracking
+        - Budget Enforcement
+        - Forecasting
+        - Chargebacks
+        - Spot Orchestration
+        - Anomaly Detection
+        - RI Recommendations
+        """)
+    
+    with col2:
+        st.markdown("### 🔒 Security & Compliance")
+        st.markdown("""
+        - RBAC & Identity
+        - Network Segmentation
+        - Encryption Management
+        - Secrets Management
+        - Certificate Management
+        - Audit Logging
+        - Vulnerability Scanning
+        """)
+    
+    with col3:
+        st.markdown("### 🤖 AI Assistant")
+        st.markdown("""
+        - Architecture Review
         - Best Practices
-        - Architecture Help
-        - Code Analysis
+        - Cost Optimization
+        - Security Guidance
+        - Troubleshooting
+        - Documentation
         """)
     
     st.markdown("---")
@@ -216,11 +405,11 @@ def show_home_page():
     with col1:
         st.metric("AWS Services", "150+")
     with col2:
-        st.metric("Compliance Frameworks", "12+")
+        st.metric("Active Deployments", "342")
     with col3:
         st.metric("IaC Templates", "500+")
     with col4:
-        st.metric("Validation Rules", "1000+")
+        st.metric("Managed Resources", "1,547")
     
     st.markdown("---")
     
@@ -238,15 +427,22 @@ def show_home_page():
         """)
         
         st.markdown("#### Try These Features:")
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
             st.info("📋 Browse 4 architecture blueprints")
             st.info("🏷️ View tagging policies")
             st.info("📛 Check naming conventions")
+            st.info("☁️ Multi-cloud provisioning")
         with col2:
-            st.info("📦 Explore 87+ IaC modules")
-            st.info("✅ Run design validation")
+            st.info("🔄 Environment promotion workflow")
+            st.info("🔧 CI/CD pipeline integration")
+            st.info("📊 Build status monitoring")
             st.info("🤖 Chat with AI Assistant")
+        with col3:
+            st.info("⚡ On-demand provisioning API")
+            st.info("📉 Right-sizing recommendations")
+            st.info("💾 Storage re-tiering policies")
+            st.info("🔍 Drift detection & remediation")
     else:
         st.warning("""
         **🟢 Live Mode Active** - Connected to AWS services
@@ -309,6 +505,228 @@ def show_design_planning_overview():
         st.markdown("- Policy compliance")
         st.markdown("- Security checks")
         st.markdown("- Cost estimates")
+
+def show_provisioning_deployment_overview():
+    """Display Provisioning & Deployment module overview"""
+    
+    st.markdown("## 🚀 Provisioning & Deployment Framework")
+    
+    st.markdown("""
+    End-to-end infrastructure provisioning and deployment management across multiple cloud providers.
+    Automate deployments, manage environment promotions, and integrate with CI/CD pipelines.
+    """)
+    
+    st.markdown("---")
+    
+    # Module cards
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("#### ☁️ Multi-Cloud Provisioning")
+        st.markdown("Deploy across cloud providers")
+        st.markdown("- AWS, Azure, GCP support")
+        st.markdown("- Unified deployment interface")
+        st.markdown("- Cross-cloud governance")
+        st.markdown("- Cost comparison tools")
+        
+        st.markdown("#### 🔄 Environment Promotion")
+        st.markdown("Structured deployment pipeline")
+        st.markdown("- Dev → Staging → Production")
+        st.markdown("- Approval workflows")
+        st.markdown("- Automated testing gates")
+        st.markdown("- Rollback capabilities")
+    
+    with col2:
+        st.markdown("#### 🔧 CI/CD Pipeline Integration")
+        st.markdown("Connect with your CI/CD tools")
+        st.markdown("- Jenkins integration")
+        st.markdown("- GitHub Actions support")
+        st.markdown("- GitLab CI/CD")
+        st.markdown("- Azure DevOps")
+        st.markdown("- Build monitoring")
+        st.markdown("- Pipeline templates")
+    
+    st.markdown("---")
+    
+    # Key features
+    st.markdown("### 🎯 Key Capabilities")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("**Automated Deployment**")
+        st.markdown("""
+        - One-click provisioning
+        - Blueprint-based deployment
+        - Infrastructure automation
+        - Configuration management
+        """)
+    
+    with col2:
+        st.markdown("**Governance & Control**")
+        st.markdown("""
+        - Approval workflows
+        - Policy enforcement
+        - Audit trails
+        - Change management
+        """)
+    
+    with col3:
+        st.markdown("**Monitoring & Insights**")
+        st.markdown("""
+        - Real-time status
+        - Build analytics
+        - Cost tracking
+        - Performance metrics
+        """)
+
+def show_ondemand_operations_overview():
+    """Display On-Demand Operations module overview"""
+    
+    st.markdown("## ⚡ On-Demand Provisioning & Operations Framework")
+    
+    st.markdown("""
+    Intelligent resource management and automation platform. Optimize costs, ensure compliance,
+    and maintain operational excellence through automated provisioning, right-sizing, and lifecycle management.
+    """)
+    
+    st.markdown("---")
+    
+    # Module cards
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("#### 🔌 On-Demand Provisioning API")
+        st.markdown("Self-service infrastructure provisioning")
+        st.markdown("- RESTful API endpoints")
+        st.markdown("- Built-in guardrails")
+        st.markdown("- Automatic validation")
+        st.markdown("- Rate limiting & auth")
+        
+        st.markdown("#### 🛡️ Guardrail Validation")
+        st.markdown("Pre-deployment policy enforcement")
+        st.markdown("- Security checks")
+        st.markdown("- Compliance validation")
+        st.markdown("- Cost controls")
+        st.markdown("- Tagging requirements")
+        
+        st.markdown("#### 📦 Deployment Templates")
+        st.markdown("Pre-configured infrastructure patterns")
+        st.markdown("- CloudFormation templates")
+        st.markdown("- Terraform modules")
+        st.markdown("- Right-sizing built-in")
+        st.markdown("- Auto-scaling enabled")
+        
+        st.markdown("#### 📉 Compute Right-Sizing")
+        st.markdown("AI-powered instance optimization")
+        st.markdown("- Usage analysis")
+        st.markdown("- Cost savings recommendations")
+        st.markdown("- Automated resizing")
+        st.markdown("- Performance monitoring")
+        
+        st.markdown("#### 💾 Storage Re-Tiering")
+        st.markdown("Automated S3 lifecycle management")
+        st.markdown("- Cost optimization")
+        st.markdown("- Lifecycle policies")
+        st.markdown("- Intelligent tiering")
+        st.markdown("- Archive automation")
+        
+        st.markdown("#### ⏰ Auto-Scaling & Scheduling")
+        st.markdown("Time-based resource management")
+        st.markdown("- Business hours scaling")
+        st.markdown("- Dev environment shutdown")
+        st.markdown("- Cost optimization")
+        st.markdown("- Demand-based scaling")
+        
+        st.markdown("#### 🔧 Patch Automation (SSM)")
+        st.markdown("Automated patch management")
+        st.markdown("- Maintenance windows")
+        st.markdown("- Compliance tracking")
+        st.markdown("- Automated updates")
+        st.markdown("- Rollback capabilities")
+    
+    with col2:
+        st.markdown("#### 🔍 Drift Detection & Remediation")
+        st.markdown("Configuration compliance monitoring")
+        st.markdown("- CloudFormation drift detection")
+        st.markdown("- Automatic remediation")
+        st.markdown("- Change tracking")
+        st.markdown("- Compliance reporting")
+        
+        st.markdown("#### 💾 Backup & Recovery Management")
+        st.markdown("Centralized backup orchestration")
+        st.markdown("- AWS Backup integration")
+        st.markdown("- Cross-region replication")
+        st.markdown("- RPO/RTO management")
+        st.markdown("- Recovery testing")
+        
+        st.markdown("#### 🪝 Lifecycle Hooks")
+        st.markdown("Automated lifecycle actions")
+        st.markdown("- Launch initialization")
+        st.markdown("- Termination cleanup")
+        st.markdown("- Custom workflows")
+        st.markdown("- Event-driven automation")
+        
+        st.markdown("#### 💤 Idle Resource Detection")
+        st.markdown("Cost optimization through usage analysis")
+        st.markdown("- Underutilized resources")
+        st.markdown("- Idle detection")
+        st.markdown("- Automatic termination")
+        st.markdown("- Savings opportunities")
+        
+        st.markdown("#### 🔄 Continuous Availability")
+        st.markdown("High availability monitoring")
+        st.markdown("- Multi-AZ deployments")
+        st.markdown("- Health checks")
+        st.markdown("- Automatic failover")
+        st.markdown("- SLA monitoring")
+        
+        st.markdown("#### 🚀 Continuous Deployment")
+        st.markdown("Progressive delivery strategies")
+        st.markdown("- Blue/green deployments")
+        st.markdown("- Canary releases")
+        st.markdown("- Automatic rollback")
+        st.markdown("- Deployment gates")
+    
+    st.markdown("---")
+    
+    # Key capabilities
+    st.markdown("### 🎯 Key Capabilities")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("**Cost Optimization**")
+        st.markdown("""
+        - Right-sizing recommendations
+        - Storage tiering
+        - Idle resource detection
+        - Scheduled scaling
+        - Savings tracking
+        """)
+    
+    with col2:
+        st.markdown("**Operational Excellence**")
+        st.markdown("""
+        - Automated patching
+        - Drift remediation
+        - Backup management
+        - Lifecycle automation
+        - Continuous monitoring
+        """)
+    
+    with col3:
+        st.markdown("**Security & Compliance**")
+        st.markdown("""
+        - Guardrail validation
+        - Policy enforcement
+        - Configuration compliance
+        - Audit trails
+        - Automated remediation
+        """)
+    
+    # Call the actual overview rendering
+    OnDemandOperationsModule.render_ondemand_overview()
 
 def show_ai_assistant():
     """Display AI Assistant"""
@@ -373,6 +791,36 @@ def show_ai_assistant():
         if st.button("🗑️ Clear Chat"):
             st.session_state.chat_history = []
             st.rerun()
+
+def show_policy_guardrails_overview():
+    """Show Policy & Guardrails Overview"""
+    module = PolicyGuardrailsModule()
+    module.render_overview()
+
+def show_policy_as_code():
+    """Show Policy as Code Engine"""
+    module = PolicyGuardrailsModule()
+    module.render_policy_as_code()
+
+def show_cross_cloud_policy():
+    """Show Cross-Cloud Policy Consistency"""
+    module = PolicyGuardrailsModule()
+    module.render_cross_cloud_policy()
+
+def show_tag_enforcement():
+    """Show Tag Policy Enforcement"""
+    module = PolicyGuardrailsModule()
+    module.render_tag_enforcement()
+
+def show_naming_enforcement():
+    """Show Naming & Placement Enforcement"""
+    module = PolicyGuardrailsModule()
+    module.render_naming_enforcement()
+
+def show_quota_guardrails():
+    """Show Quota Guardrails"""
+    module = PolicyGuardrailsModule()
+    module.render_quota_guardrails()
 
 if __name__ == "__main__":
     main()

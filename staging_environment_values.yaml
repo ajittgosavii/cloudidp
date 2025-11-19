@@ -1,0 +1,37 @@
+# Staging Environment Configuration
+environment_name: "staging"
+environment_description: "Staging Environment for Customer Portal - Pre-Production Testing"
+creator: "devops@company.com"
+creation_date: "2025-11-18"
+app_name: "customer-portal"
+
+# Network Configuration
+vpc_cidr: "10.20.0.0/16"
+availability_zones: ["us-east-1a", "us-east-1b"]
+enable_nat: true
+enable_vpn: false
+
+# Database Configuration
+db_engine: "postgres"
+db_version: "15.4"
+db_instance_class: "db.t3.medium"
+db_storage: 50
+db_multi_az: false
+db_backup_retention: 7
+
+# Compute Configuration
+compute_instance_type: "t3.medium"
+compute_min: 2
+compute_max: 4
+compute_desired: 2
+
+# Security Settings
+deletion_protection: false
+monitoring_enabled: true
+
+# Compliance
+compliance_standards: ["SOC2", "HIPAA"]
+
+# Tags
+cost_center: "Engineering"
+owner: "QATeam"

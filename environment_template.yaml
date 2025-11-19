@@ -1,0 +1,46 @@
+version: "1.0"
+metadata:
+  name: "{{ environment_name }}"
+  description: "{{ environment_description }}"
+  created_by: "{{ creator }}"
+  created_date: "{{ creation_date }}"
+
+infrastructure:
+  network:
+    vpc_cidr: "{{ vpc_cidr }}"
+    availability_zones: {{ availability_zones }}
+    enable_nat_gateway: {{ enable_nat }}
+    enable_vpn_gateway: {{ enable_vpn }}
+  
+  database:
+    engine: "{{ db_engine }}"
+    engine_version: "{{ db_version }}"
+    instance_class: "{{ db_instance_class }}"
+    allocated_storage: {{ db_storage }}
+    multi_az: {{ db_multi_az }}
+    backup_retention: {{ db_backup_retention }}
+  
+  compute:
+    instance_type: "{{ compute_instance_type }}"
+    min_size: {{ compute_min }}
+    max_size: {{ compute_max }}
+    desired_capacity: {{ compute_desired }}
+
+security:
+  encryption_enabled: true
+  deletion_protection: {{ deletion_protection }}
+  backup_enabled: true
+  monitoring_enabled: {{ monitoring_enabled }}
+
+compliance:
+  standards: {{ compliance_standards }}
+  audit_logging: true
+  vpc_flow_logs: true
+
+tags:
+  Environment: "{{ environment_name }}"
+  Application: "{{ app_name }}"
+  CostCenter: "{{ cost_center }}"
+  Owner: "{{ owner }}"
+  ManagedBy: "Terraform"
+  CreatedDate: "{{ creation_date }}"
