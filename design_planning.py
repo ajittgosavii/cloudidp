@@ -1165,8 +1165,7 @@ class DesignPlanningModule:
                 with col3:
                     if st.button("🔄 Re-run Tests"):
                         st.info("Tests scheduled for re-run")
-)
-
+    
     @staticmethod
     def render_multi_region_planner():
         """Multi-Region Deployment Planner"""
