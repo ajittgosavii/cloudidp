@@ -1,6 +1,6 @@
 """
-AWS Design & Planning Platform
-Streamlit Cloud Compatible - Flat File Structure
+CloudIDP - Cloud Infrastructure Development Platform
+Multi-Cloud Architecture & Governance Framework
 """
 
 import streamlit as st
@@ -20,8 +20,8 @@ from anthropic_helper import AnthropicHelper
 
 # Page configuration
 st.set_page_config(
-    page_title="AWS Design & Planning Platform",
-    page_icon="🏗️",
+    page_title="CloudIDP - Cloud Infrastructure Development Platform",
+    page_icon="☁️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -67,12 +67,38 @@ def main():
     initialize_session_state()
     
     # Header
-    st.markdown('<div class="main-header">🏗️ AWS Design & Planning Platform</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Enterprise Cloud Architecture & Governance Framework</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header">☁️ CloudIDP</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Cloud Infrastructure Development Platform | Enterprise Architecture & Governance</div>', unsafe_allow_html=True)
     
     # Sidebar configuration
     with st.sidebar:
-        st.image("https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png", width=200)
+        # Dynamic CloudIDP Logo
+        st.markdown("""
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    border-radius: 20px;
+                    padding: 20px;
+                    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+                    margin-bottom: 10px;
+                ">
+                    <div style="font-size: 48px; margin-bottom: 5px;">☁️</div>
+                    <div style="
+                        color: white;
+                        font-size: 28px;
+                        font-weight: bold;
+                        letter-spacing: 2px;
+                        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                    ">CloudIDP</div>
+                    <div style="
+                        color: rgba(255,255,255,0.9);
+                        font-size: 11px;
+                        margin-top: 5px;
+                        letter-spacing: 1px;
+                    ">INFRASTRUCTURE DEVELOPMENT</div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
         st.markdown("---")
         
         # ============= LIVE/DEMO MODE TOGGLE =============
@@ -81,7 +107,7 @@ def main():
             "Select Mode:",
             ["Demo Mode", "Live Mode"],
             index=0,  # Demo Mode is default
-            help="Demo Mode: Use sample data (no AWS credentials)\nLive Mode: Connect to real AWS services"
+            help="Demo Mode: Use sample data (no cloud credentials)\nLive Mode: Connect to real cloud services (AWS, Azure, GCP)"
         )
         
         # Update session state based on selection
@@ -93,13 +119,13 @@ def main():
                 '<div class="mode-indicator demo-mode">📋 DEMO MODE ACTIVE</div>',
                 unsafe_allow_html=True
             )
-            st.info("✓ Using sample data\n\n✓ No AWS credentials needed\n\n✓ Safe to explore all features")
+            st.info("✓ Using sample data\n\n✓ No cloud credentials needed\n\n✓ Safe to explore all features")
         else:
             st.markdown(
                 '<div class="mode-indicator live-mode">🟢 LIVE MODE ACTIVE</div>',
                 unsafe_allow_html=True
             )
-            st.warning("⚠️ Connected to AWS\n\n⚠️ Real data will be used\n\n⚠️ Actions may affect resources")
+            st.warning("⚠️ Connected to Cloud Services\n\n⚠️ Real data will be used\n\n⚠️ Actions may affect resources")
         
         st.markdown("---")
         
@@ -194,42 +220,69 @@ def main():
         
         st.markdown("---")
         
-        # AWS Configuration (Live Mode Only)
+        # Cloud Provider Configuration (Live Mode Only)
         if not st.session_state.demo_mode:
-            st.markdown("### ⚙️ AWS Configuration")
-            with st.expander("AWS Settings", expanded=False):
-                aws_region = st.selectbox(
-                    "AWS Region:",
-                    ["us-east-1", "us-west-2", "eu-west-1", "ap-southeast-1"],
+            st.markdown("### ☁️ Cloud Provider Configuration")
+            with st.expander("Cloud Settings", expanded=False):
+                cloud_provider = st.selectbox(
+                    "Cloud Provider:",
+                    ["AWS", "Azure", "Google Cloud", "Multi-Cloud"],
                     index=0
                 )
-                st.session_state.aws_region = aws_region
+                st.session_state.cloud_provider = cloud_provider
                 
-                aws_account = st.text_input(
-                    "AWS Account ID:",
-                    placeholder="123456789012"
-                )
-                st.session_state.aws_account = aws_account
+                if cloud_provider == "AWS":
+                    aws_region = st.selectbox(
+                        "AWS Region:",
+                        ["us-east-1", "us-west-2", "eu-west-1", "ap-southeast-1"],
+                        index=0
+                    )
+                    st.session_state.aws_region = aws_region
+                    
+                    aws_account = st.text_input(
+                        "AWS Account ID:",
+                        placeholder="123456789012"
+                    )
+                    st.session_state.aws_account = aws_account
+                    
+                    if aws_account:
+                        st.success("✅ AWS configured")
                 
-                if aws_account:
-                    st.success("✅ AWS Account configured")
+                elif cloud_provider == "Azure":
+                    azure_subscription = st.text_input(
+                        "Azure Subscription ID:",
+                        placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    )
+                    st.session_state.azure_subscription = azure_subscription
+                    if azure_subscription:
+                        st.success("✅ Azure configured")
+                
+                elif cloud_provider == "Google Cloud":
+                    gcp_project = st.text_input(
+                        "GCP Project ID:",
+                        placeholder="my-project-id"
+                    )
+                    st.session_state.gcp_project = gcp_project
+                    if gcp_project:
+                        st.success("✅ GCP configured")
         
-        # Anthropic API Configuration
-        st.markdown("### 🤖 Claude AI Configuration")
-        with st.expander("API Settings", expanded=False):
-            api_key = st.text_input(
-                "Anthropic API Key:",
-                type="password",
-                help="Get your API key from https://console.anthropic.com/"
-            )
-            if api_key:
-                st.session_state.anthropic_api_key = api_key
-                st.success("✅ API Key configured")
+        # Anthropic API Configuration (from secrets)
+        st.markdown("### 🤖 Claude AI")
+        try:
+            # Read API key from Streamlit secrets
+            if 'anthropic' in st.secrets and 'api_key' in st.secrets['anthropic']:
+                st.session_state.anthropic_api_key = st.secrets['anthropic']['api_key']
+                st.success("✅ Claude AI connected")
             else:
-                st.info("ℹ️ API key needed for AI features")
+                st.session_state.anthropic_api_key = None
+                st.warning("⚠️ API key not found in secrets")
+                st.caption("Add to secrets.toml: [anthropic] api_key = 'your-key'")
+        except Exception as e:
+            st.session_state.anthropic_api_key = None
+            st.info("ℹ️ Configure API key in Streamlit Cloud secrets for AI features")
         
         st.markdown("---")
-        st.caption("v1.0.0 | Built for AWS Enterprise Architecture")
+        st.caption("v1.0.0 | CloudIDP - Multi-Cloud Infrastructure Platform")
     
     # Main content area - Route to appropriate page
     if page == "Home":
@@ -471,7 +524,7 @@ def show_home_page():
     
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("AWS Services", "150+")
+        st.metric("Cloud Services", "450+")
     with col2:
         st.metric("Active Deployments", "342")
     with col3:
@@ -489,7 +542,7 @@ def show_home_page():
         **✅ Demo Mode Active** - You're exploring with sample data
         
         - All features available for testing
-        - No AWS credentials required
+        - No cloud credentials required
         - Sample data represents real scenarios
         - Switch to Live Mode when ready to connect
         """)
@@ -513,9 +566,9 @@ def show_home_page():
             st.info("🔍 Drift detection & remediation")
     else:
         st.warning("""
-        **🟢 Live Mode Active** - Connected to AWS services
+        **🟢 Live Mode Active** - Connected to cloud services
         
-        - Configure AWS credentials in sidebar
+        - Configure cloud credentials in sidebar
         - All operations affect real resources
         - Review changes before applying
         - Audit logs are enabled
@@ -527,8 +580,8 @@ def show_design_planning_overview():
     st.markdown("## 📐 Design & Planning Framework")
     
     st.markdown("""
-    Comprehensive tools for AWS architecture design and planning. Ensure consistency,
-    compliance, and best practices across your cloud environment.
+    Comprehensive tools for multi-cloud architecture design and planning. Ensure consistency,
+    compliance, and best practices across AWS, Azure, GCP, and hybrid environments.
     """)
     
     st.markdown("---")
@@ -723,7 +776,7 @@ def show_ondemand_operations_overview():
         
         st.markdown("#### 💾 Backup & Recovery Management")
         st.markdown("Centralized backup orchestration")
-        st.markdown("- AWS Backup integration")
+        st.markdown("- Cloud backup integration (AWS Backup, Azure Backup, GCP backups)")
         st.markdown("- Cross-region replication")
         st.markdown("- RPO/RTO management")
         st.markdown("- Recovery testing")
@@ -911,18 +964,23 @@ def show_ai_assistant():
     st.markdown("## 🤖 Claude AI Assistant")
     
     if not st.session_state.get('anthropic_api_key'):
-        st.warning("⚠️ Configure your Anthropic API key in the sidebar to use AI features.")
+        st.warning("⚠️ Anthropic API key not configured in Streamlit secrets.")
         st.info("""
-        **Get your API key:**
-        1. Visit https://console.anthropic.com/
-        2. Sign up or log in
-        3. Go to API Keys section
-        4. Create a new key
-        5. Enter it in the sidebar
+        **Configure API key in Streamlit Cloud:**
+        1. Go to your app settings
+        2. Navigate to "Secrets" section
+        3. Add the following:
+        ```
+        [anthropic]
+        api_key = "your-api-key-here"
+        ```
+        4. Save and reboot the app
+        
+        Get your API key at: https://console.anthropic.com/
         """)
         return
     
-    st.markdown("Ask Claude about AWS architecture, best practices, and design patterns.")
+    st.markdown("Ask Claude about multi-cloud architecture, best practices, and design patterns for AWS, Azure, and GCP.")
     
     # Initialize chat history
     if 'chat_history' not in st.session_state:
@@ -934,7 +992,7 @@ def show_ai_assistant():
             st.markdown(message["content"])
     
     # Chat input
-    if prompt := st.chat_input("Ask about AWS architecture..."):
+    if prompt := st.chat_input("Ask about cloud architecture, AWS, Azure, GCP..."):
         # Add user message
         st.session_state.chat_history.append({"role": "user", "content": prompt})
         
@@ -947,12 +1005,12 @@ def show_ai_assistant():
                 try:
                     helper = AnthropicHelper(st.session_state.anthropic_api_key)
                     
-                    context = f"""You are an AWS architecture expert. 
+                    context = f"""You are a multi-cloud architecture expert with deep knowledge of AWS, Azure, and Google Cloud Platform. 
                     Current mode: {'Demo Mode' if st.session_state.demo_mode else 'Live Mode'}
                     
                     User question: {prompt}
                     
-                    Provide detailed, practical AWS advice."""
+                    Provide detailed, practical cloud architecture advice. Consider best practices across different cloud providers when relevant."""
                     
                     response = helper.get_completion(context)
                     st.markdown(response)
