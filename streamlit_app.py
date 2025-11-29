@@ -497,46 +497,107 @@ def render_core_infrastructure_tabs():
     ])
     
     with infra_tabs[0]:
-        design_planning = DesignPlanningModule()
-        design_planning.render()
+        try:
+            design_planning = DesignPlanningModule()
+            if hasattr(design_planning, 'render'):
+                design_planning.render()
+            else:
+                st.error("Design & Planning module is not properly configured. Missing render() method.")
+        except Exception as e:
+            st.error(f"Error loading Design & Planning module: {str(e)}")
+            st.info("Please ensure design_planning.py is in the same directory and properly configured.")
     
     with infra_tabs[1]:
-        provisioning = ProvisioningDeploymentModule()
-        provisioning.render()
+        try:
+            provisioning = ProvisioningDeploymentModule()
+            if hasattr(provisioning, 'render'):
+                provisioning.render()
+            else:
+                st.error("Provisioning module is not properly configured.")
+        except Exception as e:
+            st.error(f"Error loading Provisioning module: {str(e)}")
     
     with infra_tabs[2]:
-        operations = OnDemandOperationsModule()
-        operations.render()
-        operations2 = OnDemandOperationsModule2()
-        operations2.render()
+        try:
+            operations = OnDemandOperationsModule()
+            if hasattr(operations, 'render'):
+                operations.render()
+            
+            operations2 = OnDemandOperationsModule2()
+            if hasattr(operations2, 'render'):
+                operations2.render()
+        except Exception as e:
+            st.error(f"Error loading Operations module: {str(e)}")
     
     with infra_tabs[3]:
-        finops = FinOpsModule()
-        finops.render()
+        try:
+            finops = FinOpsModule()
+            if hasattr(finops, 'render'):
+                finops.render()
+            else:
+                st.error("FinOps module is not properly configured.")
+        except Exception as e:
+            st.error(f"Error loading FinOps module: {str(e)}")
     
     with infra_tabs[4]:
-        security = SecurityComplianceModule()
-        security.render()
+        try:
+            security = SecurityComplianceModule()
+            if hasattr(security, 'render'):
+                security.render()
+            else:
+                st.error("Security module is not properly configured.")
+        except Exception as e:
+            st.error(f"Error loading Security module: {str(e)}")
     
     with infra_tabs[5]:
-        policy = PolicyGuardrailsModule()
-        policy.render()
+        try:
+            policy = PolicyGuardrailsModule()
+            if hasattr(policy, 'render'):
+                policy.render()
+            else:
+                st.error("Policy module is not properly configured.")
+        except Exception as e:
+            st.error(f"Error loading Policy module: {str(e)}")
     
     with infra_tabs[6]:
-        abstraction = AbstractionReusabilityModule()
-        abstraction.render()
+        try:
+            abstraction = AbstractionReusabilityModule()
+            if hasattr(abstraction, 'render'):
+                abstraction.render()
+            else:
+                st.error("Abstraction module is not properly configured.")
+        except Exception as e:
+            st.error(f"Error loading Abstraction module: {str(e)}")
     
     with infra_tabs[7]:
-        multicloud = MultiCloudHybridModule()
-        multicloud.render()
+        try:
+            multicloud = MultiCloudHybridModule()
+            if hasattr(multicloud, 'render'):
+                multicloud.render()
+            else:
+                st.error("Multi-Cloud module is not properly configured.")
+        except Exception as e:
+            st.error(f"Error loading Multi-Cloud module: {str(e)}")
     
     with infra_tabs[8]:
-        devex = DeveloperExperienceModule()
-        devex.render()
+        try:
+            devex = DeveloperExperienceModule()
+            if hasattr(devex, 'render'):
+                devex.render()
+            else:
+                st.error("Developer Experience module is not properly configured.")
+        except Exception as e:
+            st.error(f"Error loading Developer Experience module: {str(e)}")
     
     with infra_tabs[9]:
-        observability = ObservabilityIntegrationModule()
-        observability.render()
+        try:
+            observability = ObservabilityIntegrationModule()
+            if hasattr(observability, 'render'):
+                observability.render()
+            else:
+                st.error("Observability module is not properly configured.")
+        except Exception as e:
+            st.error(f"Error loading Observability module: {str(e)}")
 
 def render_api_management_tabs():
     """Render API Management modules in nested tabs"""
