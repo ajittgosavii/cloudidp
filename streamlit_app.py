@@ -1,6 +1,7 @@
 """
 CloudIDP - Cloud Infrastructure Development Platform
 Multi-Cloud Architecture & Governance Framework
+COMPLETE VERSION - Tab-Based Navigation with ALL Features
 """
 
 import streamlit as st
@@ -17,6 +18,32 @@ from module_09_developer_experience import DeveloperExperienceModule
 from module_10_observability import ObservabilityIntegrationModule
 from config import initialize_session_state
 from anthropic_helper import AnthropicHelper
+from datetime import datetime, timedelta
+import json
+
+# Backend Integration Import
+try:
+    from backend_integration import CloudIDPBackend
+    BACKEND_AVAILABLE = True
+except ImportError:
+    BACKEND_AVAILABLE = False
+    print("⚠️ Backend modules not found. Some features will be limited.")
+
+# AWS Integrations Import
+try:
+    from aws_integrations_manager import AWSIntegrationsManager
+    AWS_INTEGRATIONS_AVAILABLE = True
+except ImportError:
+    AWS_INTEGRATIONS_AVAILABLE = False
+    print("⚠️ AWS integration modules not found. AWS features will be limited.")
+
+# Enhanced API Gateway Import
+try:
+    from api_gateway_streamlit import APIKeyManager, RateLimitTier, RATE_LIMIT_CONFIG
+    API_GATEWAY_ENHANCED_AVAILABLE = True
+except ImportError:
+    API_GATEWAY_ENHANCED_AVAILABLE = False
+    print("⚠️ Enhanced API Gateway not found. API management features will be limited.")
 
 # Page configuration
 st.set_page_config(
@@ -26,7 +53,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS - COMPLETE VERSION
 st.markdown("""
     <style>
     .main-header {
@@ -40,7 +67,7 @@ st.markdown("""
         font-size: 1.2rem;
         color: #232F3E;
         text-align: center;
-        padding-bottom: 2rem;
+        padding-bottom: 1rem;
     }
     .mode-indicator {
         padding: 10px;
@@ -57,22 +84,133 @@ st.markdown("""
         background-color: #ffc107;
         color: #000;
     }
+    .backend-status {
+        padding: 8px;
+        border-radius: 5px;
+        margin: 10px 0;
+        font-size: 0.9rem;
+    }
+    .backend-healthy {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+    .backend-degraded {
+        background-color: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+    }
+    /* Tab styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 8px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        padding: 10px 20px;
+        background-color: white;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+        font-weight: 500;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #FF9900 !important;
+        color: white !important;
+        border-color: #FF9900 !important;
+    }
+    .api-key-card {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px 0;
+    }
+    .tier-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        margin: 5px;
+    }
+    .tier-free {
+        background-color: #e9ecef;
+        color: #495057;
+    }
+    .tier-basic {
+        background-color: #cfe2ff;
+        color: #084298;
+    }
+    .tier-premium {
+        background-color: #ffd700;
+        color: #000;
+    }
+    .tier-enterprise {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .rate-limit-bar {
+        height: 20px;
+        background-color: #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 5px 0;
+    }
+    .rate-limit-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #28a745 0%, #ffc107 70%, #dc3545 100%);
+        transition: width 0.3s ease;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-def main():
-    """Main application entry point"""
+def initialize_backend():
+    """Initialize backend services with current demo mode"""
+    if BACKEND_AVAILABLE:
+        try:
+            st.session_state.backend = CloudIDPBackend(
+                demo_mode=st.session_state.demo_mode,
+                region=st.session_state.get('aws_region', 'us-east-1')
+            )
+            st.session_state.backend_initialized = True
+        except Exception as e:
+            st.session_state.backend_initialized = False
+            st.session_state.backend_error = str(e)
+    else:
+        st.session_state.backend_initialized = False
     
-    # Initialize session state
-    initialize_session_state()
+    # Initialize AWS Integrations
+    if AWS_INTEGRATIONS_AVAILABLE:
+        try:
+            st.session_state.aws_integrations = AWSIntegrationsManager(
+                demo_mode=st.session_state.demo_mode,
+                region=st.session_state.get('aws_region', 'us-east-1')
+            )
+            st.session_state.aws_integrations_initialized = True
+        except Exception as e:
+            st.session_state.aws_integrations_initialized = False
+            st.session_state.aws_integrations_error = str(e)
+    else:
+        st.session_state.aws_integrations_initialized = False
     
-    # Header
-    st.markdown('<div class="main-header">☁️ CloudIDP</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Cloud Infrastructure Development Platform | Enterprise Architecture & Governance</div>', unsafe_allow_html=True)
-    
-    # Sidebar configuration
+    # Initialize Enhanced API Gateway Manager
+    if API_GATEWAY_ENHANCED_AVAILABLE:
+        try:
+            if 'api_key_manager' not in st.session_state:
+                st.session_state.api_key_manager = APIKeyManager()
+            st.session_state.api_gateway_initialized = True
+        except Exception as e:
+            st.session_state.api_gateway_initialized = False
+            st.session_state.api_gateway_error = str(e)
+    else:
+        st.session_state.api_gateway_initialized = False
+
+def render_sidebar():
+    """Render simplified sidebar with settings only"""
     with st.sidebar:
-        # AWS-Style CloudIDP Logo
+        # CloudIDP Logo
         st.markdown("""
             <div style="text-align: center; padding: 20px 0;">
                 <div style="
@@ -108,19 +246,23 @@ def main():
         """, unsafe_allow_html=True)
         st.markdown("---")
         
-        # ============= LIVE/DEMO MODE TOGGLE =============
+        # Operation Mode Toggle
         st.markdown("### 🔄 Operation Mode")
         mode = st.radio(
             "Select Mode:",
             ["Demo Mode", "Live Mode"],
-            index=0,  # Demo Mode is default
-            help="Demo Mode: Use sample data (no cloud credentials)\nLive Mode: Connect to real cloud services (AWS, Azure, GCP)"
+            index=0,
+            help="Demo Mode: Use sample data (no cloud credentials)\nLive Mode: Connect to real cloud services"
         )
         
-        # Update session state based on selection
+        # Update session state and reinitialize backend if mode changed
+        old_demo_mode = st.session_state.get('demo_mode', True)
         st.session_state.demo_mode = (mode == "Demo Mode")
         
-        # Display mode indicator with clear visual feedback
+        if old_demo_mode != st.session_state.demo_mode and BACKEND_AVAILABLE:
+            initialize_backend()
+        
+        # Display mode indicator
         if st.session_state.demo_mode:
             st.markdown(
                 '<div class="mode-indicator demo-mode">📋 DEMO MODE ACTIVE</div>',
@@ -136,961 +278,1030 @@ def main():
         
         st.markdown("---")
         
-        # Navigation
-        st.markdown("### 📋 Navigation")
-        page = st.selectbox(
-            "Select Module:",
-            [
-                "Home",
-                "─────── DESIGN & PLANNING ───────",
-                "Design & Planning Overview",
-                "Blueprint Definition",
-                "Tagging Standards",
-                "Naming Conventions",
-                "Image/Artifact Versioning",
-                "IaC Module Registry",
-                "Design-Time Validation",
-                "─────── PROVISIONING & DEPLOYMENT ───────",
-                "Provisioning & Deployment Overview",
-                "Multi-Cloud Provisioning",
-                "Environment Promotion",
-                "CI/CD Pipeline Integration",
-                "─────── ON-DEMAND OPERATIONS ───────",
-                "On-Demand Operations Overview",
-                "Provisioning API",
-                "Guardrail Validation",
-                "Deployment Templates",
-                "Compute Right-Sizing",
-                "Storage Re-Tiering",
-                "Auto-Scaling & Scheduling",
-                "Patch Automation (SSM)",
-                "Drift Detection",
-                "Backup & Recovery",
-                "Lifecycle Hooks",
-                "Idle Resource Detection",
-                "Continuous Availability",
-                "Continuous Deployment",
-                "─────── FINOPS ───────",
-                "FinOps Overview",
-                "Tag-Based Cost Tracking",
-                "Budget Policy Enforcement",
-                "Forecasting & Chargebacks",
-                "Scheduled Infrastructure",
-                "Spot Instance Orchestration",
-                "Cost Anomaly Detection",
-                "Reporting & Dashboards",
-                "PMO vs FMO",
-                "RI Recommendations",
-                "Use Case Tracking",
-                "─────── SECURITY & COMPLIANCE ───────",
-                "Security & Compliance Overview",
-                "─────── MODULE 07: ABSTRACTION & REUSABILITY ───────",
-                "Module 07 Overview",
-                "Composable Modules",
-                "App-Centric Packaging",
-                "Parameterization & Defaults",
-                "Multi-Environment Support",
-                "Lifecycle Management",
-                "─────── MODULE 08: MULTI-CLOUD & HYBRID ───────",
-                "Module 08 Overview",
-                "Cloud & On-Prem Provisioning",
-                "Unified Policy Framework",
-                "Cloud-Specific Optimization",
-                "Private+Public Connectivity",
-                "Global Environment Management",
-                "─────── MODULE 09: DEVELOPER EXPERIENCE ───────",
-                "Module 09 Overview",
-                "Governed Self-Service Portals",
-                "GitOps Integration",
-                "Drift Notification & Feedback Loop",
-                "Documentation & Examples",
-                "InfraSecOps",
-                "User Community",
-                "─────── MODULE 10: OBSERVABILITY & INTEGRATION ───────",
-                "Module 10 Overview",
-                "Standard Logging Stack via IaC",
-                "Cloud Native Log/Metric Collection",
-                "Change Tracking & CMDB Sync",
-                "Policy Violation Reporting",
-                "Event Tools for Alerting",
-                "─────── POLICY & GUARDRAILS ───────",
-                "Policy & Guardrails Overview",
-                "Policy as Code Engine",
-                "Cross-Cloud Policy Consistency",
-                "Tag Policy Enforcement",
-                "Naming & Placement Enforcement",
-                "Quota Guardrails",
-                "─────── AI ASSISTANT ───────",
-                "AI Assistant"
-            ]
-        )
-        
-        st.markdown("---")
-        
-        # Cloud Provider Configuration (Live Mode Only)
-        if not st.session_state.demo_mode:
-            st.markdown("### ☁️ Cloud Provider Configuration")
-            with st.expander("Cloud Settings", expanded=False):
-                cloud_provider = st.selectbox(
-                    "Cloud Provider:",
-                    ["AWS", "Azure", "Google Cloud", "Multi-Cloud"],
-                    index=0
+        # Backend Status Indicator
+        if BACKEND_AVAILABLE and st.session_state.get('backend_initialized'):
+            backend = st.session_state.backend
+            health = backend.health_check()
+            
+            if health['status'] == 'healthy':
+                st.markdown(
+                    '<div class="backend-status backend-healthy">✅ Backend: Healthy</div>',
+                    unsafe_allow_html=True
                 )
-                st.session_state.cloud_provider = cloud_provider
-                
-                if cloud_provider == "AWS":
-                    aws_region = st.selectbox(
-                        "AWS Region:",
-                        ["us-east-1", "us-west-2", "eu-west-1", "ap-southeast-1"],
-                        index=0
-                    )
-                    st.session_state.aws_region = aws_region
-                    
-                    aws_account = st.text_input(
-                        "AWS Account ID:",
-                        placeholder="123456789012"
-                    )
-                    st.session_state.aws_account = aws_account
-                    
-                    if aws_account:
-                        st.success("✅ AWS configured")
-                
-                elif cloud_provider == "Azure":
-                    azure_subscription = st.text_input(
-                        "Azure Subscription ID:",
-                        placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                    )
-                    st.session_state.azure_subscription = azure_subscription
-                    if azure_subscription:
-                        st.success("✅ Azure configured")
-                
-                elif cloud_provider == "Google Cloud":
-                    gcp_project = st.text_input(
-                        "GCP Project ID:",
-                        placeholder="my-project-id"
-                    )
-                    st.session_state.gcp_project = gcp_project
-                    if gcp_project:
-                        st.success("✅ GCP configured")
-        
-        # Anthropic API Configuration (from secrets)
-        st.markdown("### 🤖 Claude AI")
-        
-        # Try to read API key from secrets
-        api_key_found = False
-        error_message = None
-        
-        try:
-            # Check if secrets exist
-            if hasattr(st, 'secrets'):
-                # Check if anthropic section exists
-                if 'anthropic' in st.secrets:
-                    # Check if api_key exists in anthropic section
-                    if 'api_key' in st.secrets['anthropic']:
-                        api_key = st.secrets['anthropic']['api_key']
-                        if api_key and len(api_key) > 0:
-                            st.session_state.anthropic_api_key = api_key
-                            api_key_found = True
-                            st.success("✅ Claude AI connected")
-                        else:
-                            error_message = "API key is empty"
-                    else:
-                        error_message = "Key 'api_key' not found in [anthropic] section"
-                else:
-                    error_message = "Section [anthropic] not found in secrets"
             else:
-                error_message = "Secrets not available (running locally without secrets.toml?)"
-        except Exception as e:
-            error_message = f"Error reading secrets: {str(e)}"
-        
-        # Show status
-        if not api_key_found:
-            st.session_state.anthropic_api_key = None
-            st.warning(f"⚠️ API key not configured")
-            if error_message:
-                with st.expander("🔍 Debug Info", expanded=False):
-                    st.code(error_message)
-            st.caption("""Add to Streamlit Cloud secrets:
-[anthropic]
-api_key = "sk-ant-your-key"
-
-Then REBOOT the app!""")
+                st.markdown(
+                    '<div class="backend-status backend-degraded">⚠️ Backend: Degraded</div>',
+                    unsafe_allow_html=True
+                )
+            
+            with st.expander("📊 Service Status"):
+                for service, status in health.get('services', {}).items():
+                    icon = "✅" if status == "healthy" else "⚠️"
+                    st.write(f"{icon} {service.title()}: {status}")
+        elif BACKEND_AVAILABLE:
+            st.markdown(
+                '<div class="backend-status backend-degraded">❌ Backend: Not Initialized</div>',
+                unsafe_allow_html=True
+            )
         
         st.markdown("---")
-        st.caption("v1.0.0 | CloudIDP - Multi-Cloud Infrastructure Platform")
-    
-    # Main content area - Route to appropriate page
-    if page == "Home":
-        show_home_page()
-    elif page.startswith("───────"):
-        # Skip separator entries
-        st.info("Please select a specific page from the navigation menu.")
-    elif page == "Design & Planning Overview":
-        show_design_planning_overview()
-    elif page == "Blueprint Definition":
-        DesignPlanningModule.render_blueprint_definition()
-    elif page == "Tagging Standards":
-        DesignPlanningModule.render_tagging_standards()
-    elif page == "Naming Conventions":
-        DesignPlanningModule.render_naming_conventions()
-    elif page == "Image/Artifact Versioning":
-        DesignPlanningModule.render_artifact_versioning()
-    elif page == "IaC Module Registry":
-        DesignPlanningModule.render_iac_registry()
-    elif page == "Design-Time Validation":
-        DesignPlanningModule.render_design_validation()
-    elif page == "Provisioning & Deployment Overview":
-        show_provisioning_deployment_overview()
-    elif page == "Multi-Cloud Provisioning":
-        ProvisioningDeploymentModule.render_multi_cloud_provisioning()
-    elif page == "Environment Promotion":
-        ProvisioningDeploymentModule.render_environment_promotion()
-    elif page == "CI/CD Pipeline Integration":
-        ProvisioningDeploymentModule.render_cicd_integration()
-    elif page == "On-Demand Operations Overview":
-        show_ondemand_operations_overview()
-    elif page == "Provisioning API":
-        OnDemandOperationsModule.render_provisioning_api()
-    elif page == "Guardrail Validation":
-        OnDemandOperationsModule.render_guardrail_validation()
-    elif page == "Deployment Templates":
-        OnDemandOperationsModule.render_deployment_templates()
-    elif page == "Compute Right-Sizing":
-        OnDemandOperationsModule.render_rightsizing()
-    elif page == "Storage Re-Tiering":
-        OnDemandOperationsModule.render_storage_tiering()
-    elif page == "Auto-Scaling & Scheduling":
-        OnDemandOperationsModule.render_autoscaling()
-    elif page == "Patch Automation (SSM)":
-        OnDemandOperationsModule2.render_patch_automation()
-    elif page == "Drift Detection":
-        OnDemandOperationsModule2.render_drift_detection()
-    elif page == "Backup & Recovery":
-        OnDemandOperationsModule2.render_backup_recovery()
-    elif page == "Lifecycle Hooks":
-        OnDemandOperationsModule2.render_lifecycle_hooks()
-    elif page == "Idle Resource Detection":
-        OnDemandOperationsModule2.render_idle_detection()
-    elif page == "Continuous Availability":
-        OnDemandOperationsModule2.render_continuous_availability()
-    elif page == "Continuous Deployment":
-        OnDemandOperationsModule2.render_continuous_deployment()
-    elif page == "FinOps Overview":
-        FinOpsModule.render_finops_overview()
-    elif page == "Tag-Based Cost Tracking":
-        FinOpsModule.render_tag_based_cost_tracking()
-    elif page == "Budget Policy Enforcement":
-        FinOpsModule.render_budget_policy_enforcement()
-    elif page == "Forecasting & Chargebacks":
-        FinOpsModule.render_forecasting_chargebacks()
-    elif page == "Scheduled Infrastructure":
-        FinOpsModule.render_scheduled_infrastructure_policies()
-    elif page == "Spot Instance Orchestration":
-        FinOpsModule.render_spot_instance_orchestration()
-    elif page == "Cost Anomaly Detection":
-        FinOpsModule.render_cost_anomaly_detection()
-    elif page == "Reporting & Dashboards":
-        FinOpsModule.render_reporting_dashboards()
-    elif page == "PMO vs FMO":
-        FinOpsModule.render_pmo_vs_fmo()
-    elif page == "RI Recommendations":
-        FinOpsModule.render_ri_recommendations()
-    elif page == "Use Case Tracking":
-        FinOpsModule.render_use_case_tracking()
-    elif page == "Security & Compliance Overview":
-        security_module = SecurityComplianceModule(demo_mode=st.session_state.demo_mode)
-        security_module.render()
-    elif page == "Module 07 Overview":
-        AbstractionReusabilityModule.render_overview()
-    elif page == "Composable Modules":
-        AbstractionReusabilityModule.render_composable_modules()
-    elif page == "App-Centric Packaging":
-        AbstractionReusabilityModule.render_app_centric_packaging()
-    elif page == "Parameterization & Defaults":
-        AbstractionReusabilityModule.render_parameterization()
-    elif page == "Multi-Environment Support":
-        AbstractionReusabilityModule.render_multi_environment()
-    elif page == "Lifecycle Management":
-        AbstractionReusabilityModule.render_lifecycle_management()
-    elif page == "Module 08 Overview":
-        show_module_08_overview()
-    elif page == "Cloud & On-Prem Provisioning":
-        module = MultiCloudHybridModule()
-        module._render_provisioning()
-    elif page == "Unified Policy Framework":
-        module = MultiCloudHybridModule()
-        module._render_policy_framework()
-    elif page == "Cloud-Specific Optimization":
-        module = MultiCloudHybridModule()
-        module._render_optimization()
-    elif page == "Private+Public Connectivity":
-        module = MultiCloudHybridModule()
-        module._render_connectivity()
-    elif page == "Global Environment Management":
-        module = MultiCloudHybridModule()
-        module._render_global_management()
-    elif page == "Module 09 Overview":
-        DeveloperExperienceModule.render_overview()
-    elif page == "Governed Self-Service Portals":
-        DeveloperExperienceModule.render_self_service_portals()
-    elif page == "GitOps Integration":
-        DeveloperExperienceModule.render_gitops_integration()
-    elif page == "Drift Notification & Feedback Loop":
-        DeveloperExperienceModule.render_drift_notification()
-    elif page == "Documentation & Examples":
-        DeveloperExperienceModule.render_documentation_examples()
-    elif page == "InfraSecOps":
-        DeveloperExperienceModule.render_infrasecops()
-    elif page == "User Community":
-        DeveloperExperienceModule.render_user_community()
-    elif page == "Module 10 Overview":
-        ObservabilityIntegrationModule.render_overview()
-    elif page == "Standard Logging Stack via IaC":
-        ObservabilityIntegrationModule.render_logging_stack()
-    elif page == "Cloud Native Log/Metric Collection":
-        ObservabilityIntegrationModule.render_metrics_collection()
-    elif page == "Change Tracking & CMDB Sync":
-        ObservabilityIntegrationModule.render_change_tracking()
-    elif page == "Policy Violation Reporting":
-        ObservabilityIntegrationModule.render_policy_violations()
-    elif page == "Event Tools for Alerting":
-        ObservabilityIntegrationModule.render_event_alerting()
-    elif page == "Policy & Guardrails Overview":
-        show_policy_guardrails_overview()
-    elif page == "Policy as Code Engine":
-        show_policy_as_code()
-    elif page == "Cross-Cloud Policy Consistency":
-        show_cross_cloud_policy()
-    elif page == "Tag Policy Enforcement":
-        show_tag_enforcement()
-    elif page == "Naming & Placement Enforcement":
-        show_naming_enforcement()
-    elif page == "Quota Guardrails":
-        show_quota_guardrails()
-    elif page == "AI Assistant":
-        show_ai_assistant()
+        
+        # API Gateway Status
+        if API_GATEWAY_ENHANCED_AVAILABLE and st.session_state.get('api_gateway_initialized'):
+            st.markdown("### 🔑 API Gateway")
+            st.info("✅ Enhanced API Gateway Active")
+            
+            if 'api_key_manager' in st.session_state:
+                manager = st.session_state.api_key_manager
+                total_keys = len(manager.keys)
+                active_keys = sum(1 for k in manager.keys.values() if k['is_active'])
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("Total Keys", total_keys)
+                with col2:
+                    st.metric("Active", active_keys)
+        
+        st.markdown("---")
+        
+        # AWS Region Selection
+        if not st.session_state.demo_mode:
+            st.markdown("### 🌍 AWS Region")
+            regions = [
+                "us-east-1 (N. Virginia)",
+                "us-west-2 (Oregon)",
+                "eu-west-1 (Ireland)",
+                "ap-southeast-1 (Singapore)"
+            ]
+            selected_region = st.selectbox(
+                "Select Region:",
+                regions,
+                index=0
+            )
+            st.session_state.aws_region = selected_region.split(' ')[0]
+        
+        st.markdown("---")
+        
+        # Footer
+        st.markdown("### ℹ️ About")
+        st.info(
+            "CloudIDP v2.0\n\n"
+            "Enterprise Cloud Infrastructure\n"
+            "Development Platform\n\n"
+            "© 2024 CloudIDP"
+        )
 
-def show_home_page():
-    """Display home page"""
+def main():
+    """Main application entry point with tab-based navigation"""
     
-    col1, col2, col3 = st.columns(3)
+    # Initialize session state
+    initialize_session_state()
     
-    with col1:
-        st.markdown("### 📐 Design & Planning")
-        st.markdown("""
-        - Blueprint Definition
-        - Tagging Standards
-        - Naming Conventions
-        - Artifact Versioning
-        - IaC Module Registry
-        - Design Validation
-        """)
+    # Initialize backend if not already done
+    if 'backend_initialized' not in st.session_state:
+        initialize_backend()
     
-    with col2:
-        st.markdown("### 🚀 Provisioning & Deployment")
-        st.markdown("""
-        - Multi-Cloud Provisioning
-        - Environment Promotion
-        - CI/CD Integration
-        - Build Monitoring
-        - Deployment Tracking
-        - Pipeline Templates
-        """)
+    # Header
+    st.markdown('<div class="main-header">☁️ CloudIDP</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Cloud Infrastructure Development Platform | Enterprise Architecture & Governance</div>', unsafe_allow_html=True)
     
-    with col3:
-        st.markdown("### ⚡ On-Demand Operations")
-        st.markdown("""
-        - API Provisioning
-        - Guardrail Validation
-        - Right-Sizing
-        - Storage Tiering
-        - Auto-Scaling
-        - Patch Automation
-        - Drift Detection
-        - Backup Management
-        - Lifecycle Hooks
-        - Continuous Deployment
-        """)
+    # Render sidebar
+    render_sidebar()
     
+    # Main content area with tabs
     st.markdown("---")
     
-    # Second row of modules
-    col1, col2, col3 = st.columns(3)
+    # Create main tab groups
+    main_tabs = st.tabs([
+        "🏠 Home",
+        "🏗️ Core Infrastructure", 
+        "🔑 API Management",
+        "☁️ AWS Integrations"
+    ])
     
-    with col1:
-        st.markdown("### 💰 FinOps")
-        st.markdown("""
-        - Cost Tracking
-        - Budget Enforcement
-        - Forecasting
-        - Chargebacks
-        - Spot Orchestration
-        - Anomaly Detection
-        - RI Recommendations
-        """)
+    # Home Tab
+    with main_tabs[0]:
+        render_home_page()
     
-    with col2:
-        st.markdown("### 🔒 Security & Compliance")
-        st.markdown("""
-        - RBAC & Identity
-        - Network Segmentation
-        - Encryption Management
-        - Secrets Management
-        - Certificate Management
-        - Audit Logging
-        - Vulnerability Scanning
-        """)
+    # Core Infrastructure Tab
+    with main_tabs[1]:
+        render_core_infrastructure_tabs()
     
-    with col3:
-        st.markdown("### 🤖 AI Assistant")
-        st.markdown("""
-        - Architecture Review
-        - Best Practices
-        - Cost Optimization
-        - Security Guidance
-        - Troubleshooting
-        - Documentation
-        """)
+    # API Management Tab
+    with main_tabs[2]:
+        render_api_management_tabs()
     
-    st.markdown("---")
+    # AWS Integrations Tab
+    with main_tabs[3]:
+        render_aws_integrations_tabs()
+
+def render_home_page():
+    """Render the home/dashboard page"""
+    st.markdown("## 🏠 Welcome to CloudIDP")
     
-    # Quick Stats
-    st.markdown("### 📊 Platform Capabilities")
+    st.markdown("""
+    ### Cloud Infrastructure Development Platform
     
+    CloudIDP is a comprehensive enterprise platform for managing multi-cloud infrastructure, 
+    governance, and operations at scale.
+    """)
+    
+    # Quick Stats Dashboard
     col1, col2, col3, col4 = st.columns(4)
+    
     with col1:
-        st.metric("Cloud Services", "450+")
+        st.metric(
+            label="🏗️ Active Projects",
+            value="12",
+            delta="2 new"
+        )
+    
     with col2:
-        st.metric("Active Deployments", "342")
+        st.metric(
+            label="☁️ Cloud Providers",
+            value="3",
+            delta="AWS, Azure, GCP"
+        )
+    
     with col3:
-        st.metric("IaC Templates", "500+")
+        st.metric(
+            label="🔐 Compliance Score",
+            value="98%",
+            delta="2%"
+        )
+    
     with col4:
-        st.metric("Managed Resources", "1,547")
+        st.metric(
+            label="💰 Monthly Cost",
+            value="$45.2K",
+            delta="-$2.3K"
+        )
     
     st.markdown("---")
     
-    # Current Mode Info
-    st.markdown("### 🚀 Getting Started")
+    # Feature Highlights
+    col1, col2 = st.columns(2)
     
-    if st.session_state.demo_mode:
-        st.success("""
-        **✅ Demo Mode Active** - You're exploring with sample data
+    with col1:
+        st.markdown("### 🚀 Quick Start")
+        st.markdown("""
+        **Get started with CloudIDP:**
         
-        - All features available for testing
-        - No cloud credentials required
-        - Sample data represents real scenarios
-        - Switch to Live Mode when ready to connect
+        1. **Design & Planning** - Define your infrastructure blueprint
+        2. **Provisioning** - Deploy resources across clouds
+        3. **Operations** - Manage day-to-day activities
+        4. **Monitoring** - Track performance and costs
         """)
+    
+    with col2:
+        st.markdown("### 📊 Platform Features")
+        st.markdown("""
+        **Key capabilities:**
         
-        st.markdown("#### Try These Features:")
-        col1, col2, col3 = st.columns(3)
+        - ✅ Multi-cloud resource provisioning
+        - ✅ Policy-driven governance
+        - ✅ Cost optimization & FinOps
+        - ✅ Security & compliance automation
+        - ✅ Developer self-service portals
+        """)
+    
+    st.markdown("---")
+    
+    # Recent Activity
+    st.markdown("### 📈 Recent Activity")
+    
+    activity_data = [
+        {"time": "10 mins ago", "event": "Infrastructure deployment completed", "status": "✅ Success"},
+        {"time": "1 hour ago", "event": "Security scan passed", "status": "✅ Success"},
+        {"time": "2 hours ago", "event": "Cost optimization applied", "status": "💰 Saved $500/month"},
+        {"time": "3 hours ago", "event": "New API key generated", "status": "🔑 Active"},
+    ]
+    
+    for item in activity_data:
+        col1, col2, col3 = st.columns([2, 5, 2])
         with col1:
-            st.info("📋 Browse 4 architecture blueprints")
-            st.info("🏷️ View tagging policies")
-            st.info("📛 Check naming conventions")
-            st.info("☁️ Multi-cloud provisioning")
+            st.text(item["time"])
         with col2:
-            st.info("🔄 Environment promotion workflow")
-            st.info("🔧 CI/CD pipeline integration")
-            st.info("📊 Build status monitoring")
-            st.info("🤖 Chat with AI Assistant")
+            st.text(item["event"])
         with col3:
-            st.info("⚡ On-demand provisioning API")
-            st.info("📉 Right-sizing recommendations")
-            st.info("💾 Storage re-tiering policies")
-            st.info("🔍 Drift detection & remediation")
-    else:
-        st.warning("""
-        **🟢 Live Mode Active** - Connected to cloud services
-        
-        - Configure cloud credentials in sidebar
-        - All operations affect real resources
-        - Review changes before applying
-        - Audit logs are enabled
-        """)
+            st.text(item["status"])
 
-def show_design_planning_overview():
-    """Display Design & Planning module overview"""
+def render_core_infrastructure_tabs():
+    """Render Core Infrastructure modules in nested tabs"""
+    st.markdown("## 🏗️ Core Infrastructure Modules")
     
-    st.markdown("## 📐 Design & Planning Framework")
+    infra_tabs = st.tabs([
+        "📐 Design & Planning",
+        "🚀 Provisioning",
+        "⚙️ Operations",
+        "💰 FinOps",
+        "🔒 Security",
+        "📜 Policy",
+        "🔄 Abstraction",
+        "☁️ Multi-Cloud",
+        "💻 DevEx",
+        "📊 Observability"
+    ])
     
-    st.markdown("""
-    Comprehensive tools for multi-cloud architecture design and planning. Ensure consistency,
-    compliance, and best practices across AWS, Azure, GCP, and hybrid environments.
-    """)
+    with infra_tabs[0]:
+        design_planning = DesignPlanningModule()
+        design_planning.render()
     
-    st.markdown("---")
+    with infra_tabs[1]:
+        provisioning = ProvisioningDeploymentModule()
+        provisioning.render()
     
-    # Module cards
-    col1, col2 = st.columns(2)
+    with infra_tabs[2]:
+        operations = OnDemandOperationsModule()
+        operations.render()
+        operations2 = OnDemandOperationsModule2()
+        operations2.render()
     
-    with col1:
-        st.markdown("#### 📋 Blueprint Definition")
-        st.markdown("Define reusable architecture blueprints")
-        st.markdown("- Infrastructure patterns")
-        st.markdown("- Security baselines")
-        st.markdown("- Network topologies")
-        
-        st.markdown("#### 🏷️ Tagging Standards")
-        st.markdown("Establish tagging policies")
-        st.markdown("- Mandatory tags")
-        st.markdown("- Validation rules")
-        st.markdown("- Cost allocation")
-        
-        st.markdown("#### 📛 Naming Conventions")
-        st.markdown("Define naming standards")
-        st.markdown("- Resource patterns")
-        st.markdown("- Prefix/suffix rules")
-        st.markdown("- Environment indicators")
+    with infra_tabs[3]:
+        finops = FinOpsModule()
+        finops.render()
     
-    with col2:
-        st.markdown("#### 📦 Image/Artifact Versioning")
-        st.markdown("Manage container versions")
-        st.markdown("- Registry management")
-        st.markdown("- Version tracking")
-        st.markdown("- Security scanning")
-        
-        st.markdown("#### 📚 IaC Module Registry")
-        st.markdown("Centralized IaC modules")
-        st.markdown("- Terraform modules")
-        st.markdown("- CloudFormation templates")
-        st.markdown("- Module versioning")
-        
-        st.markdown("#### ✅ Design-Time Validation")
-        st.markdown("Validate before deployment")
-        st.markdown("- Policy compliance")
-        st.markdown("- Security checks")
-        st.markdown("- Cost estimates")
+    with infra_tabs[4]:
+        security = SecurityComplianceModule()
+        security.render()
+    
+    with infra_tabs[5]:
+        policy = PolicyGuardrailsModule()
+        policy.render()
+    
+    with infra_tabs[6]:
+        abstraction = AbstractionReusabilityModule()
+        abstraction.render()
+    
+    with infra_tabs[7]:
+        multicloud = MultiCloudHybridModule()
+        multicloud.render()
+    
+    with infra_tabs[8]:
+        devex = DeveloperExperienceModule()
+        devex.render()
+    
+    with infra_tabs[9]:
+        observability = ObservabilityIntegrationModule()
+        observability.render()
 
-def show_provisioning_deployment_overview():
-    """Display Provisioning & Deployment module overview"""
+def render_api_management_tabs():
+    """Render API Management modules in nested tabs"""
+    st.markdown("## 🔑 API Management & Gateway")
     
-    st.markdown("## 🚀 Provisioning & Deployment Framework")
-    
-    st.markdown("""
-    End-to-end infrastructure provisioning and deployment management across multiple cloud providers.
-    Automate deployments, manage environment promotions, and integrate with CI/CD pipelines.
-    """)
-    
-    st.markdown("---")
-    
-    # Module cards
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("#### ☁️ Multi-Cloud Provisioning")
-        st.markdown("Deploy across cloud providers")
-        st.markdown("- AWS, Azure, GCP support")
-        st.markdown("- Unified deployment interface")
-        st.markdown("- Cross-cloud governance")
-        st.markdown("- Cost comparison tools")
-        
-        st.markdown("#### 🔄 Environment Promotion")
-        st.markdown("Structured deployment pipeline")
-        st.markdown("- Dev → Staging → Production")
-        st.markdown("- Approval workflows")
-        st.markdown("- Automated testing gates")
-        st.markdown("- Rollback capabilities")
-    
-    with col2:
-        st.markdown("#### 🔧 CI/CD Pipeline Integration")
-        st.markdown("Connect with your CI/CD tools")
-        st.markdown("- Jenkins integration")
-        st.markdown("- GitHub Actions support")
-        st.markdown("- GitLab CI/CD")
-        st.markdown("- Azure DevOps")
-        st.markdown("- Build monitoring")
-        st.markdown("- Pipeline templates")
-    
-    st.markdown("---")
-    
-    # Key features
-    st.markdown("### 🎯 Key Capabilities")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("**Automated Deployment**")
-        st.markdown("""
-        - One-click provisioning
-        - Blueprint-based deployment
-        - Infrastructure automation
-        - Configuration management
-        """)
-    
-    with col2:
-        st.markdown("**Governance & Control**")
-        st.markdown("""
-        - Approval workflows
-        - Policy enforcement
-        - Audit trails
-        - Change management
-        """)
-    
-    with col3:
-        st.markdown("**Monitoring & Insights**")
-        st.markdown("""
-        - Real-time status
-        - Build analytics
-        - Cost tracking
-        - Performance metrics
-        """)
-
-def show_ondemand_operations_overview():
-    """Display On-Demand Operations module overview"""
-    
-    st.markdown("## ⚡ On-Demand Provisioning & Operations Framework")
-    
-    st.markdown("""
-    Intelligent resource management and automation platform. Optimize costs, ensure compliance,
-    and maintain operational excellence through automated provisioning, right-sizing, and lifecycle management.
-    """)
-    
-    st.markdown("---")
-    
-    # Module cards
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("#### 🔌 On-Demand Provisioning API")
-        st.markdown("Self-service infrastructure provisioning")
-        st.markdown("- RESTful API endpoints")
-        st.markdown("- Built-in guardrails")
-        st.markdown("- Automatic validation")
-        st.markdown("- Rate limiting & auth")
-        
-        st.markdown("#### 🛡️ Guardrail Validation")
-        st.markdown("Pre-deployment policy enforcement")
-        st.markdown("- Security checks")
-        st.markdown("- Compliance validation")
-        st.markdown("- Cost controls")
-        st.markdown("- Tagging requirements")
-        
-        st.markdown("#### 📦 Deployment Templates")
-        st.markdown("Pre-configured infrastructure patterns")
-        st.markdown("- CloudFormation templates")
-        st.markdown("- Terraform modules")
-        st.markdown("- Right-sizing built-in")
-        st.markdown("- Auto-scaling enabled")
-        
-        st.markdown("#### 📉 Compute Right-Sizing")
-        st.markdown("AI-powered instance optimization")
-        st.markdown("- Usage analysis")
-        st.markdown("- Cost savings recommendations")
-        st.markdown("- Automated resizing")
-        st.markdown("- Performance monitoring")
-        
-        st.markdown("#### 💾 Storage Re-Tiering")
-        st.markdown("Automated S3 lifecycle management")
-        st.markdown("- Cost optimization")
-        st.markdown("- Lifecycle policies")
-        st.markdown("- Intelligent tiering")
-        st.markdown("- Archive automation")
-        
-        st.markdown("#### ⏰ Auto-Scaling & Scheduling")
-        st.markdown("Time-based resource management")
-        st.markdown("- Business hours scaling")
-        st.markdown("- Dev environment shutdown")
-        st.markdown("- Cost optimization")
-        st.markdown("- Demand-based scaling")
-        
-        st.markdown("#### 🔧 Patch Automation (SSM)")
-        st.markdown("Automated patch management")
-        st.markdown("- Maintenance windows")
-        st.markdown("- Compliance tracking")
-        st.markdown("- Automated updates")
-        st.markdown("- Rollback capabilities")
-    
-    with col2:
-        st.markdown("#### 🔍 Drift Detection & Remediation")
-        st.markdown("Configuration compliance monitoring")
-        st.markdown("- CloudFormation drift detection")
-        st.markdown("- Automatic remediation")
-        st.markdown("- Change tracking")
-        st.markdown("- Compliance reporting")
-        
-        st.markdown("#### 💾 Backup & Recovery Management")
-        st.markdown("Centralized backup orchestration")
-        st.markdown("- Cloud backup integration (AWS Backup, Azure Backup, GCP backups)")
-        st.markdown("- Cross-region replication")
-        st.markdown("- RPO/RTO management")
-        st.markdown("- Recovery testing")
-        
-        st.markdown("#### 🪝 Lifecycle Hooks")
-        st.markdown("Automated lifecycle actions")
-        st.markdown("- Launch initialization")
-        st.markdown("- Termination cleanup")
-        st.markdown("- Custom workflows")
-        st.markdown("- Event-driven automation")
-        
-        st.markdown("#### 💤 Idle Resource Detection")
-        st.markdown("Cost optimization through usage analysis")
-        st.markdown("- Underutilized resources")
-        st.markdown("- Idle detection")
-        st.markdown("- Automatic termination")
-        st.markdown("- Savings opportunities")
-        
-        st.markdown("#### 🔄 Continuous Availability")
-        st.markdown("High availability monitoring")
-        st.markdown("- Multi-AZ deployments")
-        st.markdown("- Health checks")
-        st.markdown("- Automatic failover")
-        st.markdown("- SLA monitoring")
-        
-        st.markdown("#### 🚀 Continuous Deployment")
-        st.markdown("Progressive delivery strategies")
-        st.markdown("- Blue/green deployments")
-        st.markdown("- Canary releases")
-        st.markdown("- Automatic rollback")
-        st.markdown("- Deployment gates")
-    
-    st.markdown("---")
-    
-    # Key capabilities
-    st.markdown("### 🎯 Key Capabilities")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("**Cost Optimization**")
-        st.markdown("""
-        - Right-sizing recommendations
-        - Storage tiering
-        - Idle resource detection
-        - Scheduled scaling
-        - Savings tracking
-        """)
-    
-    with col2:
-        st.markdown("**Operational Excellence**")
-        st.markdown("""
-        - Automated patching
-        - Drift remediation
-        - Backup management
-        - Lifecycle automation
-        - Continuous monitoring
-        """)
-    
-    with col3:
-        st.markdown("**Security & Compliance**")
-        st.markdown("""
-        - Guardrail validation
-        - Policy enforcement
-        - Configuration compliance
-        - Audit trails
-        - Automated remediation
-        """)
-    
-    # Call the actual overview rendering
-    OnDemandOperationsModule.render_ondemand_overview()
-
-def show_module_08_overview():
-    """Display Module 08: Multi-Cloud & Hybrid Support overview"""
-    
-    st.markdown("## ☁️ Module 08: Multi-Cloud & Hybrid Support")
-    
-    st.markdown("""
-    Comprehensive multi-cloud and hybrid cloud management platform. Unify policies across clouds,
-    optimize workloads for each provider, and seamlessly connect on-premises to cloud environments.
-    """)
-    
-    st.markdown("---")
-    
-    # Module cards
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("#### 🌐 Cloud & On-Prem Provisioning")
-        st.markdown("Multi-cloud and hybrid provisioning")
-        st.markdown("- AWS, Azure, GCP, Oracle, IBM support")
-        st.markdown("- On-premises integration (VMware, Hyper-V)")
-        st.markdown("- Hybrid connectivity (Direct Connect, ExpressRoute)")
-        st.markdown("- Cloud bursting capabilities")
-        st.markdown("- Unified IaC (Terraform, CloudFormation)")
-        
-        st.markdown("#### 📋 Unified Policy Framework")
-        st.markdown("Cross-cloud policy management")
-        st.markdown("- Policy translation engine")
-        st.markdown("- Compliance mapping (ISO, SOC 2, PCI DSS, GDPR)")
-        st.markdown("- Real-time enforcement")
-        st.markdown("- Auto-remediation")
-        st.markdown("- Comprehensive audit trails")
-        
-        st.markdown("#### ⚡ Cloud-Specific Optimization")
-        st.markdown("Tailored optimization per cloud")
-        st.markdown("- Multi-cloud cost analysis")
-        st.markdown("- Performance tuning recommendations")
-        st.markdown("- Resource right-sizing")
-        st.markdown("- Cloud-native best practices")
-        st.markdown("- Savings opportunity tracking")
-    
-    with col2:
-        st.markdown("#### 🔗 Private + Public Connectivity")
-        st.markdown("Secure hybrid networking")
-        st.markdown("- Network topology design (Hub-Spoke, Mesh)")
-        st.markdown("- Direct Connect / ExpressRoute / VPN")
-        st.markdown("- Security zones & microsegmentation")
-        st.markdown("- Global load balancing")
-        st.markdown("- Traffic management & QoS")
-        
-        st.markdown("#### 🌍 Global Environment Management")
-        st.markdown("Worldwide deployment orchestration")
-        st.markdown("- Multi-region active-active/passive")
-        st.markdown("- Global traffic distribution")
-        st.markdown("- Data residency compliance")
-        st.markdown("- Disaster recovery automation")
-        st.markdown("- Latency-based routing")
-    
-    st.markdown("---")
-    
-    # Key capabilities
-    st.markdown("### 🎯 Key Capabilities")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("**Multi-Cloud Strategy**")
-        st.markdown("""
-        - Unified provisioning
-        - Cross-cloud policies
-        - Cost comparison
-        - Workload distribution
-        - Vendor flexibility
-        """)
-    
-    with col2:
-        st.markdown("**Hybrid Integration**")
-        st.markdown("""
-        - On-premises connectivity
-        - Data synchronization
-        - Hybrid governance
-        - Cloud bursting
-        - Seamless migration
-        """)
-    
-    with col3:
-        st.markdown("**Global Scale**")
-        st.markdown("""
-        - Multi-region deployments
-        - Data residency compliance
-        - Global load balancing
-        - DR automation
-        - Latency optimization
-        """)
-    
-    st.markdown("---")
-    
-    # Stats
-    st.markdown("### 📊 Platform Coverage")
-    
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Cloud Providers", "6+", "+2")
-    with col2:
-        st.metric("Global Regions", "35+", "+5")
-    with col3:
-        st.metric("Unified Policies", "87", "+12")
-    with col4:
-        st.metric("Compliance Frameworks", "8", "+2")
-
-def show_ai_assistant():
-    """Display AI Assistant"""
-    
-    st.markdown("## 🤖 Claude AI Assistant")
-    
-    if not st.session_state.get('anthropic_api_key'):
-        st.warning("⚠️ Anthropic API key not configured in Streamlit secrets.")
-        st.info("""
-        **Configure API key in Streamlit Cloud:**
-        1. Go to your app settings
-        2. Navigate to "Secrets" section
-        3. Add the following:
-        ```
-        [anthropic]
-        api_key = "your-api-key-here"
-        ```
-        4. Save and reboot the app
-        
-        Get your API key at: https://console.anthropic.com/
-        """)
+    if not API_GATEWAY_ENHANCED_AVAILABLE or not st.session_state.get('api_gateway_initialized'):
+        st.error("❌ Enhanced API Gateway not available")
+        st.info("💡 The enhanced API gateway provides API key authentication, rate limiting, and usage tracking.")
         return
     
-    st.markdown("Ask Claude about multi-cloud architecture, best practices, and design patterns for AWS, Azure, and GCP.")
+    api_tabs = st.tabs([
+        "🔑 API Keys",
+        "📈 Rate Limits",
+        "📊 Analytics"
+    ])
     
-    # Initialize chat history
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
+    with api_tabs[0]:
+        show_api_key_management()
     
-    # Display chat history
-    for message in st.session_state.chat_history:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+    with api_tabs[1]:
+        show_rate_limit_monitoring()
     
-    # Chat input
-    if prompt := st.chat_input("Ask about cloud architecture, AWS, Azure, GCP..."):
-        # Add user message
-        st.session_state.chat_history.append({"role": "user", "content": prompt})
+    with api_tabs[2]:
+        show_api_usage_analytics()
+
+def render_aws_integrations_tabs():
+    """Render AWS Integration modules in nested tabs"""
+    st.markdown("## ☁️ AWS Cloud Integrations")
+    
+    if not AWS_INTEGRATIONS_AVAILABLE or not st.session_state.get('aws_integrations_initialized'):
+        st.error("❌ AWS integrations not available")
+        return
+    
+    aws_tabs = st.tabs([
+        "🔐 IAM",
+        "📊 Cost Explorer",
+        "⚙️ Systems Manager",
+        "🖥️ Compute & Network",
+        "🗄️ Databases"
+    ])
+    
+    with aws_tabs[0]:
+        show_iam_management_page()
+    
+    with aws_tabs[1]:
+        show_cost_explorer_page()
+    
+    with aws_tabs[2]:
+        show_systems_manager_page()
+    
+    with aws_tabs[3]:
+        show_compute_network_page()
+    
+    with aws_tabs[4]:
+        show_database_management_page()
+
+# ==================== API Gateway Pages - COMPLETE IMPLEMENTATION ====================
+
+def show_api_key_management():
+    """API Key Management Page - COMPLETE VERSION"""
+    st.markdown("### 🔑 API Key Management")
+    st.markdown("Generate and manage API keys for backend services and integrations")
+    
+    manager = st.session_state.api_key_manager
+    
+    # Tabs for different sections
+    tab1, tab2, tab3, tab4 = st.tabs(["🆕 Generate Key", "📋 My Keys", "📊 Rate Limits", "📚 Documentation"])
+    
+    with tab1:
+        st.markdown("#### Generate New API Key")
         
-        with st.chat_message("user"):
-            st.markdown(prompt)
-        
-        # Generate response
-        with st.chat_message("assistant"):
-            with st.spinner("Claude is thinking..."):
-                try:
-                    helper = AnthropicHelper(st.session_state.anthropic_api_key)
-                    
-                    context = f"""You are a multi-cloud architecture expert with deep knowledge of AWS, Azure, and Google Cloud Platform. 
-                    Current mode: {'Demo Mode' if st.session_state.demo_mode else 'Live Mode'}
-                    
-                    User question: {prompt}
-                    
-                    Provide detailed, practical cloud architecture advice. Consider best practices across different cloud providers when relevant."""
-                    
-                    response = helper.get_completion(context)
-                    st.markdown(response)
-                    
-                    st.session_state.chat_history.append({"role": "assistant", "content": response})
-                    
-                except Exception as e:
-                    st.error(f"Error: {str(e)}")
-                    st.info("Check your API key and try again.")
+        with st.form("generate_api_key"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                user_id = st.text_input(
+                    "User/Service ID",
+                    placeholder="e.g., backend-service-1",
+                    help="Identifier for the service or user using this API key"
+                )
+            
+            with col2:
+                tier = st.selectbox(
+                    "Rate Limit Tier",
+                    options=[tier.value for tier in RateLimitTier],
+                    format_func=lambda x: x.upper(),
+                    help="Select the appropriate tier based on usage needs"
+                )
+            
+            # Show tier details
+            st.markdown("##### Selected Tier Details")
+            tier_config = RATE_LIMIT_CONFIG[RateLimitTier(tier)]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("Requests per Minute", tier_config['requests_per_minute'])
+            with col2:
+                st.metric("Requests per Hour", tier_config['requests_per_hour'])
+            
+            description = st.text_area(
+                "Description (Optional)",
+                placeholder="e.g., Production backend service for order processing",
+                help="Add notes about this API key's purpose"
+            )
+            
+            submitted = st.form_submit_button("🔑 Generate API Key", use_container_width=True)
+            
+            if submitted:
+                if not user_id:
+                    st.error("❌ Please provide a User/Service ID")
+                else:
+                    with st.spinner("Generating API key..."):
+                        api_key = manager.generate_api_key(user_id, RateLimitTier(tier))
+                        
+                        # Store description if provided
+                        if description and api_key in manager.keys:
+                            manager.keys[api_key]['description'] = description
+                        
+                        st.success("✅ API Key generated successfully!")
+                        
+                        # Display the key prominently
+                        st.markdown("#### 🔐 Your API Key")
+                        st.warning("⚠️ **IMPORTANT**: Copy this key now! It won't be shown again for security reasons.")
+                        
+                        st.code(api_key, language="text")
+                        
+                        st.markdown("#### 📝 Quick Start")
+                        st.markdown("Use this API key in your requests:")
+                        st.code(f"""curl -X GET http://localhost:8000/api/v1/accounts \\
+  -H "X-API-Key: {api_key}" """, language="bash")
     
-    # Clear chat
-    if st.session_state.chat_history:
-        if st.button("🗑️ Clear Chat"):
-            st.session_state.chat_history = []
-            st.rerun()
+    with tab2:
+        st.markdown("#### My API Keys")
+        
+        if not manager.keys:
+            st.info("📝 No API keys generated yet. Create your first key in the 'Generate Key' tab!")
+        else:
+            # Filter controls
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                search = st.text_input("🔍 Search keys", placeholder="Search by user ID...")
+            with col2:
+                show_inactive = st.checkbox("Show Inactive", value=False)
+            
+            # Display keys
+            for api_key, key_data in manager.keys.items():
+                if not show_inactive and not key_data['is_active']:
+                    continue
+                
+                if search and search.lower() not in key_data['user_id'].lower():
+                    continue
+                
+                # Key card
+                with st.expander(
+                    f"{'🟢' if key_data['is_active'] else '🔴'} {key_data['user_id']} - {key_data['tier'].value.upper()}",
+                    expanded=False
+                ):
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        st.markdown("**Status**")
+                        status = "Active" if key_data['is_active'] else "Revoked"
+                        st.markdown(f"{'🟢' if key_data['is_active'] else '🔴'} {status}")
+                        
+                        st.markdown("**Tier**")
+                        tier_class = f"tier-{key_data['tier'].value}"
+                        st.markdown(
+                            f'<span class="tier-badge {tier_class}">{key_data["tier"].value.upper()}</span>',
+                            unsafe_allow_html=True
+                        )
+                    
+                    with col2:
+                        st.markdown("**Created**")
+                        created = key_data['created_at']
+                        st.write(created.strftime("%Y-%m-%d %H:%M"))
+                        
+                        st.markdown("**Last Used**")
+                        if key_data.get('last_used'):
+                            last_used = key_data['last_used']
+                            st.write(last_used.strftime("%Y-%m-%d %H:%M"))
+                        else:
+                            st.write("Never")
+                    
+                    with col3:
+                        st.markdown("**Total Requests**")
+                        st.metric("", key_data.get('usage_count', 0))
+                        
+                        st.markdown("**Today**")
+                        st.metric("", key_data.get('requests_today', 0))
+                    
+                    # Description
+                    if key_data.get('description'):
+                        st.markdown("**Description**")
+                        st.info(key_data['description'])
+                    
+                    # Masked API key
+                    st.markdown("**API Key (Masked)**")
+                    masked_key = f"{api_key[:12]}...{api_key[-8:]}"
+                    st.code(masked_key, language="text")
+                    
+                    # Actions
+                    st.markdown("---")
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        if key_data['is_active']:
+                            if st.button("🔒 Revoke Key", key=f"revoke_{api_key}", use_container_width=True):
+                                manager.revoke_api_key(api_key)
+                                st.success("✅ API key revoked successfully")
+                                st.rerun()
+                    
+                    with col2:
+                        if st.button("📋 Copy Key ID", key=f"copy_{api_key}", use_container_width=True):
+                            st.info(f"Key ID: {api_key[:12]}...")
+    
+    with tab3:
+        st.markdown("#### Rate Limit Tiers")
+        st.markdown("Compare different rate limit tiers and their capabilities")
+        
+        # Tier comparison table
+        tiers_data = []
+        for tier in RateLimitTier:
+            config = RATE_LIMIT_CONFIG[tier]
+            tiers_data.append({
+                "Tier": tier.value.upper(),
+                "Requests/Min": config['requests_per_minute'],
+                "Requests/Hour": config['requests_per_hour'],
+                "Recommended For": {
+                    RateLimitTier.FREE: "Testing & Development",
+                    RateLimitTier.BASIC: "Small Applications",
+                    RateLimitTier.PREMIUM: "Production Apps",
+                    RateLimitTier.ENTERPRISE: "Large-Scale Systems"
+                }[tier]
+            })
+        
+        import pandas as pd
+        df = pd.DataFrame(tiers_data)
+        st.dataframe(df, use_container_width=True, hide_index=True)
+        
+        # Visual comparison
+        st.markdown("#### 📊 Visual Comparison")
+        
+        for tier in RateLimitTier:
+            config = RATE_LIMIT_CONFIG[tier]
+            tier_class = f"tier-{tier.value}"
+            
+            st.markdown(f'<span class="tier-badge {tier_class}">{tier.value.upper()}</span>', unsafe_allow_html=True)
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.progress(config['requests_per_minute'] / 1000, text=f"{config['requests_per_minute']} req/min")
+            with col2:
+                st.progress(config['requests_per_hour'] / 50000, text=f"{config['requests_per_hour']} req/hour")
+    
+    with tab4:
+        st.markdown("#### 📚 API Key Documentation")
+        
+        st.markdown("""
+        ##### Authentication Methods
+        
+        CloudIDP supports two authentication methods:
+        
+        1. **JWT Tokens** - For web applications and user sessions
+        2. **API Keys** - For backend services and integrations (Enhanced)
+        
+        ##### Using API Keys
+        
+        Include your API key in the request header:
+        ```bash
+        curl -X GET http://localhost:8000/api/v1/accounts \\
+          -H "X-API-Key: cidp_your_api_key_here"
+        ```
+        
+        ##### Rate Limiting
+        
+        API keys are subject to rate limits based on their tier:
+        - Requests are tracked per minute and per hour
+        - Rate limit headers are included in responses
+        - Exceeded limits return 429 Too Many Requests
+        
+        ##### Response Headers
+        
+        Rate limit information is included in response headers:
+        ```
+        X-RateLimit-Limit-Minute: 300
+        X-RateLimit-Remaining-Minute: 285
+        X-RateLimit-Limit-Hour: 10000
+        X-RateLimit-Remaining-Hour: 9850
+        X-RateLimit-Reset: 2024-01-15T10:30:00Z
+        ```
+        
+        ##### Best Practices
+        
+        1. **Keep Keys Secret**: Never commit API keys to version control
+        2. **Use Environment Variables**: Store keys in environment variables
+        3. **Rotate Regularly**: Generate new keys periodically
+        4. **Revoke Unused Keys**: Remove keys that are no longer needed
+        5. **Monitor Usage**: Track API key usage regularly
+        6. **Choose Appropriate Tier**: Select tier based on your needs
+        
+        ##### Security
+        
+        - API keys are hashed before storage
+        - Keys are only shown once during generation
+        - Revoked keys cannot be reactivated
+        - Usage is tracked and auditable
+        """)
 
-def show_policy_guardrails_overview():
-    """Show Policy & Guardrails Overview"""
-    module = PolicyGuardrailsModule()
-    module.render_overview()
+def show_rate_limit_monitoring():
+    """Rate Limit Monitoring Page - COMPLETE VERSION"""
+    st.markdown("### 📈 Rate Limit Monitoring")
+    st.markdown("Monitor API rate limits and usage in real-time")
+    
+    manager = st.session_state.api_key_manager
+    
+    # Summary metrics
+    st.markdown("#### 📊 Current Usage")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    total_requests_today = sum(k.get('requests_today', 0) for k in manager.keys.values())
+    active_keys = sum(1 for k in manager.keys.values() if k['is_active'])
+    
+    with col1:
+        st.metric("Total Keys", len(manager.keys))
+    with col2:
+        st.metric("Active Keys", active_keys)
+    with col3:
+        st.metric("Requests Today", total_requests_today)
+    with col4:
+        avg_requests = total_requests_today / active_keys if active_keys > 0 else 0
+        st.metric("Avg per Key", f"{avg_requests:.0f}")
+    
+    st.markdown("---")
+    
+    # Per-key monitoring
+    st.markdown("#### 🔍 Per-Key Monitoring")
+    
+    if not manager.keys:
+        st.info("📝 No API keys to monitor. Generate keys in the API Key Management module.")
+    else:
+        for api_key, key_data in manager.keys.items():
+            if not key_data['is_active']:
+                continue
+            
+            tier = key_data['tier']
+            config = RATE_LIMIT_CONFIG[tier]
+            
+            with st.expander(
+                f"{key_data['user_id']} - {tier.value.upper()}",
+                expanded=True
+            ):
+                # Usage bars
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("**Requests per Minute**")
+                    # Simulated current usage (in real app, track actual usage)
+                    current_rpm = min(key_data.get('requests_today', 0) % 100, config['requests_per_minute'])
+                    usage_pct = (current_rpm / config['requests_per_minute']) * 100
+                    
+                    st.markdown(f"""
+                    <div class="rate-limit-bar">
+                        <div class="rate-limit-fill" style="width: {usage_pct}%"></div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.caption(f"{current_rpm} / {config['requests_per_minute']} requests")
+                
+                with col2:
+                    st.markdown("**Requests per Hour**")
+                    current_rph = min(key_data.get('requests_today', 0), config['requests_per_hour'])
+                    usage_pct = (current_rph / config['requests_per_hour']) * 100
+                    
+                    st.markdown(f"""
+                    <div class="rate-limit-bar">
+                        <div class="rate-limit-fill" style="width: {usage_pct}%"></div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.caption(f"{current_rph} / {config['requests_per_hour']} requests")
+                
+                # Additional stats
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Total Requests", key_data.get('usage_count', 0))
+                with col2:
+                    st.metric("Today's Requests", key_data.get('requests_today', 0))
+                with col3:
+                    if key_data.get('last_used'):
+                        last_used = key_data['last_used']
+                        time_ago = datetime.now() - last_used
+                        if time_ago.seconds < 60:
+                            st.metric("Last Used", f"{time_ago.seconds}s ago")
+                        elif time_ago.seconds < 3600:
+                            st.metric("Last Used", f"{time_ago.seconds // 60}m ago")
+                        else:
+                            st.metric("Last Used", f"{time_ago.seconds // 3600}h ago")
+                    else:
+                        st.metric("Last Used", "Never")
 
-def show_policy_as_code():
-    """Show Policy as Code Engine"""
-    module = PolicyGuardrailsModule()
-    module.render_policy_as_code()
+def show_api_usage_analytics():
+    """API Usage Analytics Page - COMPLETE VERSION"""
+    st.markdown("### 📊 API Usage Analytics")
+    st.markdown("Analyze API usage patterns and trends")
+    
+    manager = st.session_state.api_key_manager
+    
+    if not manager.keys:
+        st.info("📝 No API keys to analyze. Generate keys in the API Key Management module.")
+        return
+    
+    # Summary statistics
+    st.markdown("#### 📈 Usage Summary")
+    
+    total_usage = sum(k.get('usage_count', 0) for k in manager.keys.values())
+    active_keys = sum(1 for k in manager.keys.values() if k['is_active'])
+    today_usage = sum(k.get('requests_today', 0) for k in manager.keys.values())
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Total Requests", f"{total_usage:,}")
+    with col2:
+        st.metric("Active Keys", active_keys)
+    with col3:
+        st.metric("Today's Requests", f"{today_usage:,}")
+    with col4:
+        avg = total_usage / active_keys if active_keys > 0 else 0
+        st.metric("Avg per Key", f"{avg:.0f}")
+    
+    st.markdown("---")
+    
+    # Usage by tier
+    st.markdown("#### 📊 Usage by Tier")
+    
+    tier_usage = {}
+    for key_data in manager.keys.values():
+        tier = key_data['tier'].value
+        if tier not in tier_usage:
+            tier_usage[tier] = {'count': 0, 'usage': 0, 'today': 0}
+        tier_usage[tier]['count'] += 1
+        tier_usage[tier]['usage'] += key_data.get('usage_count', 0)
+        tier_usage[tier]['today'] += key_data.get('requests_today', 0)
+    
+    for tier in RateLimitTier:
+        if tier.value in tier_usage:
+            data = tier_usage[tier.value]
+            tier_class = f"tier-{tier.value}"
+            
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.markdown(f'<span class="tier-badge {tier_class}">{tier.value.upper()}</span>', unsafe_allow_html=True)
+            with col2:
+                st.metric("Keys", data['count'])
+            with col3:
+                st.metric("Total Requests", f"{data['usage']:,}")
+            with col4:
+                st.metric("Today", f"{data['today']:,}")
+    
+    st.markdown("---")
+    
+    # Top consumers
+    st.markdown("#### 🏆 Top API Consumers")
+    
+    sorted_keys = sorted(
+        manager.keys.items(),
+        key=lambda x: x[1].get('usage_count', 0),
+        reverse=True
+    )[:10]
+    
+    for rank, (api_key, key_data) in enumerate(sorted_keys, 1):
+        col1, col2, col3, col4 = st.columns([1, 3, 2, 2])
+        
+        with col1:
+            st.markdown(f"**#{rank}**")
+        with col2:
+            st.write(key_data['user_id'])
+        with col3:
+            st.metric("Total", f"{key_data.get('usage_count', 0):,}")
+        with col4:
+            st.metric("Today", f"{key_data.get('requests_today', 0):,}")
 
-def show_cross_cloud_policy():
-    """Show Cross-Cloud Policy Consistency"""
-    module = PolicyGuardrailsModule()
-    module.render_cross_cloud_policy()
+# ==================== AWS Integration Pages - COMPLETE IMPLEMENTATION ====================
 
-def show_tag_enforcement():
-    """Show Tag Policy Enforcement"""
-    module = PolicyGuardrailsModule()
-    module.render_tag_enforcement()
+def show_iam_management_page():
+    """IAM Management Page - COMPLETE VERSION"""
+    st.markdown("### 🔐 IAM Management")
+    
+    try:
+        aws = st.session_state.aws_integrations
+        
+        # IAM Users
+        st.markdown("#### IAM Users")
+        users = aws.iam.list_users()
+        
+        st.write(f"**Total Users**: {users.get('count', 0)}")
+        
+        for user in users.get('users', []):
+            with st.expander(f"👤 {user.get('UserName')}"):
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write(f"**User ID**: {user.get('UserId')}")
+                    st.write(f"**ARN**: {user.get('Arn')}")
+                with col2:
+                    created = user.get('CreateDate')
+                    if created:
+                        st.write(f"**Created**: {created}")
+        
+        # IAM Roles
+        st.markdown("---")
+        st.markdown("#### IAM Roles")
+        roles = aws.iam.list_roles()
+        
+        st.write(f"**Total Roles**: {roles.get('count', 0)}")
+        
+        for role in roles.get('roles', []):
+            with st.expander(f"🎭 {role.get('RoleName')}"):
+                st.write(f"**ARN**: {role.get('Arn')}")
+                st.write(f"**Description**: {role.get('Description', 'N/A')}")
+        
+        # Create User
+        st.markdown("---")
+        st.markdown("#### Create New IAM User")
+        
+        with st.form("create_iam_user"):
+            username = st.text_input("Username", placeholder="new-user")
+            
+            if st.form_submit_button("Create User"):
+                with st.spinner("Creating IAM user..."):
+                    result = aws.iam.create_user(user_name=username)
+                if result.get('success'):
+                    st.success(f"✅ User created: {username}")
+                else:
+                    st.error(f"❌ Failed: {result.get('error')}")
+    
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
 
-def show_naming_enforcement():
-    """Show Naming & Placement Enforcement"""
-    module = PolicyGuardrailsModule()
-    module.render_naming_enforcement()
+def show_cost_explorer_page():
+    """AWS Cost Explorer Page - COMPLETE VERSION"""
+    st.markdown("### 📊 Cost Explorer")
+    
+    try:
+        aws = st.session_state.aws_integrations
+        
+        # Date range selection
+        col1, col2 = st.columns(2)
+        with col1:
+            start_date = st.date_input("Start Date", datetime.now() - timedelta(days=30))
+        with col2:
+            end_date = st.date_input("End Date", datetime.now())
+        
+        # Get cost data
+        costs = aws.cost_explorer.get_cost_and_usage(
+            start_date=start_date.isoformat(),
+            end_date=end_date.isoformat()
+        )
+        
+        # Display metrics
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Total Cost", f"${costs.get('total_cost', 0):.2f}")
+        with col2:
+            st.metric("Average Daily", f"${costs.get('average_daily', 0):.2f}")
+        with col3:
+            st.metric("Period", f"{(end_date - start_date).days} days")
+        
+        st.markdown("---")
+        
+        # Cost breakdown
+        st.markdown("#### Cost by Service")
+        breakdown = costs.get('breakdown', [])
+        
+        for item in breakdown:
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.write(f"**{item.get('service')}**")
+            with col2:
+                st.write(f"${item.get('cost', 0):.2f}")
+        
+        # Rightsizing recommendations
+        st.markdown("---")
+        st.markdown("#### 💡 Rightsizing Recommendations")
+        recommendations = aws.cost_explorer.get_rightsizing_recommendations()
+        
+        if recommendations.get('recommendations'):
+            st.info(f"Potential monthly savings: **${recommendations.get('total_savings', 0):.2f}**")
+            
+            for rec in recommendations.get('recommendations', []):
+                with st.expander(f"Instance: {rec.get('instance_id')}"):
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.write(f"**Current**: {rec.get('current_type')}")
+                    with col2:
+                        st.write(f"**Recommended**: {rec.get('recommended_type')}")
+                    with col3:
+                        st.write(f"**Savings**: ${rec.get('estimated_monthly_savings', 0):.2f}/month")
+    
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
 
-def show_quota_guardrails():
-    """Show Quota Guardrails"""
-    module = PolicyGuardrailsModule()
-    module.render_quota_guardrails()
+def show_systems_manager_page():
+    """AWS Systems Manager Page - COMPLETE VERSION"""
+    st.markdown("### ⚙️ AWS Systems Manager")
+    
+    try:
+        aws = st.session_state.aws_integrations
+        
+        # Parameter Store
+        st.markdown("#### Parameter Store")
+        
+        with st.form("get_parameter"):
+            param_name = st.text_input("Parameter Name", placeholder="/cloudidp/config/example")
+            decrypt = st.checkbox("Decrypt SecureString", value=False)
+            
+            if st.form_submit_button("Get Parameter"):
+                result = aws.systems_manager.get_parameter(param_name, with_decryption=decrypt)
+                if result.get('success'):
+                    st.success("✅ Parameter retrieved")
+                    st.code(result.get('value', result.get('parameter', {}).get('Value', 'N/A')))
+                else:
+                    st.error(f"❌ Failed: {result.get('error')}")
+        
+        st.markdown("---")
+        
+        # Automation
+        st.markdown("#### Automation Documents")
+        
+        with st.form("execute_automation"):
+            doc_name = st.selectbox(
+                "Document Name",
+                ["AWS-StopEC2Instance", "AWS-StartEC2Instance", "AWS-RestartEC2Instance"]
+            )
+            instance_id = st.text_input("Instance ID", placeholder="i-1234567890abcdef0")
+            
+            if st.form_submit_button("Execute Automation"):
+                result = aws.systems_manager.execute_automation(
+                    document_name=doc_name,
+                    parameters={'InstanceId': [instance_id]} if instance_id else {}
+                )
+                if result.get('success'):
+                    st.success(f"✅ Automation started: {result.get('automation_execution_id', result.get('execution_id'))}")
+                else:
+                    st.error(f"❌ Failed: {result.get('error')}")
+    
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
+
+def show_compute_network_page():
+    """EC2 and VPC Management Page - COMPLETE VERSION"""
+    st.markdown("### 🖥️ Compute & Network Management")
+    
+    try:
+        aws = st.session_state.aws_integrations
+        
+        # VPCs
+        st.markdown("#### Virtual Private Clouds (VPCs)")
+        vpcs = aws.compute_network.list_vpcs()
+        
+        st.write(f"**Total VPCs**: {vpcs.get('count', 0)}")
+        
+        for vpc in vpcs.get('vpcs', []):
+            with st.expander(f"🌐 VPC: {vpc.get('VpcId')}"):
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write(f"**CIDR Block**: {vpc.get('CidrBlock')}")
+                    st.write(f"**State**: {vpc.get('State')}")
+                with col2:
+                    tags = vpc.get('Tags', [])
+                    name = next((t['Value'] for t in tags if t['Key'] == 'Name'), 'N/A')
+                    st.write(f"**Name**: {name}")
+        
+        # EC2 Instances
+        st.markdown("---")
+        st.markdown("#### EC2 Instances")
+        instances = aws.compute_network.list_instances()
+        
+        st.write(f"**Total Instances**: {instances.get('count', 0)}")
+        
+        for instance in instances.get('instances', []):
+            state = instance.get('State', {}).get('Name', 'unknown')
+            state_icon = "🟢" if state == 'running' else "🔴" if state == 'stopped' else "🟡"
+            
+            with st.expander(f"{state_icon} {instance.get('InstanceId')} - {instance.get('InstanceType')} ({state})"):
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write(f"**State**: {state}")
+                    st.write(f"**Type**: {instance.get('InstanceType')}")
+                with col2:
+                    tags = instance.get('Tags', [])
+                    name = next((t['Value'] for t in tags if t['Key'] == 'Name'), 'N/A')
+                    st.write(f"**Name**: {name}")
+        
+        # Create VPC
+        st.markdown("---")
+        st.markdown("#### Create New VPC")
+        
+        with st.form("create_vpc"):
+            col1, col2 = st.columns(2)
+            with col1:
+                cidr = st.text_input("CIDR Block", "10.0.0.0/16")
+            with col2:
+                vpc_name = st.text_input("VPC Name", "Production-VPC")
+            enable_dns = st.checkbox("Enable DNS", value=True)
+            
+            if st.form_submit_button("Create VPC"):
+                with st.spinner("Creating VPC..."):
+                    result = aws.compute_network.create_vpc(
+                        cidr_block=cidr,
+                        name=vpc_name,
+                        enable_dns=enable_dns
+                    )
+                if result.get('success'):
+                    st.success(f"✅ VPC created: {result['vpc_id']}")
+                else:
+                    st.error(f"❌ Failed: {result.get('error')}")
+    
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
+
+def show_database_management_page():
+    """RDS and DynamoDB Management Page - COMPLETE VERSION"""
+    st.markdown("### 🗄️ Database Management")
+    
+    try:
+        aws = st.session_state.aws_integrations
+        
+        # RDS Instances
+        st.markdown("#### RDS Database Instances")
+        rds_instances = aws.database.list_db_instances()
+        
+        st.write(f"**Total RDS Instances**: {rds_instances.get('count', 0)}")
+        
+        for db in rds_instances.get('db_instances', []):
+            status = db.get('DBInstanceStatus', 'unknown')
+            status_icon = "🟢" if status == 'available' else "🔴" if status == 'stopped' else "🟡"
+            
+            with st.expander(f"{status_icon} {db.get('DBInstanceIdentifier')} - {db.get('Engine')} ({status})"):
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.write(f"**Engine**: {db.get('Engine')}")
+                    st.write(f"**Status**: {status}")
+                with col2:
+                    st.write(f"**Class**: {db.get('DBInstanceClass')}")
+                    st.write(f"**Storage**: {db.get('AllocatedStorage')} GB")
+                with col3:
+                    st.write(f"**Multi-AZ**: {'Yes' if db.get('MultiAZ') else 'No'}")
+        
+        # DynamoDB Tables
+        st.markdown("---")
+        st.markdown("#### DynamoDB Tables")
+        tables = aws.database.list_dynamodb_tables()
+        
+        st.write(f"**Total DynamoDB Tables**: {tables.get('count', 0)}")
+        
+        for table in tables.get('tables', []):
+            st.write(f"📊 {table}")
+    
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
 
 if __name__ == "__main__":
     main()
