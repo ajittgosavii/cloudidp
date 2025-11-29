@@ -50,24 +50,47 @@ st.set_page_config(
     page_title="CloudIDP - Cloud Infrastructure Development Platform",
     page_icon="☁️",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"  # Auto-collapse on smaller screens
 )
 
 # Custom CSS - COMPLETE VERSION
 st.markdown("""
     <style>
+    /* Reduce overall padding for better space utilization */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 1rem;
+    }
+    
+    /* Compact sidebar */
+    section[data-testid="stSidebar"] > div {
+        padding-top: 1rem;
+    }
+    
+    /* Compact metrics */
+    div[data-testid="stMetric"] {
+        padding: 0.5rem 0;
+    }
+    
+    /* Compact expanders */
+    div[data-testid="stExpander"] {
+        margin: 0.5rem 0;
+    }
+    
     .main-header {
         font-size: 2.5rem;
         font-weight: bold;
         color: #FF9900;
         text-align: center;
-        padding: 1rem 0;
+        padding: 0.5rem 0;
+        margin-bottom: 0;
     }
     .sub-header {
         font-size: 1.2rem;
         color: #232F3E;
         text-align: center;
-        padding-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
     }
     .mode-indicator {
         padding: 10px;
@@ -208,108 +231,83 @@ def initialize_backend():
         st.session_state.api_gateway_initialized = False
 
 def render_sidebar():
-    """Render simplified sidebar with settings only"""
+    """Render compact sidebar with settings and quick stats"""
     with st.sidebar:
-        # CloudIDP Logo
+        # CloudIDP Logo - More Compact
         st.markdown("""
-            <div style="text-align: center; padding: 20px 0;">
+            <div style="text-align: center; padding: 10px 0 5px 0;">
                 <div style="
                     background: linear-gradient(180deg, #232F3E 0%, #1a252f 100%);
                     border-radius: 8px;
-                    padding: 25px 20px;
+                    padding: 15px;
                     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                    margin-bottom: 10px;
                     border: 2px solid #FF9900;
                 ">
                     <div style="
                         color: #FF9900;
-                        font-size: 36px;
+                        font-size: 28px;
                         font-weight: bold;
-                        letter-spacing: 3px;
-                        margin-bottom: 8px;
+                        letter-spacing: 2px;
+                        margin-bottom: 5px;
                     ">CloudIDP</div>
                     <div style="
                         color: #FFFFFF;
-                        font-size: 10px;
-                        letter-spacing: 1.5px;
+                        font-size: 9px;
+                        letter-spacing: 1px;
                         font-weight: 500;
-                    ">INFRASTRUCTURE DEVELOPMENT PLATFORM</div>
-                    <div style="
-                        width: 60px;
-                        height: 3px;
-                        background: #FF9900;
-                        margin: 12px auto 0 auto;
-                        border-radius: 2px;
-                    "></div>
+                    ">INFRASTRUCTURE PLATFORM</div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
-        st.markdown("---")
         
-        # Operation Mode Toggle
-        st.markdown("### 🔄 Operation Mode")
+        # Operation Mode Toggle - Compact
+        st.markdown("### 🔄 Mode")
         mode = st.radio(
-            "Select Mode:",
-            ["Demo Mode", "Live Mode"],
+            "Select:",
+            ["Demo", "Live"],
             index=0,
-            help="Demo Mode: Use sample data (no cloud credentials)\nLive Mode: Connect to real cloud services"
+            help="Demo: Sample data | Live: Real cloud"
         )
         
-        # Update session state and reinitialize backend if mode changed
+        # Update session state
         old_demo_mode = st.session_state.get('demo_mode', True)
-        st.session_state.demo_mode = (mode == "Demo Mode")
+        st.session_state.demo_mode = (mode == "Demo")
         
         if old_demo_mode != st.session_state.demo_mode and BACKEND_AVAILABLE:
             initialize_backend()
         
-        # Display mode indicator
+        # Display mode indicator - Compact
         if st.session_state.demo_mode:
-            st.markdown(
-                '<div class="mode-indicator demo-mode">📋 DEMO MODE ACTIVE</div>',
-                unsafe_allow_html=True
-            )
-            st.info("✓ Using sample data\n\n✓ No cloud credentials needed\n\n✓ Safe to explore all features")
+            st.success("📋 DEMO MODE")
         else:
-            st.markdown(
-                '<div class="mode-indicator live-mode">🟢 LIVE MODE ACTIVE</div>',
-                unsafe_allow_html=True
-            )
-            st.warning("⚠️ Connected to Cloud Services\n\n⚠️ Real data will be used\n\n⚠️ Actions may affect resources")
+            st.warning("🟢 LIVE MODE")
         
-        st.markdown("---")
+        # Quick Platform Stats
+        st.markdown("### 📊 Quick Stats")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Modules", "18", delta=None, label_visibility="visible")
+        with col2:
+            st.metric("Clouds", "3", delta=None, label_visibility="visible")
         
-        # Backend Status Indicator
+        # Backend Status - Compact
         if BACKEND_AVAILABLE and st.session_state.get('backend_initialized'):
             backend = st.session_state.backend
             health = backend.health_check()
             
             if health['status'] == 'healthy':
-                st.markdown(
-                    '<div class="backend-status backend-healthy">✅ Backend: Healthy</div>',
-                    unsafe_allow_html=True
-                )
+                st.success("✅ Backend Healthy")
             else:
-                st.markdown(
-                    '<div class="backend-status backend-degraded">⚠️ Backend: Degraded</div>',
-                    unsafe_allow_html=True
-                )
+                st.warning("⚠️ Backend Degraded")
             
-            with st.expander("📊 Service Status"):
+            with st.expander("📊 Services"):
                 for service, status in health.get('services', {}).items():
                     icon = "✅" if status == "healthy" else "⚠️"
-                    st.write(f"{icon} {service.title()}: {status}")
-        elif BACKEND_AVAILABLE:
-            st.markdown(
-                '<div class="backend-status backend-degraded">❌ Backend: Not Initialized</div>',
-                unsafe_allow_html=True
-            )
+                    st.caption(f"{icon} {service.title()}")
         
-        st.markdown("---")
-        
-        # API Gateway Status
+        # API Gateway Status - Compact
         if API_GATEWAY_ENHANCED_AVAILABLE and st.session_state.get('api_gateway_initialized'):
-            st.markdown("### 🔑 API Gateway")
-            st.info("✅ Enhanced API Gateway Active")
+            st.markdown("### 🔑 API Keys")
             
             if 'api_key_manager' in st.session_state:
                 manager = st.session_state.api_key_manager
@@ -318,38 +316,35 @@ def render_sidebar():
                 
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.metric("Total Keys", total_keys)
+                    st.metric("Total", total_keys)
                 with col2:
                     st.metric("Active", active_keys)
         
-        st.markdown("---")
-        
-        # AWS Region Selection
+        # AWS Region Selection - Compact
         if not st.session_state.demo_mode:
-            st.markdown("### 🌍 AWS Region")
+            st.markdown("### 🌍 Region")
             regions = [
-                "us-east-1 (N. Virginia)",
-                "us-west-2 (Oregon)",
-                "eu-west-1 (Ireland)",
-                "ap-southeast-1 (Singapore)"
+                "us-east-1",
+                "us-west-2",
+                "eu-west-1",
+                "ap-southeast-1"
             ]
             selected_region = st.selectbox(
-                "Select Region:",
+                "AWS:",
                 regions,
-                index=0
+                index=0,
+                label_visibility="collapsed"
             )
-            st.session_state.aws_region = selected_region.split(' ')[0]
+            st.session_state.aws_region = selected_region
         
+        # Quick Navigation Hint
+        st.markdown("### 💡 Navigation")
+        st.info("Use tabs above to navigate between modules")
+        
+        # Footer - Compact
         st.markdown("---")
-        
-        # Footer
-        st.markdown("### ℹ️ About")
-        st.info(
-            "CloudIDP v2.0\n\n"
-            "Enterprise Cloud Infrastructure\n"
-            "Development Platform\n\n"
-            "© 2024 CloudIDP"
-        )
+        st.caption("CloudIDP v2.0")
+        st.caption("© 2024 CloudIDP")
 
 def main():
     """Main application entry point with tab-based navigation"""
@@ -369,8 +364,6 @@ def main():
     render_sidebar()
     
     # Main content area with tabs
-    st.markdown("---")
-    
     # Create main tab groups
     main_tabs = st.tabs([
         "🏠 Home",
