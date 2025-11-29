@@ -479,6 +479,31 @@ def render_home_page():
         with col3:
             st.text(item["status"])
 
+def render_module(module_instance, module_name):
+    """
+    Flexible module renderer that works with different method names
+    Tries common method names: render, show, display, run, execute
+    """
+    method_names = ['render', 'show', 'display', 'run', 'execute', 'main']
+    
+    for method_name in method_names:
+        if hasattr(module_instance, method_name):
+            method = getattr(module_instance, method_name)
+            if callable(method):
+                try:
+                    method()
+                    return True
+                except Exception as e:
+                    st.error(f"Error running {module_name}: {str(e)}")
+                    return False
+    
+    # If no common method found, show available methods
+    available_methods = [m for m in dir(module_instance) if not m.startswith('_') and callable(getattr(module_instance, m))]
+    st.error(f"❌ {module_name} module error")
+    st.warning(f"Could not find a display method. Available methods: {', '.join(available_methods)}")
+    st.info("💡 Please ensure your module has one of these methods: render(), show(), display(), run(), or execute()")
+    return False
+
 def render_core_infrastructure_tabs():
     """Render Core Infrastructure modules in nested tabs"""
     st.markdown("## 🏗️ Core Infrastructure Modules")
@@ -499,105 +524,76 @@ def render_core_infrastructure_tabs():
     with infra_tabs[0]:
         try:
             design_planning = DesignPlanningModule()
-            if hasattr(design_planning, 'render'):
-                design_planning.render()
-            else:
-                st.error("Design & Planning module is not properly configured. Missing render() method.")
+            render_module(design_planning, "Design & Planning")
         except Exception as e:
-            st.error(f"Error loading Design & Planning module: {str(e)}")
-            st.info("Please ensure design_planning.py is in the same directory and properly configured.")
+            st.error(f"❌ Error loading Design & Planning module: {str(e)}")
+            st.info("Please ensure design_planning.py is in the same directory.")
     
     with infra_tabs[1]:
         try:
             provisioning = ProvisioningDeploymentModule()
-            if hasattr(provisioning, 'render'):
-                provisioning.render()
-            else:
-                st.error("Provisioning module is not properly configured.")
+            render_module(provisioning, "Provisioning & Deployment")
         except Exception as e:
-            st.error(f"Error loading Provisioning module: {str(e)}")
+            st.error(f"❌ Error loading Provisioning module: {str(e)}")
     
     with infra_tabs[2]:
         try:
             operations = OnDemandOperationsModule()
-            if hasattr(operations, 'render'):
-                operations.render()
+            render_module(operations, "On-Demand Operations")
             
             operations2 = OnDemandOperationsModule2()
-            if hasattr(operations2, 'render'):
-                operations2.render()
+            render_module(operations2, "On-Demand Operations Part 2")
         except Exception as e:
-            st.error(f"Error loading Operations module: {str(e)}")
+            st.error(f"❌ Error loading Operations module: {str(e)}")
     
     with infra_tabs[3]:
         try:
             finops = FinOpsModule()
-            if hasattr(finops, 'render'):
-                finops.render()
-            else:
-                st.error("FinOps module is not properly configured.")
+            render_module(finops, "FinOps Cost Management")
         except Exception as e:
-            st.error(f"Error loading FinOps module: {str(e)}")
+            st.error(f"❌ Error loading FinOps module: {str(e)}")
     
     with infra_tabs[4]:
         try:
             security = SecurityComplianceModule()
-            if hasattr(security, 'render'):
-                security.render()
-            else:
-                st.error("Security module is not properly configured.")
+            render_module(security, "Security & Compliance")
         except Exception as e:
-            st.error(f"Error loading Security module: {str(e)}")
+            st.error(f"❌ Error loading Security module: {str(e)}")
     
     with infra_tabs[5]:
         try:
             policy = PolicyGuardrailsModule()
-            if hasattr(policy, 'render'):
-                policy.render()
-            else:
-                st.error("Policy module is not properly configured.")
+            render_module(policy, "Policy & Guardrails")
         except Exception as e:
-            st.error(f"Error loading Policy module: {str(e)}")
+            st.error(f"❌ Error loading Policy module: {str(e)}")
     
     with infra_tabs[6]:
         try:
             abstraction = AbstractionReusabilityModule()
-            if hasattr(abstraction, 'render'):
-                abstraction.render()
-            else:
-                st.error("Abstraction module is not properly configured.")
+            render_module(abstraction, "Abstraction & Reusability")
         except Exception as e:
-            st.error(f"Error loading Abstraction module: {str(e)}")
+            st.error(f"❌ Error loading Abstraction module: {str(e)}")
     
     with infra_tabs[7]:
         try:
             multicloud = MultiCloudHybridModule()
-            if hasattr(multicloud, 'render'):
-                multicloud.render()
-            else:
-                st.error("Multi-Cloud module is not properly configured.")
+            render_module(multicloud, "Multi-Cloud & Hybrid")
         except Exception as e:
-            st.error(f"Error loading Multi-Cloud module: {str(e)}")
+            st.error(f"❌ Error loading Multi-Cloud module: {str(e)}")
     
     with infra_tabs[8]:
         try:
             devex = DeveloperExperienceModule()
-            if hasattr(devex, 'render'):
-                devex.render()
-            else:
-                st.error("Developer Experience module is not properly configured.")
+            render_module(devex, "Developer Experience")
         except Exception as e:
-            st.error(f"Error loading Developer Experience module: {str(e)}")
+            st.error(f"❌ Error loading Developer Experience module: {str(e)}")
     
     with infra_tabs[9]:
         try:
             observability = ObservabilityIntegrationModule()
-            if hasattr(observability, 'render'):
-                observability.render()
-            else:
-                st.error("Observability module is not properly configured.")
+            render_module(observability, "Observability & Integration")
         except Exception as e:
-            st.error(f"Error loading Observability module: {str(e)}")
+            st.error(f"❌ Error loading Observability module: {str(e)}")
 
 def render_api_management_tabs():
     """Render API Management modules in nested tabs"""
