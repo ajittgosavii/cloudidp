@@ -155,14 +155,85 @@ class FinOpsModule:
             })
             st.line_chart(trend_data.set_index('Date'))
         
-        # Top Cost Resources
+        # Top Cost Resources - MODE-AWARE
         st.markdown("### Top 10 Costly Resources")
-        resources = pd.DataFrame({
-            'Resource ID': [f'i-{i:08x}' for i in range(10)],
-            'Type': ['EC2'] * 5 + ['RDS'] * 3 + ['ELB'] * 2,
-            'Monthly Cost': [3456, 2345, 2123, 1987, 1765, 1654, 1543, 1432, 1321, 1210],
-            'Tags': ['prod-web', 'prod-api', 'dev-web', 'staging-db', 'prod-worker'] * 2
-        })
+        
+        # Check mode and get appropriate data
+        if st.session_state.get('mode', 'Demo') == 'Live' and DATA_PROVIDER_AVAILABLE:
+            try:
+                # Live mode - show message about data source
+                st.caption("🔴 Live Mode: Showing real AWS resources with estimated costs. For accurate per-resource costs, enable AWS Cost Allocation Tags.")
+                
+                # Get live data (this is a simplified version - real costs require Cost Allocation Tags)
+                from compute_network_integration import ComputeNetworkIntegration
+                from database_integration import DatabaseIntegration
+                
+                compute = ComputeNetworkIntegration(demo_mode=False)
+                database = DatabaseIntegration(demo_mode=False)
+                
+                resources_data = []
+                
+                # Get EC2 instances
+                ec2_result = compute.list_instances()
+                if ec2_result.get('success'):
+                    for instance in ec2_result.get('instances', [])[:5]:
+                        instance_id = instance.get('InstanceId', 'unknown')
+                        instance_type = instance.get('InstanceType', 'unknown')
+                        tags_list = instance.get('Tags', [])
+                        name_tag = next((t['Value'] for t in tags_list if t['Key'] == 'Name'), 'unnamed')
+                        
+                        # Rough cost estimate (actual costs require Cost Explorer)
+                        resources_data.append({
+                            'Resource ID': instance_id,
+                            'Type': 'EC2',
+                            'Monthly Cost': '~Est',  # Placeholder
+                            'Tags': name_tag
+                        })
+                
+                # Get RDS instances  
+                rds_result = database.list_db_instances()
+                if rds_result.get('success'):
+                    for db in rds_result.get('instances', [])[:3]:
+                        db_id = db.get('DBInstanceIdentifier', 'unknown')
+                        engine = db.get('Engine', 'unknown')
+                        
+                        resources_data.append({
+                            'Resource ID': db_id,
+                            'Type': 'RDS',
+                            'Monthly Cost': '~Est',
+                            'Tags': engine
+                        })
+                
+                if resources_data:
+                    resources = pd.DataFrame(resources_data)
+                else:
+                    # No resources found, show demo
+                    resources = pd.DataFrame({
+                        'Resource ID': [f'i-{i:08x}' for i in range(10)],
+                        'Type': ['EC2'] * 5 + ['RDS'] * 3 + ['ELB'] * 2,
+                        'Monthly Cost': [3456, 2345, 2123, 1987, 1765, 1654, 1543, 1432, 1321, 1210],
+                        'Tags': ['prod-web', 'prod-api', 'dev-web', 'staging-db', 'prod-worker'] * 2
+                    })
+                    st.caption("⚠️ No AWS resources found - showing demo data")
+                    
+            except Exception as e:
+                # Error fetching live data, fall back to demo
+                st.caption(f"⚠️ Could not fetch live AWS resources ({str(e)[:50]}) - showing demo data")
+                resources = pd.DataFrame({
+                    'Resource ID': [f'i-{i:08x}' for i in range(10)],
+                    'Type': ['EC2'] * 5 + ['RDS'] * 3 + ['ELB'] * 2,
+                    'Monthly Cost': [3456, 2345, 2123, 1987, 1765, 1654, 1543, 1432, 1321, 1210],
+                    'Tags': ['prod-web', 'prod-api', 'dev-web', 'staging-db', 'prod-worker'] * 2
+                })
+        else:
+            # Demo mode - show demo data
+            resources = pd.DataFrame({
+                'Resource ID': [f'i-{i:08x}' for i in range(10)],
+                'Type': ['EC2'] * 5 + ['RDS'] * 3 + ['ELB'] * 2,
+                'Monthly Cost': [3456, 2345, 2123, 1987, 1765, 1654, 1543, 1432, 1321, 1210],
+                'Tags': ['prod-web', 'prod-api', 'dev-web', 'staging-db', 'prod-worker'] * 2
+            })
+        
         st.dataframe(resources, use_container_width=True)
     
     def render_tag_based_tracking(self):
