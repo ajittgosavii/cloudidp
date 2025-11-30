@@ -319,6 +319,93 @@ class LiveDataService:
         except Exception:
             return "$0"
     
+    # ========== TAG COMPLIANCE DATA ==========
+    
+    def get_tag_compliance_data(self) -> dict:
+        """Get tag compliance statistics from EC2 instances"""
+        if self._is_demo_mode():
+            return {
+                'tagged': 1123,
+                'untagged': 111,
+                'total': 1234,
+                'compliance_pct': 91
+            }
+        
+        try:
+            # Get all EC2 instances
+            result = self.compute.list_instances()
+            if not result.get('success'):
+                return {'tagged': 0, 'untagged': 0, 'total': 0, 'compliance_pct': 0}
+            
+            instances = result.get('instances', [])
+            total = len(instances)
+            
+            if total == 0:
+                return {'tagged': 0, 'untagged': 0, 'total': 0, 'compliance_pct': 0}
+            
+            # Count tagged vs untagged
+            # Consider an instance "tagged" if it has at least one tag
+            tagged_count = 0
+            untagged_count = 0
+            
+            for instance in instances:
+                tags = instance.get('Tags', [])
+                # Filter out AWS system tags (aws:*)
+                user_tags = [t for t in tags if not t.get('Key', '').startswith('aws:')]
+                
+                if user_tags:
+                    tagged_count += 1
+                else:
+                    untagged_count += 1
+            
+            # Calculate compliance percentage
+            compliance_pct = round((tagged_count / total) * 100) if total > 0 else 0
+            
+            return {
+                'tagged': tagged_count,
+                'untagged': untagged_count,
+                'total': total,
+                'compliance_pct': compliance_pct
+            }
+            
+        except Exception:
+            return {'tagged': 0, 'untagged': 0, 'total': 0, 'compliance_pct': 0}
+    
+    def get_tagged_resources_count(self) -> str:
+        """Get count of tagged resources"""
+        if self._is_demo_mode():
+            return "1,123"
+        
+        try:
+            data = self.get_tag_compliance_data()
+            return f"{data['tagged']:,}"
+        except Exception:
+            return "0"
+    
+    def get_untagged_resources_count(self) -> str:
+        """Get count of untagged resources"""
+        if self._is_demo_mode():
+            return "111"
+        
+        try:
+            data = self.get_tag_compliance_data()
+            return f"{data['untagged']:,}"
+        except Exception:
+            return "0"
+    
+    def get_tag_compliance_score(self) -> str:
+        """Get tag compliance percentage"""
+        if self._is_demo_mode():
+            return "91%"
+        
+        try:
+            data = self.get_tag_compliance_data()
+            if data['total'] == 0:
+                return "N/A"
+            return f"{data['compliance_pct']}%"
+        except Exception:
+            return "N/A"
+    
     # ========== COMPLIANCE DATA ==========
     
     def get_compliance_score(self) -> str:
