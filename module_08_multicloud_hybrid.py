@@ -53,6 +53,10 @@ class MultiCloudHybridModule:
         """Main render method for the module"""
         st.header("☁️ Multi-Cloud & Hybrid Support")
 
+        # Mode indicator
+        if st.session_state.get('mode', 'Demo') == 'Live':
+            st.warning("⚠️ Live mode not yet implemented - showing demo data")
+
         # Show current mode
         is_demo = st.session_state.get('mode', 'Demo') == 'Demo'
         if is_demo:

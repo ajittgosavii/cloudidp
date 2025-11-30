@@ -11,6 +11,10 @@ class FinOpsModule:
         """Main render method - organizes all sub-features in tabs"""
         
         st.markdown("## Finops")
+
+        # Mode indicator
+        if st.session_state.get('mode', 'Demo') == 'Live':
+            st.warning("⚠️ Live mode not yet implemented - showing demo data")
         
         # Create tabs for each sub-feature
         tabs = st.tabs([

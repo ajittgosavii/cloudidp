@@ -9,6 +9,9 @@ class PolicyGuardrailsModule:
     """Policy & Guardrails Module with comprehensive policy management"""
     def render(self):
         """Main render method - organizes all sub-features in tabs"""
+        # Mode indicator
+        if st.session_state.get('mode', 'Demo') == 'Live':
+            st.warning("⚠️ Live mode not yet implemented - showing demo data")
         
         st.markdown("## Policyguardrails")
         

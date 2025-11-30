@@ -60,6 +60,10 @@ class SecurityComplianceModule:
         """Main render method for Security & Compliance module"""
         st.header("🔒 Security & Compliance Management")
 
+        # Mode indicator
+        if st.session_state.get('mode', 'Demo') == 'Live':
+            st.warning("⚠️ Live mode not yet implemented - showing demo data")
+
         # Show current mode
         is_demo = st.session_state.get('mode', 'Demo') == 'Demo'
         if is_demo:

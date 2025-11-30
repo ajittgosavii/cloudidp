@@ -11,6 +11,9 @@ class DeveloperExperienceModule:
     """Developer Experience & Self-Service Module"""
     def render(self):
         """Main render method - organizes all sub-features in tabs"""
+        # Mode indicator
+        if st.session_state.get('mode', 'Demo') == 'Live':
+            st.warning("⚠️ Live mode not yet implemented - showing demo data")
         
         st.markdown("## Developerexperience")
         
@@ -2304,6 +2307,7 @@ kubectl get events --sort_by ='.lastTimestamp' # Recent events
             
             st.markdown("---")
             
+
             # Achievement Badges
             st.markdown("### 🏅 Achievement Badges")
             
