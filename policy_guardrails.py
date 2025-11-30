@@ -45,6 +45,40 @@ class PolicyGuardrailsModule:
     def __init__(self):
         self.demo_data = DemoDataProvider()
     
+
+    def _get_data(self, key: str, default_demo_value):
+        """
+        Get data based on current mode (Demo or Live)
+        
+        Args:
+            key: Data key to fetch
+            default_demo_value: Value to return in demo mode
+            
+        Returns:
+            Demo data or Live data based on mode
+        """
+        is_demo = st.session_state.get('mode', 'Demo') == 'Demo'
+        
+        if is_demo:
+            return default_demo_value
+        else:
+            try:
+                # TODO: Implement live data fetching for this key
+                # For now, return demo value in live mode
+                # Add your live data logic here
+                
+                # Example:
+                # if key == 'total_cost':
+                #     from cost_explorer_integration import CostExplorerIntegration
+                #     ce = CostExplorerIntegration()
+                #     return ce.get_total_cost()
+                
+                return default_demo_value
+            except Exception as e:
+                st.warning(f"Live data fetch failed for {key}: {e}")
+                return default_demo_value
+
+
     def render_overview(self):
         """Render Policy & Guardrails overview"""
         st.title("🛡️ Policy & Guardrails")
@@ -60,13 +94,25 @@ class PolicyGuardrailsModule:
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            st.metric("Active Policies", "147", "+12")
+            # Mode-aware metric
+            active_policies_value = self._get_data('active_policies', "147")
+            active_policies_delta = self._get_data('active_policies_delta', "+12")
+            st.metric("Active Policies", active_policies_value, active_policies_delta)
         with col2:
-            st.metric("Compliance Rate", "94.2%", "+2.1%")
+            # Mode-aware metric
+            compliance_rate_value = self._get_data('compliance_rate', "94.2%")
+            compliance_rate_delta = self._get_data('compliance_rate_delta', "+2.1%")
+            st.metric("Compliance Rate", compliance_rate_value, compliance_rate_delta)
         with col3:
-            st.metric("Violations Today", "23", "-8")
+            # Mode-aware metric
+            violations_today_value = self._get_data('violations_today', "23")
+            violations_today_delta = self._get_data('violations_today_delta', "-8")
+            st.metric("Violations Today", violations_today_value, violations_today_delta)
         with col4:
-            st.metric("Auto-Remediated", "18", "+5")
+            # Mode-aware metric
+            auto-remediated_value = self._get_data('auto-remediated', "18")
+            auto-remediated_delta = self._get_data('auto-remediated_delta', "+5")
+            st.metric("Auto-Remediated", auto-remediated_value, auto-remediated_delta)
         
         st.markdown("---")
         
@@ -299,11 +345,17 @@ deny[msg] {
         # Git integration status
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("Total Commits", "1,247")
+            # Mode-aware metric
+            total_commits_value = self._get_data('total_commits', "1,247")
+            st.metric("Total Commits", total_commits_value)
         with col2:
-            st.metric("Active Branches", "8")
+            # Mode-aware metric
+            active_branches_value = self._get_data('active_branches', "8")
+            st.metric("Active Branches", active_branches_value)
         with col3:
-            st.metric("Pending PRs", "3")
+            # Mode-aware metric
+            pending_prs_value = self._get_data('pending_prs', "3")
+            st.metric("Pending PRs", pending_prs_value)
         
         st.markdown("---")
         
@@ -451,13 +503,21 @@ deny[msg] {
         # Sync metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Synced Policies", "127")
+            # Mode-aware metric
+            synced_policies_value = self._get_data('synced_policies', "127")
+            st.metric("Synced Policies", synced_policies_value)
         with col2:
-            st.metric("Pending Sync", "5")
+            # Mode-aware metric
+            pending_sync_value = self._get_data('pending_sync', "5")
+            st.metric("Pending Sync", pending_sync_value)
         with col3:
-            st.metric("Failed Sync", "2")
+            # Mode-aware metric
+            failed_sync_value = self._get_data('failed_sync', "2")
+            st.metric("Failed Sync", failed_sync_value)
         with col4:
-            st.metric("Last Sync", "2m ago")
+            # Mode-aware metric
+            last_sync_value = self._get_data('last_sync', "2m ago")
+            st.metric("Last Sync", last_sync_value)
         
         st.markdown("---")
         
@@ -558,13 +618,21 @@ deny[msg] {
         # Summary metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Active Policies", "12")
+            # Mode-aware metric
+            active_policies_value = self._get_data('active_policies', "12")
+            st.metric("Active Policies", active_policies_value)
         with col2:
-            st.metric("Required Tags", "8")
+            # Mode-aware metric
+            required_tags_value = self._get_data('required_tags', "8")
+            st.metric("Required Tags", required_tags_value)
         with col3:
-            st.metric("Optional Tags", "15")
+            # Mode-aware metric
+            optional_tags_value = self._get_data('optional_tags', "15")
+            st.metric("Optional Tags", optional_tags_value)
         with col4:
-            st.metric("Compliance Rate", "91.3%")
+            # Mode-aware metric
+            compliance_rate_value = self._get_data('compliance_rate', "91.3%")
+            st.metric("Compliance Rate", compliance_rate_value)
         
         st.markdown("---")
         
@@ -622,13 +690,24 @@ deny[msg] {
             # Results summary
             col1, col2, col3, col4 = st.columns(4)
             with col1:
-                st.metric("Resources Scanned", "1,234")
+                # Mode-aware metric
+            resources_scanned_value = self._get_data('resources_scanned', "1,234")
+            st.metric("Resources Scanned", resources_scanned_value)
             with col2:
-                st.metric("Compliant", "1,127", "+45")
+                # Mode-aware metric
+            compliant_value = self._get_data('compliant', "1,127")
+            compliant_delta = self._get_data('compliant_delta', "+45")
+            st.metric("Compliant", compliant_value, compliant_delta)
             with col3:
-                st.metric("Non-Compliant", "107", "-12")
+                # Mode-aware metric
+            non-compliant_value = self._get_data('non-compliant', "107")
+            non-compliant_delta = self._get_data('non-compliant_delta', "-12")
+            st.metric("Non-Compliant", non-compliant_value, non-compliant_delta)
             with col4:
-                st.metric("Compliance Rate", "91.3%", "+1.2%")
+                # Mode-aware metric
+            compliance_rate_value = self._get_data('compliance_rate', "91.3%")
+            compliance_rate_delta = self._get_data('compliance_rate_delta', "+1.2%")
+            st.metric("Compliance Rate", compliance_rate_value, compliance_rate_delta)
             
             st.markdown("---")
             
@@ -873,13 +952,23 @@ deny[msg] {
         # Summary metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Monitored Quotas", "347")
+            # Mode-aware metric
+            monitored_quotas_value = self._get_data('monitored_quotas', "347")
+            st.metric("Monitored Quotas", monitored_quotas_value)
         with col2:
-            st.metric("At Risk (>80%)", "23", "⚠️")
+            # Mode-aware metric
+            at_risk_(>80pct)_value = self._get_data('at_risk_(>80pct)', "23")
+            at_risk_(>80pct)_delta = self._get_data('at_risk_(>80pct)_delta', "⚠️")
+            st.metric("At Risk (>80%)", at_risk_(>80pct)_value, at_risk_(>80pct)_delta)
         with col3:
-            st.metric("Critical (>90%)", "5", "🔴")
+            # Mode-aware metric
+            critical_(>90pct)_value = self._get_data('critical_(>90pct)', "5")
+            critical_(>90pct)_delta = self._get_data('critical_(>90pct)_delta', "🔴")
+            st.metric("Critical (>90%)", critical_(>90pct)_value, critical_(>90pct)_delta)
         with col4:
-            st.metric("Increase Requests", "12")
+            # Mode-aware metric
+            increase_requests_value = self._get_data('increase_requests', "12")
+            st.metric("Increase Requests", increase_requests_value)
         
         st.markdown("---")
         
@@ -1069,11 +1158,20 @@ deny[msg] {
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("Current Usage", "87%", "+2.3%")
+            # Mode-aware metric
+            current_usage_value = self._get_data('current_usage', "87%")
+            current_usage_delta = self._get_data('current_usage_delta', "+2.3%")
+            st.metric("Current Usage", current_usage_value, current_usage_delta)
         with col2:
-            st.metric("Forecasted (30d)", "96%", "+9%")
+            # Mode-aware metric
+            forecasted_(30d)_value = self._get_data('forecasted_(30d)', "96%")
+            forecasted_(30d)_delta = self._get_data('forecasted_(30d)_delta', "+9%")
+            st.metric("Forecasted (30d)", forecasted_(30d)_value, forecasted_(30d)_delta)
         with col3:
-            st.metric("Days to Limit", "23", "-7")
+            # Mode-aware metric
+            days_to_limit_value = self._get_data('days_to_limit', "23")
+            days_to_limit_delta = self._get_data('days_to_limit_delta', "-7")
+            st.metric("Days to Limit", days_to_limit_value, days_to_limit_delta)
         
         st.warning("⚠️ Forecast indicates quota will be reached in 23 days. Consider requesting an increase.")
         

@@ -49,6 +49,15 @@ class ObservabilityIntegrationModule:
     def render_overview():
         """Render Module 10 Overview"""
         st.header("🔍 Module 10: Observability & Integration")
+
+        # Show current mode
+        is_demo = st.session_state.get('mode', 'Demo') == 'Demo'
+        if is_demo:
+            st.info("📊 Demo Mode: Showing sample data")
+        else:
+            st.success("🔴 Live Mode: Showing real data")
+        
+
         
         st.markdown("""
         ### Comprehensive Observability and Integration Framework
@@ -774,6 +783,40 @@ class LoggingStack(Stack):
                 st.info("Showing deployed logging stacks across accounts...")
     
     @staticmethod
+
+    def _get_data(self, key: str, default_demo_value):
+        """
+        Get data based on current mode (Demo or Live)
+        
+        Args:
+            key: Data key to fetch
+            default_demo_value: Value to return in demo mode
+            
+        Returns:
+            Demo data or Live data based on mode
+        """
+        is_demo = st.session_state.get('mode', 'Demo') == 'Demo'
+        
+        if is_demo:
+            return default_demo_value
+        else:
+            try:
+                # TODO: Implement live data fetching for this key
+                # For now, return demo value in live mode
+                # Add your live data logic here
+                
+                # Example:
+                # if key == 'total_cost':
+                #     from cost_explorer_integration import CostExplorerIntegration
+                #     ce = CostExplorerIntegration()
+                #     return ce.get_total_cost()
+                
+                return default_demo_value
+            except Exception as e:
+                st.warning(f"Live data fetch failed for {key}: {e}")
+                return default_demo_value
+
+
     def render_metrics_collection():
         """Render Cloud Native Log/Metric Collection"""
         st.header("📊 Cloud Native Log/Metric Collection")
@@ -1265,7 +1308,9 @@ def lambda_handler(event, context):
             # Summary metrics
             col1, col2, col3, col4 = st.columns(4)
             with col1:
-                st.metric("Total Changes (24h)", "247")
+                # Mode-aware metric
+            total_changes_(24h)_value = self._get_data('total_changes_(24h)', "247")
+            st.metric("Total Changes (24h)", total_changes_(24h)_value)
             with col2:
                 st.metric("Unauthorized Changes", "3", delta="-2")
             with col3:

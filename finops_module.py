@@ -72,15 +72,30 @@ class FinOpsModule:
         # Key Metrics Row
         col1, col2, col3, col4, col5 = st.columns(5)
         with col1:
-            st.metric("Monthly Spend", "$234,567", "-8.2%")
+            # Mode-aware metric
+            monthly_spend_value = self._get_data('monthly_spend', "$234,567")
+            monthly_spend_delta = self._get_data('monthly_spend_delta', "-8.2%")
+            st.metric("Monthly Spend", monthly_spend_value, monthly_spend_delta)
         with col2:
-            st.metric("Budget Utilization", "78%", "+3%")
+            # Mode-aware metric
+            budget_utilization_value = self._get_data('budget_utilization', "78%")
+            budget_utilization_delta = self._get_data('budget_utilization_delta', "+3%")
+            st.metric("Budget Utilization", budget_utilization_value, budget_utilization_delta)
         with col3:
-            st.metric("Cost Savings", "$45,890", "+15%")
+            # Mode-aware metric
+            cost_savings_value = self._get_data('cost_savings', "$45,890")
+            cost_savings_delta = self._get_data('cost_savings_delta', "+15%")
+            st.metric("Cost Savings", cost_savings_value, cost_savings_delta)
         with col4:
-            st.metric("Anomalies Detected", "3", "-2")
+            # Mode-aware metric
+            anomalies_detected_value = self._get_data('anomalies_detected', "3")
+            anomalies_detected_delta = self._get_data('anomalies_detected_delta', "-2")
+            st.metric("Anomalies Detected", anomalies_detected_value, anomalies_detected_delta)
         with col5:
-            st.metric("RI Coverage", "67%", "+5%")
+            # Mode-aware metric
+            ri_coverage_value = self._get_data('ri_coverage', "67%")
+            ri_coverage_delta = self._get_data('ri_coverage_delta', "+5%")
+            st.metric("RI Coverage", ri_coverage_value, ri_coverage_delta)
         
         st.markdown("---")
         
@@ -130,13 +145,25 @@ class FinOpsModule:
         # Tag Coverage Metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Tag Coverage", "94.3%", "+2.1%")
+            # Mode-aware metric
+            tag_coverage_value = self._get_data('tag_coverage', "94.3%")
+            tag_coverage_delta = self._get_data('tag_coverage_delta', "+2.1%")
+            st.metric("Tag Coverage", tag_coverage_value, tag_coverage_delta)
         with col2:
-            st.metric("Untagged Resources", "23", "-12")
+            # Mode-aware metric
+            untagged_resources_value = self._get_data('untagged_resources', "23")
+            untagged_resources_delta = self._get_data('untagged_resources_delta', "-12")
+            st.metric("Untagged Resources", untagged_resources_value, untagged_resources_delta)
         with col3:
-            st.metric("Untagged Cost", "$4,567", "-$1,234")
+            # Mode-aware metric
+            untagged_cost_value = self._get_data('untagged_cost', "$4,567")
+            untagged_cost_delta = self._get_data('untagged_cost_delta', "-$1,234")
+            st.metric("Untagged Cost", untagged_cost_value, untagged_cost_delta)
         with col4:
-            st.metric("Cost Centers", "12", "0")
+            # Mode-aware metric
+            cost_centers_value = self._get_data('cost_centers', "12")
+            cost_centers_delta = self._get_data('cost_centers_delta', "0")
+            st.metric("Cost Centers", cost_centers_value, cost_centers_delta)
         
         st.markdown("---")
         
@@ -214,13 +241,25 @@ class FinOpsModule:
         # Budget Status Overview
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Active Budgets", "18", "+2")
+            # Mode-aware metric
+            active_budgets_value = self._get_data('active_budgets', "18")
+            active_budgets_delta = self._get_data('active_budgets_delta', "+2")
+            st.metric("Active Budgets", active_budgets_value, active_budgets_delta)
         with col2:
-            st.metric("Alerts Triggered", "5", "+2")
+            # Mode-aware metric
+            alerts_triggered_value = self._get_data('alerts_triggered', "5")
+            alerts_triggered_delta = self._get_data('alerts_triggered_delta', "+2")
+            st.metric("Alerts Triggered", alerts_triggered_value, alerts_triggered_delta)
         with col3:
-            st.metric("Auto-Actions", "12", "+3")
+            # Mode-aware metric
+            auto-actions_value = self._get_data('auto-actions', "12")
+            auto-actions_delta = self._get_data('auto-actions_delta', "+3")
+            st.metric("Auto-Actions", auto-actions_value, auto-actions_delta)
         with col4:
-            st.metric("Budget Compliance", "94%", "-1%")
+            # Mode-aware metric
+            budget_compliance_value = self._get_data('budget_compliance', "94%")
+            budget_compliance_delta = self._get_data('budget_compliance_delta', "-1%")
+            st.metric("Budget Compliance", budget_compliance_value, budget_compliance_delta)
         
         st.markdown("---")
         
@@ -352,11 +391,17 @@ class FinOpsModule:
         with col1:
             st.metric("Current Month Forecast", "$298,450", "")
         with col2:
-            st.metric("Confidence", "87%", "+3%")
+            # Mode-aware metric
+            confidence_value = self._get_data('confidence', "87%")
+            confidence_delta = self._get_data('confidence_delta', "+3%")
+            st.metric("Confidence", confidence_value, confidence_delta)
         with col3:
             st.metric("Q4 Forecast", "$892,340", "")
         with col4:
-            st.metric("Annual Projection", "$3.2M", "+12%")
+            # Mode-aware metric
+            annual_projection_value = self._get_data('annual_projection', "$3.2M")
+            annual_projection_delta = self._get_data('annual_projection_delta', "+12%")
+            st.metric("Annual Projection", annual_projection_value, annual_projection_delta)
         
         st.markdown("---")
         
@@ -398,7 +443,10 @@ class FinOpsModule:
                 {"Month": "Aug 2024", "Actual": "$212,450", "Forecast": "$218,900", "Variance": "-3.0%", "Accuracy": "97.0%"}
             ]
             st.dataframe(pd.DataFrame(accuracy), use_container_width=True, hide_index=True)
-            st.metric("Average Forecast Accuracy", "98.2%", "+1.2%")
+            # Mode-aware metric
+            average_forecast_accuracy_value = self._get_data('average_forecast_accuracy', "98.2%")
+            average_forecast_accuracy_delta = self._get_data('average_forecast_accuracy_delta', "+1.2%")
+            st.metric("Average Forecast Accuracy", average_forecast_accuracy_value, average_forecast_accuracy_delta)
         
         st.markdown("---")
         
@@ -503,13 +551,25 @@ class FinOpsModule:
         # Scheduling Metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Active Schedules", "23", "+3")
+            # Mode-aware metric
+            active_schedules_value = self._get_data('active_schedules', "23")
+            active_schedules_delta = self._get_data('active_schedules_delta', "+3")
+            st.metric("Active Schedules", active_schedules_value, active_schedules_delta)
         with col2:
-            st.metric("Resources Managed", "456", "+45")
+            # Mode-aware metric
+            resources_managed_value = self._get_data('resources_managed', "456")
+            resources_managed_delta = self._get_data('resources_managed_delta', "+45")
+            st.metric("Resources Managed", resources_managed_value, resources_managed_delta)
         with col3:
-            st.metric("Monthly Savings", "$18,900", "+$3,200")
+            # Mode-aware metric
+            monthly_savings_value = self._get_data('monthly_savings', "$18,900")
+            monthly_savings_delta = self._get_data('monthly_savings_delta', "+$3,200")
+            st.metric("Monthly Savings", monthly_savings_value, monthly_savings_delta)
         with col4:
-            st.metric("Automation Rate", "89%", "+5%")
+            # Mode-aware metric
+            automation_rate_value = self._get_data('automation_rate', "89%")
+            automation_rate_delta = self._get_data('automation_rate_delta', "+5%")
+            st.metric("Automation Rate", automation_rate_value, automation_rate_delta)
         
         st.markdown("---")
         
@@ -619,15 +679,30 @@ class FinOpsModule:
         # Spot Metrics
         col1, col2, col3, col4, col5 = st.columns(5)
         with col1:
-            st.metric("Spot Instances", "234", "+23")
+            # Mode-aware metric
+            spot_instances_value = self._get_data('spot_instances', "234")
+            spot_instances_delta = self._get_data('spot_instances_delta', "+23")
+            st.metric("Spot Instances", spot_instances_value, spot_instances_delta)
         with col2:
-            st.metric("Monthly Savings", "$18,900", "+$2,400")
+            # Mode-aware metric
+            monthly_savings_value = self._get_data('monthly_savings', "$18,900")
+            monthly_savings_delta = self._get_data('monthly_savings_delta', "+$2,400")
+            st.metric("Monthly Savings", monthly_savings_value, monthly_savings_delta)
         with col3:
-            st.metric("Interruption Rate", "2.3%", "-0.5%")
+            # Mode-aware metric
+            interruption_rate_value = self._get_data('interruption_rate', "2.3%")
+            interruption_rate_delta = self._get_data('interruption_rate_delta', "-0.5%")
+            st.metric("Interruption Rate", interruption_rate_value, interruption_rate_delta)
         with col4:
-            st.metric("Avg Discount", "72%", "+3%")
+            # Mode-aware metric
+            avg_discount_value = self._get_data('avg_discount', "72%")
+            avg_discount_delta = self._get_data('avg_discount_delta', "+3%")
+            st.metric("Avg Discount", avg_discount_value, avg_discount_delta)
         with col5:
-            st.metric("Spot Coverage", "45%", "+8%")
+            # Mode-aware metric
+            spot_coverage_value = self._get_data('spot_coverage', "45%")
+            spot_coverage_delta = self._get_data('spot_coverage_delta', "+8%")
+            st.metric("Spot Coverage", spot_coverage_value, spot_coverage_delta)
         
         st.markdown("---")
         
@@ -743,13 +818,25 @@ class FinOpsModule:
         # Anomaly Metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Anomalies (24h)", "3", "-1")
+            # Mode-aware metric
+            anomalies_(24h)_value = self._get_data('anomalies_(24h)', "3")
+            anomalies_(24h)_delta = self._get_data('anomalies_(24h)_delta', "-1")
+            st.metric("Anomalies (24h)", anomalies_(24h)_value, anomalies_(24h)_delta)
         with col2:
-            st.metric("False Positives", "1", "0")
+            # Mode-aware metric
+            false_positives_value = self._get_data('false_positives', "1")
+            false_positives_delta = self._get_data('false_positives_delta', "0")
+            st.metric("False Positives", false_positives_value, false_positives_delta)
         with col3:
-            st.metric("Avg Detection Time", "8 min", "-2 min")
+            # Mode-aware metric
+            avg_detection_time_value = self._get_data('avg_detection_time', "8 min")
+            avg_detection_time_delta = self._get_data('avg_detection_time_delta', "-2 min")
+            st.metric("Avg Detection Time", avg_detection_time_value, avg_detection_time_delta)
         with col4:
-            st.metric("Cost Impact", "$4,567", "-$1,234")
+            # Mode-aware metric
+            cost_impact_value = self._get_data('cost_impact', "$4,567")
+            cost_impact_delta = self._get_data('cost_impact_delta', "-$1,234")
+            st.metric("Cost Impact", cost_impact_value, cost_impact_delta)
         
         st.markdown("---")
         
@@ -1147,11 +1234,20 @@ class FinOpsModule:
             
             col1, col2, col3 = st.columns(3)
             with col1:
-                st.metric("Aligned Projects", "14/18", "78%")
+                # Mode-aware metric
+            aligned_projects_value = self._get_data('aligned_projects', "14/18")
+            aligned_projects_delta = self._get_data('aligned_projects_delta', "78%")
+            st.metric("Aligned Projects", aligned_projects_value, aligned_projects_delta)
             with col2:
-                st.metric("Cost Discrepancies", "4", "-2")
+                # Mode-aware metric
+            cost_discrepancies_value = self._get_data('cost_discrepancies', "4")
+            cost_discrepancies_delta = self._get_data('cost_discrepancies_delta', "-2")
+            st.metric("Cost Discrepancies", cost_discrepancies_value, cost_discrepancies_delta)
             with col3:
-                st.metric("Data Quality", "94%", "+3%")
+                # Mode-aware metric
+            data_quality_value = self._get_data('data_quality', "94%")
+            data_quality_delta = self._get_data('data_quality_delta', "+3%")
+            st.metric("Data Quality", data_quality_value, data_quality_delta)
             
             st.markdown("---")
             
@@ -1175,13 +1271,22 @@ class FinOpsModule:
         # RI/SP Metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Current RI Coverage", "67%", "+5%")
+            # Mode-aware metric
+            current_ri_coverage_value = self._get_data('current_ri_coverage', "67%")
+            current_ri_coverage_delta = self._get_data('current_ri_coverage_delta', "+5%")
+            st.metric("Current RI Coverage", current_ri_coverage_value, current_ri_coverage_delta)
         with col2:
             st.metric("Potential Savings", "$8,760/mo", "")
         with col3:
-            st.metric("Recommendation Confidence", "92%", "+3%")
+            # Mode-aware metric
+            recommendation_confidence_value = self._get_data('recommendation_confidence', "92%")
+            recommendation_confidence_delta = self._get_data('recommendation_confidence_delta', "+3%")
+            st.metric("Recommendation Confidence", recommendation_confidence_value, recommendation_confidence_delta)
         with col4:
-            st.metric("Active RIs", "45", "+3")
+            # Mode-aware metric
+            active_ris_value = self._get_data('active_ris', "45")
+            active_ris_delta = self._get_data('active_ris_delta', "+3")
+            st.metric("Active RIs", active_ris_value, active_ris_delta)
         
         st.markdown("---")
         
@@ -1306,7 +1411,10 @@ class FinOpsModule:
             ]
             st.dataframe(pd.DataFrame(savings), use_container_width=True, hide_index=True)
             
-            st.metric("Total RI/SP Savings", "$8,760/mo", "$105,120/year")
+            # Mode-aware metric
+            total_ri_sp_savings_value = self._get_data('total_ri_sp_savings', "$8,760/mo")
+            total_ri_sp_savings_delta = self._get_data('total_ri_sp_savings_delta', "$105,120/year")
+            st.metric("Total RI/SP Savings", total_ri_sp_savings_value, total_ri_sp_savings_delta)
     
     @staticmethod
     def render_use_case_tracking():
@@ -1320,13 +1428,25 @@ class FinOpsModule:
         # Use Case Metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Active Use Cases", "34", "+4")
+            # Mode-aware metric
+            active_use_cases_value = self._get_data('active_use_cases', "34")
+            active_use_cases_delta = self._get_data('active_use_cases_delta', "+4")
+            st.metric("Active Use Cases", active_use_cases_value, active_use_cases_delta)
         with col2:
-            st.metric("Tracked Resources", "1,234", "+89")
+            # Mode-aware metric
+            tracked_resources_value = self._get_data('tracked_resources', "1,234")
+            tracked_resources_delta = self._get_data('tracked_resources_delta', "+89")
+            st.metric("Tracked Resources", tracked_resources_value, tracked_resources_delta)
         with col3:
-            st.metric("Attribution Coverage", "91%", "+6%")
+            # Mode-aware metric
+            attribution_coverage_value = self._get_data('attribution_coverage', "91%")
+            attribution_coverage_delta = self._get_data('attribution_coverage_delta', "+6%")
+            st.metric("Attribution Coverage", attribution_coverage_value, attribution_coverage_delta)
         with col4:
-            st.metric("Avg Cost/Use Case", "$6,899", "-8%")
+            # Mode-aware metric
+            avg_cost_use_case_value = self._get_data('avg_cost_use_case', "$6,899")
+            avg_cost_use_case_delta = self._get_data('avg_cost_use_case_delta', "-8%")
+            st.metric("Avg Cost/Use Case", avg_cost_use_case_value, avg_cost_use_case_delta)
         
         st.markdown("---")
         

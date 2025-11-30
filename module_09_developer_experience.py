@@ -52,6 +52,40 @@ class DeveloperExperienceModule:
         self.module_name = "Developer Experience & Self-Service"
     
     @staticmethod
+
+    def _get_data(self, key: str, default_demo_value):
+        """
+        Get data based on current mode (Demo or Live)
+        
+        Args:
+            key: Data key to fetch
+            default_demo_value: Value to return in demo mode
+            
+        Returns:
+            Demo data or Live data based on mode
+        """
+        is_demo = st.session_state.get('mode', 'Demo') == 'Demo'
+        
+        if is_demo:
+            return default_demo_value
+        else:
+            try:
+                # TODO: Implement live data fetching for this key
+                # For now, return demo value in live mode
+                # Add your live data logic here
+                
+                # Example:
+                # if key == 'total_cost':
+                #     from cost_explorer_integration import CostExplorerIntegration
+                #     ce = CostExplorerIntegration()
+                #     return ce.get_total_cost()
+                
+                return default_demo_value
+            except Exception as e:
+                st.warning(f"Live data fetch failed for {key}: {e}")
+                return default_demo_value
+
+
     def render_overview():
         """Render Module 09 Overview"""
         st.markdown("## 👨‍💻 Module 09: Developer Experience & Self-Service")
@@ -160,13 +194,25 @@ class DeveloperExperienceModule:
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Active Developers", "847", "+156")
+            # Mode-aware metric
+            active_developers_value = self._get_data('active_developers', "847")
+            active_developers_delta = self._get_data('active_developers_delta', "+156")
+            st.metric("Active Developers", active_developers_value, active_developers_delta)
         with col2:
-            st.metric("Self-Service Requests", "12.4K", "+2.3K")
+            # Mode-aware metric
+            self-service_requests_value = self._get_data('self-service_requests', "12.4K")
+            self-service_requests_delta = self._get_data('self-service_requests_delta', "+2.3K")
+            st.metric("Self-Service Requests", self-service_requests_value, self-service_requests_delta)
         with col3:
-            st.metric("Avg Deployment Time", "8 min", "-12 min")
+            # Mode-aware metric
+            avg_deployment_time_value = self._get_data('avg_deployment_time', "8 min")
+            avg_deployment_time_delta = self._get_data('avg_deployment_time_delta', "-12 min")
+            st.metric("Avg Deployment Time", avg_deployment_time_value, avg_deployment_time_delta)
         with col4:
-            st.metric("Developer Satisfaction", "4.6/5", "+0.3")
+            # Mode-aware metric
+            developer_satisfaction_value = self._get_data('developer_satisfaction', "4.6/5")
+            developer_satisfaction_delta = self._get_data('developer_satisfaction_delta', "+0.3")
+            st.metric("Developer Satisfaction", developer_satisfaction_value, developer_satisfaction_delta)
     
     @staticmethod
     def render_self_service_portals():
@@ -631,13 +677,25 @@ class DeveloperExperienceModule:
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Deployments Today", "18", "+6")
+            # Mode-aware metric
+            deployments_today_value = self._get_data('deployments_today', "18")
+            deployments_today_delta = self._get_data('deployments_today_delta', "+6")
+            st.metric("Deployments Today", deployments_today_value, deployments_today_delta)
         with col2:
-            st.metric("Success Rate", "96.4%", "+2.1%")
+            # Mode-aware metric
+            success_rate_value = self._get_data('success_rate', "96.4%")
+            success_rate_delta = self._get_data('success_rate_delta', "+2.1%")
+            st.metric("Success Rate", success_rate_value, success_rate_delta)
         with col3:
-            st.metric("Avg Deploy Time", "7.2 min", "-1.8 min")
+            # Mode-aware metric
+            avg_deploy_time_value = self._get_data('avg_deploy_time', "7.2 min")
+            avg_deploy_time_delta = self._get_data('avg_deploy_time_delta', "-1.8 min")
+            st.metric("Avg Deploy Time", avg_deploy_time_value, avg_deploy_time_delta)
         with col4:
-            st.metric("Rollbacks (24h)", "1", "-2")
+            # Mode-aware metric
+            rollbacks_(24h)_value = self._get_data('rollbacks_(24h)', "1")
+            rollbacks_(24h)_delta = self._get_data('rollbacks_(24h)_delta', "-2")
+            st.metric("Rollbacks (24h)", rollbacks_(24h)_value, rollbacks_(24h)_delta)
     
     @staticmethod
     def render_drift_notification():
@@ -656,13 +714,25 @@ class DeveloperExperienceModule:
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Resources Monitored", "2,847", "+124")
+            # Mode-aware metric
+            resources_monitored_value = self._get_data('resources_monitored', "2,847")
+            resources_monitored_delta = self._get_data('resources_monitored_delta', "+124")
+            st.metric("Resources Monitored", resources_monitored_value, resources_monitored_delta)
         with col2:
-            st.metric("Drifts Detected (24h)", "23", "+8")
+            # Mode-aware metric
+            drifts_detected_(24h)_value = self._get_data('drifts_detected_(24h)', "23")
+            drifts_detected_(24h)_delta = self._get_data('drifts_detected_(24h)_delta', "+8")
+            st.metric("Drifts Detected (24h)", drifts_detected_(24h)_value, drifts_detected_(24h)_delta)
         with col3:
-            st.metric("Auto-Remediated", "18", "+5")
+            # Mode-aware metric
+            auto-remediated_value = self._get_data('auto-remediated', "18")
+            auto-remediated_delta = self._get_data('auto-remediated_delta', "+5")
+            st.metric("Auto-Remediated", auto-remediated_value, auto-remediated_delta)
         with col4:
-            st.metric("Manual Review Needed", "5", "+3")
+            # Mode-aware metric
+            manual_review_needed_value = self._get_data('manual_review_needed', "5")
+            manual_review_needed_delta = self._get_data('manual_review_needed_delta', "+3")
+            st.metric("Manual Review Needed", manual_review_needed_value, manual_review_needed_delta)
         
         st.markdown("---")
         
@@ -1652,13 +1722,25 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Security Scans (24h)", "342", "+28")
+            # Mode-aware metric
+            security_scans_(24h)_value = self._get_data('security_scans_(24h)', "342")
+            security_scans_(24h)_delta = self._get_data('security_scans_(24h)_delta', "+28")
+            st.metric("Security Scans (24h)", security_scans_(24h)_value, security_scans_(24h)_delta)
         with col2:
-            st.metric("Vulnerabilities Found", "47", "+12")
+            # Mode-aware metric
+            vulnerabilities_found_value = self._get_data('vulnerabilities_found', "47")
+            vulnerabilities_found_delta = self._get_data('vulnerabilities_found_delta', "+12")
+            st.metric("Vulnerabilities Found", vulnerabilities_found_value, vulnerabilities_found_delta)
         with col3:
-            st.metric("Auto-Remediated", "39", "+10")
+            # Mode-aware metric
+            auto-remediated_value = self._get_data('auto-remediated', "39")
+            auto-remediated_delta = self._get_data('auto-remediated_delta', "+10")
+            st.metric("Auto-Remediated", auto-remediated_value, auto-remediated_delta)
         with col4:
-            st.metric("Critical Issues", "2", "-1")
+            # Mode-aware metric
+            critical_issues_value = self._get_data('critical_issues', "2")
+            critical_issues_delta = self._get_data('critical_issues_delta', "-1")
+            st.metric("Critical Issues", critical_issues_value, critical_issues_delta)
         
         st.markdown("---")
         
@@ -1940,13 +2022,25 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Active Users", "847", "+156 this month")
+            # Mode-aware metric
+            active_users_value = self._get_data('active_users', "847")
+            active_users_delta = self._get_data('active_users_delta', "+156 this month")
+            st.metric("Active Users", active_users_value, active_users_delta)
         with col2:
-            st.metric("Total Posts", "2,341", "+248")
+            # Mode-aware metric
+            total_posts_value = self._get_data('total_posts', "2,341")
+            total_posts_delta = self._get_data('total_posts_delta', "+248")
+            st.metric("Total Posts", total_posts_value, total_posts_delta)
         with col3:
-            st.metric("Resolved Questions", "1,876", "+198")
+            # Mode-aware metric
+            resolved_questions_value = self._get_data('resolved_questions', "1,876")
+            resolved_questions_delta = self._get_data('resolved_questions_delta', "+198")
+            st.metric("Resolved Questions", resolved_questions_value, resolved_questions_delta)
         with col4:
-            st.metric("Satisfaction Score", "4.7/5", "+0.2")
+            # Mode-aware metric
+            satisfaction_score_value = self._get_data('satisfaction_score', "4.7/5")
+            satisfaction_score_delta = self._get_data('satisfaction_score_delta', "+0.2")
+            st.metric("Satisfaction Score", satisfaction_score_value, satisfaction_score_delta)
         
         st.markdown("---")
         
@@ -2247,13 +2341,25 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             # Usage Metrics
             col1, col2, col3, col4 = st.columns(4)
             with col1:
-                st.metric("Total Deployments", "1,847", "+234")
+                # Mode-aware metric
+            total_deployments_value = self._get_data('total_deployments', "1,847")
+            total_deployments_delta = self._get_data('total_deployments_delta', "+234")
+            st.metric("Total Deployments", total_deployments_value, total_deployments_delta)
             with col2:
-                st.metric("Infrastructure Requests", "923", "+145")
+                # Mode-aware metric
+            infrastructure_requests_value = self._get_data('infrastructure_requests', "923")
+            infrastructure_requests_delta = self._get_data('infrastructure_requests_delta', "+145")
+            st.metric("Infrastructure Requests", infrastructure_requests_value, infrastructure_requests_delta)
             with col3:
-                st.metric("Active Projects", "127", "+18")
+                # Mode-aware metric
+            active_projects_value = self._get_data('active_projects', "127")
+            active_projects_delta = self._get_data('active_projects_delta', "+18")
+            st.metric("Active Projects", active_projects_value, active_projects_delta)
             with col4:
-                st.metric("Avg Response Time", "14 min", "-8 min")
+                # Mode-aware metric
+            avg_response_time_value = self._get_data('avg_response_time', "14 min")
+            avg_response_time_delta = self._get_data('avg_response_time_delta', "-8 min")
+            st.metric("Avg Response Time", avg_response_time_value, avg_response_time_delta)
             
             st.markdown("---")
             

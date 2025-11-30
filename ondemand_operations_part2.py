@@ -465,7 +465,9 @@ class OnDemandOperationsModule2:
         with col3:
             st.metric("Multi-AZ Resources", "156", delta="72% of total")
         with col4:
-            st.metric("Failover Ready", "98.5%")
+            # Mode-aware metric
+            failover_ready_value = self._get_data('failover_ready', "98.5%")
+            st.metric("Failover Ready", failover_ready_value)
         
         st.markdown("---")
         

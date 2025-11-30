@@ -22,9 +22,52 @@ class SecurityComplianceModule:
         """Initialize Security & Compliance module"""
         self.demo_mode = demo_mode
         
+
+    def _get_data(self, key: str, default_demo_value):
+        """
+        Get data based on current mode (Demo or Live)
+        
+        Args:
+            key: Data key to fetch
+            default_demo_value: Value to return in demo mode
+            
+        Returns:
+            Demo data or Live data based on mode
+        """
+        is_demo = st.session_state.get('mode', 'Demo') == 'Demo'
+        
+        if is_demo:
+            return default_demo_value
+        else:
+            try:
+                # TODO: Implement live data fetching for this key
+                # For now, return demo value in live mode
+                # Add your live data logic here
+                
+                # Example:
+                # if key == 'total_cost':
+                #     from cost_explorer_integration import CostExplorerIntegration
+                #     ce = CostExplorerIntegration()
+                #     return ce.get_total_cost()
+                
+                return default_demo_value
+            except Exception as e:
+                st.warning(f"Live data fetch failed for {key}: {e}")
+                return default_demo_value
+
+
     def render(self):
         """Main render method for Security & Compliance module"""
         st.header("🔒 Security & Compliance Management")
+
+        # Show current mode
+        is_demo = st.session_state.get('mode', 'Demo') == 'Demo'
+        if is_demo:
+            st.info("📊 Demo Mode: Showing sample data")
+        else:
+            st.success("🔴 Live Mode: Showing real data")
+        
+
         
         # Sub-navigation tabs
         tabs = st.tabs([
@@ -277,7 +320,9 @@ class SecurityComplianceModule:
         with col2:
             st.metric("Unencrypted", "23", delta="-5", delta_color="inverse")
         with col3:
-            st.metric("KMS Keys Active", "47")
+            # Mode-aware metric
+            kms_keys_active_value = self._get_data('kms_keys_active', "47")
+            st.metric("KMS Keys Active", kms_keys_active_value)
         with col4:
             st.metric("Compliance Rate", "98.8%", delta="0.5%")
         
@@ -356,9 +401,15 @@ class SecurityComplianceModule:
             with col2:
                 st.markdown("### 📊 Key Usage Stats")
                 
-                st.metric("Total Keys", "47")
-                st.metric("Active Rotations", "12")
-                st.metric("Pending Deletion", "2")
+                # Mode-aware metric
+            total_keys_value = self._get_data('total_keys', "47")
+            st.metric("Total Keys", total_keys_value)
+                # Mode-aware metric
+            active_rotations_value = self._get_data('active_rotations', "12")
+            st.metric("Active Rotations", active_rotations_value)
+                # Mode-aware metric
+            pending_deletion_value = self._get_data('pending_deletion', "2")
+            st.metric("Pending Deletion", pending_deletion_value)
                 
                 st.markdown("### 🔄 Rotation Status")
                 st.progress(0.85, text="Auto-rotation: 85%")
@@ -440,9 +491,15 @@ class SecurityComplianceModule:
             
             with col2:
                 st.markdown("### 📊 Last Scan")
-                st.metric("Total Resources", "1,870")
-                st.metric("Compliant", "1,847")
-                st.metric("Non-Compliant", "23")
+                # Mode-aware metric
+            total_resources_value = self._get_data('total_resources', "1,870")
+            st.metric("Total Resources", total_resources_value)
+                # Mode-aware metric
+            compliant_value = self._get_data('compliant', "1,847")
+            st.metric("Compliant", compliant_value)
+                # Mode-aware metric
+            non-compliant_value = self._get_data('non-compliant', "23")
+            st.metric("Non-Compliant", non-compliant_value)
                 st.caption("Last scan: 2 hours ago")
             
             # Scan results
@@ -459,11 +516,15 @@ class SecurityComplianceModule:
         # Overview metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Total Secrets", "342")
+            # Mode-aware metric
+            total_secrets_value = self._get_data('total_secrets', "342")
+            st.metric("Total Secrets", total_secrets_value)
         with col2:
             st.metric("Expiring Soon", "12", delta="-3", delta_color="inverse")
         with col3:
-            st.metric("Recently Rotated", "45")
+            # Mode-aware metric
+            recently_rotated_value = self._get_data('recently_rotated', "45")
+            st.metric("Recently Rotated", recently_rotated_value)
         with col4:
             st.metric("Access Violations", "0", delta="0")
         
@@ -568,13 +629,19 @@ class SecurityComplianceModule:
         # Overview
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Total Certificates", "127")
+            # Mode-aware metric
+            total_certificates_value = self._get_data('total_certificates', "127")
+            st.metric("Total Certificates", total_certificates_value)
         with col2:
             st.metric("Expiring (30 days)", "8", delta="-2", delta_color="inverse")
         with col3:
-            st.metric("Auto-Renewed", "94")
+            # Mode-aware metric
+            auto-renewed_value = self._get_data('auto-renewed', "94")
+            st.metric("Auto-Renewed", auto-renewed_value)
         with col4:
-            st.metric("Validation Errors", "0")
+            # Mode-aware metric
+            validation_errors_value = self._get_data('validation_errors', "0")
+            st.metric("Validation Errors", validation_errors_value)
         
         st.markdown("---")
         
@@ -698,13 +765,17 @@ class SecurityComplianceModule:
         # Overview metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Events Today", "47,523")
+            # Mode-aware metric
+            events_today_value = self._get_data('events_today', "47,523")
+            st.metric("Events Today", events_today_value)
         with col2:
             st.metric("Security Events", "127", delta="12")
         with col3:
             st.metric("Failed Logins", "5", delta="-2", delta_color="inverse")
         with col4:
-            st.metric("Log Storage", "2.4 TB")
+            # Mode-aware metric
+            log_storage_value = self._get_data('log_storage', "2.4 TB")
+            st.metric("Log Storage", log_storage_value)
         
         st.markdown("---")
         
@@ -945,13 +1016,17 @@ class SecurityComplianceModule:
         # Overview metrics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Total Scans", "1,247")
+            # Mode-aware metric
+            total_scans_value = self._get_data('total_scans', "1,247")
+            st.metric("Total Scans", total_scans_value)
         with col2:
             st.metric("Critical Vulns", "3", delta="-2", delta_color="inverse")
         with col3:
             st.metric("High Vulns", "47", delta="5")
         with col4:
-            st.metric("Last Scan", "2h ago")
+            # Mode-aware metric
+            last_scan_value = self._get_data('last_scan', "2h ago")
+            st.metric("Last Scan", last_scan_value)
         
         st.markdown("---")
         
@@ -1276,7 +1351,9 @@ class SecurityComplianceModule:
         with col2:
             st.metric("Compliant Zones", "94%", delta="2%")
         with col3:
-            st.metric("Active Secrets", "342")
+            # Mode-aware metric
+            active_secrets_value = self._get_data('active_secrets', "342")
+            st.metric("Active Secrets", active_secrets_value)
         with col4:
             st.metric("Critical Vulns", "3", delta="-2", delta_color="inverse")
         with col5:

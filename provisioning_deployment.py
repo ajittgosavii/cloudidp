@@ -469,8 +469,12 @@ class ProvisioningDeploymentModule:
         with col1:
             st.markdown("#### Development")
             st.success("✅ Healthy")
-            st.metric("Version", "v1.2.5")
-            st.metric("Commits", "247")
+            # Mode-aware metric
+            version_value = self._get_data('version', "v1.2.5")
+            st.metric("Version", version_value)
+            # Mode-aware metric
+            commits_value = self._get_data('commits', "247")
+            st.metric("Commits", commits_value)
         
         with col2:
             st.markdown("→")
@@ -480,8 +484,12 @@ class ProvisioningDeploymentModule:
         with col3:
             st.markdown("#### Staging")
             st.success("✅ Healthy")
-            st.metric("Version", "v1.2.4")
-            st.metric("Age", "2 days")
+            # Mode-aware metric
+            version_value = self._get_data('version', "v1.2.4")
+            st.metric("Version", version_value)
+            # Mode-aware metric
+            age_value = self._get_data('age', "2 days")
+            st.metric("Age", age_value)
         
         with col4:
             st.markdown("→")
@@ -491,8 +499,12 @@ class ProvisioningDeploymentModule:
         with col5:
             st.markdown("#### Production")
             st.success("✅ Healthy")
-            st.metric("Version", "v1.2.3")
-            st.metric("Age", "7 days")
+            # Mode-aware metric
+            version_value = self._get_data('version', "v1.2.3")
+            st.metric("Version", version_value)
+            # Mode-aware metric
+            age_value = self._get_data('age', "7 days")
+            st.metric("Age", age_value)
         
         st.markdown("---")
         
@@ -691,9 +703,13 @@ class ProvisioningDeploymentModule:
             success_count = len([p for p in data if p['status'] == 'Success'])
             st.metric("Success Rate", f"{(success_count/len(data)*100):.1f}%")
         with col3:
-            st.metric("Avg Time", "12.5 min")
+            # Mode-aware metric
+            avg_time_value = self._get_data('avg_time', "12.5 min")
+            st.metric("Avg Time", avg_time_value)
         with col4:
-            st.metric("Rollbacks", "2")
+            # Mode-aware metric
+            rollbacks_value = self._get_data('rollbacks', "2")
+            st.metric("Rollbacks", rollbacks_value)
     
     @staticmethod
     def render_cicd_integration():
