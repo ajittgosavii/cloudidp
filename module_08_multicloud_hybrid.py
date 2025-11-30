@@ -11,7 +11,7 @@ from typing import Dict, List, Any
 class MultiCloudHybridModule:
     """Multi-Cloud & Hybrid Cloud Support Module"""
     
-    def __init__(self):
+    def __init__self:
         self.module_name = "Multi-Cloud & Hybrid Support"
         self.version = "1.0.0"
         
@@ -96,7 +96,7 @@ class MultiCloudHybridModule:
             providers = st.multiselect(
                 "Select Cloud Providers",
                 ["AWS", "Azure", "GCP", "Oracle Cloud", "IBM Cloud", "Alibaba Cloud"],
-                default=["AWS", "Azure", "GCP"]
+                default =["AWS", "Azure", "GCP"]
             )
             
             # Provisioning strategy
@@ -111,8 +111,8 @@ class MultiCloudHybridModule:
             for provider in providers:
                 percentage = st.slider(
                     f"{provider} Workload %",
-                    0, 100, 33 if len(providers) == 3 else 50,
-                    key=f"workload_{provider}"
+                    0, 100, 33 if lenproviders == 3 else 50,
+                    key =f"workload_{provider}"
                 )
             
             # Resource provisioning
@@ -130,7 +130,7 @@ class MultiCloudHybridModule:
                  "Deployment Manager (GCP)", "Pulumi", "Crossplane"]
             )
             
-            if st.button("Generate Provisioning Templates", key="gen_provisioning"):
+            if st.button("Generate Provisioning Templates", key ="gen_provisioning"):
                 st.success("✅ Provisioning templates generated")
                 self._show_provisioning_templates(providers, iac_tool)
         
@@ -150,7 +150,7 @@ class MultiCloudHybridModule:
                 "Connection Methods",
                 ["AWS Direct Connect", "Azure ExpressRoute", "GCP Dedicated Interconnect",
                  "VPN Gateway", "SD-WAN", "Private Network Links"],
-                default=["AWS Direct Connect", "VPN Gateway"]
+                default =["AWS Direct Connect", "VPN Gateway"]
             )
             
             # Data synchronization
@@ -163,14 +163,14 @@ class MultiCloudHybridModule:
             
             sync_interval = st.select_slider(
                 "Sync Frequency",
-                options=["Real-time", "1 min", "5 min", "15 min", "1 hour", "Daily"],
-                value="15 min"
+                options =["Real-time", "1 min", "5 min", "15 min", "1 hour", "Daily"],
+                value ="15 min"
             )
             
             # Capacity planning
             st.markdown("#### Capacity Planning")
             onprem_capacity = st.slider("On-Prem Capacity Utilization %", 0, 100, 70)
-            cloud_burst = st.checkbox("Enable Cloud Bursting", value=True)
+            cloud_burst = st.checkbox("Enable Cloud Bursting", value =True)
             
             if cloud_burst:
                 burst_threshold = st.slider("Cloud Burst Threshold %", 60, 95, 80)
@@ -210,7 +210,7 @@ class MultiCloudHybridModule:
             st.metric("Sync Lag", sync_lag_value, sync_lag_delta)
         
         # Provisioning workflow
-        if st.checkbox("Show Provisioning Workflow", key="show_prov_workflow"):
+        if st.checkbox("Show Provisioning Workflow", key ="show_prov_workflow"):
             self._show_provisioning_workflow(providers, onprem_type)
     
     def _render_policy_framework(self):
@@ -235,7 +235,7 @@ class MultiCloudHybridModule:
                 policy_scope = st.multiselect(
                     "Policy Scope",
                     ["AWS", "Azure", "GCP", "On-Premises", "Edge Locations"],
-                    default=["AWS", "Azure", "GCP"]
+                    default =["AWS", "Azure", "GCP"]
                 )
                 
                 policy_type = st.selectbox(
@@ -252,20 +252,20 @@ class MultiCloudHybridModule:
                     ["Encryption at Rest", "Encryption in Transit", "Access Control",
                      "Network Segmentation", "Logging & Monitoring", "Backup & DR",
                      "Resource Tagging", "Cost Limits", "Data Classification"],
-                    default=["Encryption at Rest", "Access Control", "Logging & Monitoring"]
+                    default =["Encryption at Rest", "Access Control", "Logging & Monitoring"]
                 )
                 
                 severity = st.select_slider(
                     "Policy Severity",
-                    options=["Info", "Low", "Medium", "High", "Critical"],
-                    value="High"
+                    options =["Info", "Low", "Medium", "High", "Critical"],
+                    value ="High"
                 )
                 
                 enforcement_mode = st.radio(
                     "Enforcement Mode",
                     ["Advisory (Notify Only)", "Soft Enforcement (Warn)", 
                      "Hard Enforcement (Block)", "Audit Only"],
-                    index=2
+                    index =2
                 )
             
             with col2:
@@ -293,7 +293,7 @@ class MultiCloudHybridModule:
                     ["Custom", "CIS Benchmark", "NIST", "PCI DSS", "HIPAA", "GDPR", "SOC 2"]
                 )
                 
-                if st.button("Generate Policy Definition", key="gen_policy"):
+                if st.button("Generate Policy Definition", key ="gen_policy"):
                     st.success("✅ Policy definition generated")
                     self._show_policy_definition(policy_name, policy_scope, rule_categories)
         
@@ -309,7 +309,7 @@ class MultiCloudHybridModule:
                     "Compliance Standards",
                     ["ISO 27001", "SOC 2 Type II", "PCI DSS 4.0", "HIPAA", 
                      "GDPR", "NIST 800-53", "CIS Controls", "FedRAMP"],
-                    default=["ISO 27001", "SOC 2 Type II", "PCI DSS 4.0"]
+                    default =["ISO 27001", "SOC 2 Type II", "PCI DSS 4.0"]
                 )
                 
                 # Control mapping
@@ -320,8 +320,8 @@ class MultiCloudHybridModule:
                         for control in controls[:5]:  # Show first 5
                             st.checkbox(
                                 f"{control['id']}: {control['name']}", 
-                                value=True,
-                                key=f"{framework}_{control['id']}"
+                                value =True,
+                                key =f"{framework}_{control['id']}"
                             )
             
             with col2:
@@ -330,12 +330,12 @@ class MultiCloudHybridModule:
                 if frameworks:
                     st.dataframe(
                         self._get_compliance_matrix(frameworks),
-                        use_container_width=True,
-                        height=300
+                        use_container_width =True,
+                        height =300
                     )
                 
                 st.markdown("#### Coverage Analysis")
-                if st.button("Analyze Coverage", key="analyze_coverage"):
+                if st.button("Analyze Coverage", key ="analyze_coverage"):
                     col_cov1, col_cov2, col_cov3 = st.columns(3)
                     with col_cov1:
                         # Mode-aware metric
@@ -362,7 +362,7 @@ class MultiCloudHybridModule:
                 st.markdown("#### Enforcement Configuration")
                 
                 # Real-time enforcement
-                realtime = st.checkbox("Enable Real-time Enforcement", value=True)
+                realtime = st.checkbox("Enable Real-time Enforcement", value =True)
                 
                 if realtime:
                     st.markdown("**Enforcement Actions:**")
@@ -371,7 +371,7 @@ class MultiCloudHybridModule:
                         ["Block Non-Compliant Resources", "Auto-Remediate",
                          "Send Notifications", "Create Tickets", "Escalate to Security",
                          "Quarantine Resources", "Generate Audit Log"],
-                        default=["Block Non-Compliant Resources", "Send Notifications", "Generate Audit Log"]
+                        default =["Block Non-Compliant Resources", "Send Notifications", "Generate Audit Log"]
                     )
                 
                 # Enforcement hooks
@@ -380,15 +380,15 @@ class MultiCloudHybridModule:
                     "Integration Points",
                     ["CI/CD Pipeline", "IaC Templates", "Cloud Console",
                      "API Calls", "CLI Commands", "Terraform/ARM"],
-                    default=["CI/CD Pipeline", "IaC Templates", "API Calls"]
+                    default =["CI/CD Pipeline", "IaC Templates", "API Calls"]
                 )
                 
                 # Exception management
                 st.markdown("#### Exception Management")
-                allow_exceptions = st.checkbox("Allow Policy Exceptions", value=True)
+                allow_exceptions = st.checkbox("Allow Policy Exceptions", value =True)
                 
                 if allow_exceptions:
-                    approval_required = st.checkbox("Require Approval", value=True)
+                    approval_required = st.checkbox("Require Approval", value =True)
                     exception_duration = st.selectbox(
                         "Exception Duration",
                         ["1 Hour", "1 Day", "1 Week", "1 Month", "Until Revoked"]
@@ -405,13 +405,13 @@ class MultiCloudHybridModule:
             policies_active_value = self._get_data('policies_active', "87")
             st.metric("Policies Active", policies_active_value)
                     # Mode-aware metric
-            violations_(24h)_value = self._get_data('violations_(24h)', "23")
-            violations_(24h)_delta = self._get_data('violations_(24h)_delta', "-12")
-            st.metric("Violations (24h)", violations_(24h)_value, violations_(24h)_delta)
+            violations_24h_value = self._get_data('violations_24h', "23")
+            violations_24h_delta = self._get_data('violations_24h_delta', "-12")
+            st.metric("Violations (24h)", violations_24h_value, violations_24h_delta)
                 with metrics_col2:
                     # Mode-aware metric
-            auto-remediated_value = self._get_data('auto-remediated', "18")
-            auto-remediated_delta = self._get_data('auto-remediated_delta', "+5")
+            auto_remediated_value = self._get_data('auto-remediated', "18")
+            auto_remediated_delta = self._get_data('auto-remediated_delta', "+5")
             st.metric("Auto-Remediated", auto-remediated_value, auto-remediated_delta)
                     # Mode-aware metric
             manual_review_value = self._get_data('manual_review', "5")
@@ -426,7 +426,7 @@ class MultiCloudHybridModule:
                     {"Time": "10:15 AM", "Action": "Alert", "Resource": "IAM Role", "Reason": "Excessive Permissions"},
                     {"Time": "10:00 AM", "Action": "Blocked", "Resource": "RDS Instance", "Reason": "No Encryption"},
                 ]
-                st.dataframe(enforcement_data, use_container_width=True)
+                st.dataframe(enforcement_data, use_container_width =True)
         
         with policy_tab4:
             st.markdown("### Audit & Reporting")
@@ -440,7 +440,7 @@ class MultiCloudHybridModule:
                     "Audit Scope",
                     ["All Policies", "Security Policies", "Compliance Policies",
                      "Cost Policies", "Custom Selection"],
-                    default=["All Policies"]
+                    default =["All Policies"]
                 )
                 
                 audit_period = st.selectbox(
@@ -452,18 +452,18 @@ class MultiCloudHybridModule:
                 report_format = st.multiselect(
                     "Report Format",
                     ["PDF", "Excel", "JSON", "CSV", "HTML Dashboard"],
-                    default=["PDF", "Excel"]
+                    default =["PDF", "Excel"]
                 )
                 
-                include_evidence = st.checkbox("Include Evidence/Screenshots", value=True)
+                include_evidence = st.checkbox("Include Evidence/Screenshots", value =True)
                 
-                if st.button("Generate Audit Report", key="gen_audit"):
+                if st.button("Generate Audit Report", key ="gen_audit"):
                     st.success("✅ Audit report generated")
                     st.download_button(
                         "📥 Download Report",
-                        data="Sample audit report content",
-                        file_name=f"audit_report_{datetime.now().strftime('%Y%m%d')}.pdf",
-                        mime="application/pdf"
+                        data ="Sample audit report content",
+                        file_name =f"audit_report_{datetime.now().strftime('%Y%m%d')}.pdf",
+                        mime ="application/pdf"
                     )
             
             with col2:
@@ -524,7 +524,7 @@ class MultiCloudHybridModule:
                             st.metric("Optimized", f"${costs['optimized']:,}")
                         with col_cost3:
                             st.metric("Savings", f"${costs['savings']:,}", 
-                                    delta=f"{(costs['savings']/costs['current']*100):.1f}%")
+                                    delta =f"{(costs['savings']/costs['current']*100):.1f}%")
                 
                 # Optimization recommendations
                 st.markdown("#### Optimization Recommendations")
@@ -536,7 +536,7 @@ class MultiCloudHybridModule:
                     {"Cloud": "GCP", "Action": "Committed Use Discounts", "Savings": "$9K/mo", "Effort": "Low"},
                 ]
                 
-                st.dataframe(recommendations, use_container_width=True)
+                st.dataframe(recommendations, use_container_width =True)
             
             with col2:
                 st.markdown("#### Cost Optimization Tools")
@@ -546,7 +546,7 @@ class MultiCloudHybridModule:
                     "Enable Optimization Tools",
                     ["AWS Cost Explorer", "Azure Cost Management", "GCP Cost Management",
                      "Cloudability", "CloudHealth", "Spot.io", "ProsperOps"],
-                    default=["AWS Cost Explorer", "Azure Cost Management", "GCP Cost Management"]
+                    default =["AWS Cost Explorer", "Azure Cost Management", "GCP Cost Management"]
                 )
                 
                 # Automated actions
@@ -557,7 +557,7 @@ class MultiCloudHybridModule:
                     ["Stop idle resources", "Downsize over-provisioned resources",
                      "Delete unused snapshots", "Archive old data to cheaper storage",
                      "Convert to reserved/committed instances", "Enable spot instances"],
-                    default=["Stop idle resources", "Delete unused snapshots"]
+                    default =["Stop idle resources", "Delete unused snapshots"]
                 )
                 
                 # Savings goals
@@ -565,15 +565,15 @@ class MultiCloudHybridModule:
                 
                 monthly_target = st.number_input(
                     "Monthly Savings Target ($)", 
-                    min_value=0, 
-                    value=50000, 
-                    step=1000
+                    min_value =0, 
+                    value =50000, 
+                    step =1000
                 )
                 
                 st.progress(65 / 100)
                 st.caption(f"Current Progress: $32,500 of ${monthly_target:,} (65%)")
                 
-                if st.button("Generate Optimization Plan", key="gen_opt_plan"):
+                if st.button("Generate Optimization Plan", key ="gen_opt_plan"):
                     st.success("✅ Optimization plan generated")
                     self._show_optimization_plan()
         
@@ -597,7 +597,7 @@ class MultiCloudHybridModule:
                     ["Compute (CPU/Memory)", "Storage (IOPS/Throughput)", 
                      "Network (Latency/Bandwidth)", "Database (Query Performance)",
                      "Application (Response Time)", "API (Throughput)"],
-                    default=["Compute (CPU/Memory)", "Network (Latency/Bandwidth)"]
+                    default =["Compute (CPU/Memory)", "Network (Latency/Bandwidth)"]
                 )
                 
                 # Current performance
@@ -643,20 +643,20 @@ class MultiCloudHybridModule:
                     with st.expander(f"🔧 {rec['Area']}: {rec['Issue']}"):
                         st.markdown(f"**Recommended Action:** {rec['Action']}")
                         st.markdown(f"**Expected Impact:** {rec['Impact']}")
-                        st.button(f"Apply Tuning", key=f"apply_{rec['Area']}")
+                        st.button(f"Apply Tuning", key =f"apply_{rec['Area']}")
                 
                 # Auto-tuning
                 st.markdown("---")
                 st.markdown("#### Auto-Tuning")
                 
-                enable_auto_tune = st.checkbox("Enable Auto-Tuning", value=False)
+                enable_auto_tune = st.checkbox("Enable Auto-Tuning", value =False)
                 
                 if enable_auto_tune:
                     st.warning("⚠️ Auto-tuning will automatically adjust resources based on performance metrics")
                     tune_aggressiveness = st.select_slider(
                         "Tuning Aggressiveness",
-                        options=["Conservative", "Moderate", "Aggressive"],
-                        value="Moderate"
+                        options =["Conservative", "Moderate", "Aggressive"],
+                        value ="Moderate"
                     )
         
         with opt_tab3:
@@ -686,7 +686,7 @@ class MultiCloudHybridModule:
                 cpu_threshold = st.slider("CPU Utilization Threshold (%)", 0, 100, 60)
                 memory_threshold = st.slider("Memory Utilization Threshold (%)", 0, 100, 70)
                 
-                if st.button("Analyze Resources", key="analyze_resources"):
+                if st.button("Analyze Resources", key ="analyze_resources"):
                     st.success("✅ Analysis complete")
                     
                     # Show findings
@@ -698,7 +698,7 @@ class MultiCloudHybridModule:
                         {"Type": "Properly Sized", "Count": 234, "Status": "Optimal"}
                     ]
                     
-                    st.dataframe(findings, use_container_width=True)
+                    st.dataframe(findings, use_container_width =True)
             
             with col2:
                 st.markdown("#### Right-Sizing Recommendations")
@@ -732,9 +732,9 @@ class MultiCloudHybridModule:
                         
                         col_btn1, col_btn2 = st.columns(2)
                         with col_btn1:
-                            st.button("Apply", key=f"apply_sizing_{idx}")
+                            st.button("Apply", key =f"apply_sizing_{idx}")
                         with col_btn2:
-                            st.button("Schedule", key=f"schedule_sizing_{idx}")
+                            st.button("Schedule", key =f"schedule_sizing_{idx}")
         
         with opt_tab4:
             st.markdown("### Cloud-Specific Best Practices")
@@ -750,7 +750,7 @@ class MultiCloudHybridModule:
                 "Best Practice Categories",
                 ["Security", "Cost Optimization", "Performance", "Reliability",
                  "Operational Excellence", "Sustainability"],
-                default=["Security", "Cost Optimization", "Reliability"]
+                default =["Security", "Cost Optimization", "Reliability"]
             )
             
             # Show best practices
@@ -775,7 +775,7 @@ class MultiCloudHybridModule:
                     compliance_status = st.selectbox(
                         "Compliance Status",
                         ["Not Started", "In Progress", "Compliant", "Not Applicable"],
-                        key=f"bp_{practice['title']}"
+                        key =f"bp_{practice['title']}"
                     )
     
     def _render_connectivity(self):
@@ -810,7 +810,7 @@ class MultiCloudHybridModule:
                      "VPN Gateway", "Direct Connect", "ExpressRoute",
                      "Cloud Interconnect", "NAT Gateway", "Load Balancers",
                      "API Gateway", "CDN", "DNS"],
-                    default=["VPC/VNet", "Subnets (Public/Private)", "Transit Gateway", "Load Balancers"]
+                    default =["VPC/VNet", "Subnets (Public/Private)", "Transit Gateway", "Load Balancers"]
                 )
                 
                 # IP addressing
@@ -831,7 +831,7 @@ class MultiCloudHybridModule:
                     "DNS Services",
                     ["Route 53 (AWS)", "Azure DNS", "Cloud DNS (GCP)",
                      "Private DNS Zones", "Hybrid DNS", "Split-Horizon DNS"],
-                    default=["Route 53 (AWS)", "Private DNS Zones"]
+                    default =["Route 53 (AWS)", "Private DNS Zones"]
                 )
             
             with col2:
@@ -849,7 +849,7 @@ class MultiCloudHybridModule:
                     {"Zone": "Management Zone", "CIDR": "10.0.48.0/20", "Purpose": "Admin & monitoring"}
                 ]
                 
-                st.dataframe(zones, use_container_width=True)
+                st.dataframe(zones, use_container_width =True)
                 
                 # Connectivity matrix
                 st.markdown("#### Connectivity Matrix")
@@ -861,10 +861,10 @@ class MultiCloudHybridModule:
                     "Allowed Connections",
                     ["Public → Private", "Private → Database", 
                      "Management → All Zones", "Internet → Public Only"],
-                    default=["Public → Private", "Private → Database", "Management → All Zones"]
+                    default =["Public → Private", "Private → Database", "Management → All Zones"]
                 )
                 
-                if st.button("Generate Network Configuration", key="gen_network_config"):
+                if st.button("Generate Network Configuration", key ="gen_network_config"):
                     st.success("✅ Network configuration generated")
                     self._show_network_configuration(topology, components)
         
@@ -893,7 +893,7 @@ class MultiCloudHybridModule:
                 # Redundancy
                 st.markdown("#### Redundancy Configuration")
                 
-                enable_redundancy = st.checkbox("Enable Redundant Connection", value=True)
+                enable_redundancy = st.checkbox("Enable Redundant Connection", value =True)
                 
                 if enable_redundancy:
                     secondary_conn = st.selectbox(
@@ -926,14 +926,14 @@ class MultiCloudHybridModule:
                 status_col1, status_col2 = st.columns(2)
                 
                 with status_col1:
-                    st.metric("Primary Link", "Active", delta="99.99% uptime")
-                    st.metric("Latency", "5.2 ms", delta="-0.3 ms")
+                    st.metric("Primary Link", "Active", delta ="99.99% uptime")
+                    st.metric("Latency", "5.2 ms", delta ="-0.3 ms")
                 
                 with status_col2:
                     # Mode-aware metric
             secondary_link_value = self._get_data('secondary_link', "Standby")
             st.metric("Secondary Link", secondary_link_value)
-                    st.metric("Throughput", "890 Mbps", delta="+120 Mbps")
+                    st.metric("Throughput", "890 Mbps", delta ="+120 Mbps")
                 
                 # Connection health
                 st.markdown("#### Connection Health")
@@ -945,7 +945,7 @@ class MultiCloudHybridModule:
                     {"Check": "Packet Loss", "Status": "✅ < 0.01%", "Last Check": "30s ago"}
                 ]
                 
-                st.dataframe(health_checks, use_container_width=True, hide_index=True)
+                st.dataframe(health_checks, use_container_width =True, hide_index =True)
                 
                 # Traffic statistics
                 st.markdown("#### Traffic Statistics (24h)")
@@ -974,8 +974,8 @@ class MultiCloudHybridModule:
                 
                 trust_level = st.select_slider(
                     "Trust Level",
-                    options=["Untrusted", "Low", "Medium", "High", "Trusted"],
-                    value="Low"
+                    options =["Untrusted", "Low", "Medium", "High", "Trusted"],
+                    value ="Low"
                 )
                 
                 # Segmentation strategy
@@ -985,7 +985,7 @@ class MultiCloudHybridModule:
                     "Segmentation Methods",
                     ["Network ACLs", "Security Groups", "NSGs (Azure)",
                      "VPC Peering Controls", "Microsegmentation", "Zero Trust"],
-                    default=["Network ACLs", "Security Groups"]
+                    default =["Network ACLs", "Security Groups"]
                 )
                 
                 # Access controls
@@ -1014,7 +1014,7 @@ class MultiCloudHybridModule:
                     {"Zone": "Management", "Trust": "Trusted", "Resources": 12, "Threats": "Low"}
                 ]
                 
-                st.dataframe(zones_summary, use_container_width=True)
+                st.dataframe(zones_summary, use_container_width =True)
                 
                 # Security posture
                 st.markdown("#### Security Posture")
@@ -1031,8 +1031,8 @@ class MultiCloudHybridModule:
                 
                 with posture_col2:
                     # Mode-aware metric
-            blocked_attempts_(24h)_value = self._get_data('blocked_attempts_(24h)', "1,234")
-            st.metric("Blocked Attempts (24h)", blocked_attempts_(24h)_value)
+            blocked_attempts_24h_value = self._get_data('blocked_attempts_24h', "1,234")
+            st.metric("Blocked Attempts (24h)", blocked_attempts_24h_value)
                     # Mode-aware metric
             security_score_value = self._get_data('security_score', "94/100")
             security_score_delta = self._get_data('security_score_delta', "+3")
@@ -1041,9 +1041,9 @@ class MultiCloudHybridModule:
                 # Threat detection
                 st.markdown("#### Threat Detection")
                 
-                enable_ids = st.checkbox("Enable IDS/IPS", value=True)
-                enable_waf = st.checkbox("Enable WAF", value=True)
-                enable_ddos = st.checkbox("Enable DDoS Protection", value=True)
+                enable_ids = st.checkbox("Enable IDS/IPS", value =True)
+                enable_waf = st.checkbox("Enable WAF", value =True)
+                enable_ddos = st.checkbox("Enable DDoS Protection", value =True)
         
         with conn_tab4:
             st.markdown("### Traffic Management & Optimization")
@@ -1067,30 +1067,30 @@ class MultiCloudHybridModule:
                     "Distribution Methods",
                     ["Geographic Routing", "Latency-Based Routing",
                      "Weighted Routing", "Failover Routing", "Multivalue Answer"],
-                    default=["Geographic Routing", "Latency-Based Routing"]
+                    default =["Geographic Routing", "Latency-Based Routing"]
                 )
                 
                 # QoS
                 st.markdown("#### Quality of Service (QoS)")
                 
-                enable_qos = st.checkbox("Enable QoS", value=True)
+                enable_qos = st.checkbox("Enable QoS", value =True)
                 
                 if enable_qos:
                     priority_traffic = st.multiselect(
                         "Priority Traffic Types",
                         ["Real-time Video", "Voice (VoIP)", "Interactive Apps",
                          "Streaming Media", "File Transfer", "Backup"],
-                        default=["Real-time Video", "Voice (VoIP)"]
+                        default =["Real-time Video", "Voice (VoIP)"]
                     )
                 
                 # Traffic shaping
                 st.markdown("#### Traffic Shaping")
                 
-                enable_shaping = st.checkbox("Enable Traffic Shaping", value=False)
+                enable_shaping = st.checkbox("Enable Traffic Shaping", value =False)
                 
                 if enable_shaping:
-                    rate_limit = st.number_input("Rate Limit (Mbps)", min_value=1, value=100)
-                    burst_size = st.number_input("Burst Size (MB)", min_value=1, value=10)
+                    rate_limit = st.number_input("Rate Limit (Mbps)", min_value =1, value =100)
+                    burst_size = st.number_input("Burst Size (MB)", min_value =1, value =10)
             
             with col2:
                 st.markdown("#### Traffic Analytics")
@@ -1139,7 +1139,7 @@ class MultiCloudHybridModule:
                     {"Source": "10.0.1.23", "Destination": "10.0.32.15", "Traffic": "67 Mbps"}
                 ]
                 
-                st.dataframe(talkers, use_container_width=True, hide_index=True)
+                st.dataframe(talkers, use_container_width =True, hide_index =True)
     
     def _render_global_management(self):
         """Global Environment Management"""
@@ -1165,7 +1165,7 @@ class MultiCloudHybridModule:
                      "eu-west-1 (Ireland)", "eu-central-1 (Frankfurt)",
                      "ap-southeast-1 (Singapore)", "ap-northeast-1 (Tokyo)",
                      "ap-south-1 (Mumbai)", "sa-east-1 (São Paulo)"],
-                    default=["us-east-1 (N. Virginia)", "eu-west-1 (Ireland)", "ap-southeast-1 (Singapore)"]
+                    default =["us-east-1 (N. Virginia)", "eu-west-1 (Ireland)", "ap-southeast-1 (Singapore)"]
                 )
                 
                 # Secondary regions (DR)
@@ -1173,7 +1173,7 @@ class MultiCloudHybridModule:
                     "Secondary Regions (DR)",
                     ["us-west-1 (California)", "eu-west-2 (London)",
                      "ap-southeast-2 (Sydney)", "ca-central-1 (Canada)"],
-                    default=["us-west-1 (California)", "eu-west-2 (London)"]
+                    default =["us-west-1 (California)", "eu-west-2 (London)"]
                 )
                 
                 # Deployment strategy
@@ -1191,7 +1191,7 @@ class MultiCloudHybridModule:
                 
                 replication_mode = st.selectbox(
                     "Replication Mode",
-                    ["Synchronous", "Asynchronous", "Hybrid (Critical=Sync)"]
+                    ["Synchronous", "Asynchronous", "Hybrid (Critical =Sync)"]
                 )
                 
                 rpo = st.selectbox("RPO (Recovery Point Objective)", 
@@ -1207,7 +1207,7 @@ class MultiCloudHybridModule:
                 
                 for region in primary_regions:
                     region_name = region.split(" ")[0]
-                    with st.expander(f"🌐 {region}", expanded=False):
+                    with st.expander(f"🌐 {region}", expanded =False):
                         col_r1, col_r2, col_r3 = st.columns(3)
                         with col_r1:
                             # Mode-aware metric
@@ -1272,18 +1272,18 @@ class MultiCloudHybridModule:
                     "Select Routing Policies",
                     ["Geolocation", "Latency-Based", "Weighted", 
                      "Failover", "Geoproximity", "Multivalue"],
-                    default=["Geolocation", "Latency-Based", "Failover"]
+                    default =["Geolocation", "Latency-Based", "Failover"]
                 )
                 
                 # Health checks
                 st.markdown("#### Health Check Configuration")
                 
-                enable_health = st.checkbox("Enable Health Checks", value=True)
+                enable_health = st.checkbox("Enable Health Checks", value =True)
                 
                 if enable_health:
                     health_protocol = st.selectbox("Protocol", ["HTTPS", "HTTP", "TCP", "ICMP"])
-                    health_interval = st.selectbox("Check Interval", ["10s", "30s", "60s"], index=1)
-                    health_timeout = st.selectbox("Timeout", ["5s", "10s", "30s"], index=0)
+                    health_interval = st.selectbox("Check Interval", ["10s", "30s", "60s"], index =1)
+                    health_timeout = st.selectbox("Timeout", ["5s", "10s", "30s"], index =0)
                     failure_threshold = st.slider("Failure Threshold", 1, 10, 3)
                 
                 # Traffic weighting
@@ -1291,7 +1291,7 @@ class MultiCloudHybridModule:
                 
                 for region in ["us-east-1", "eu-west-1", "ap-southeast-1"]:
                     weight = st.slider(f"{region} Weight", 0, 100, 33, 
-                                      key=f"weight_{region}")
+                                      key =f"weight_{region}")
             
             with col2:
                 st.markdown("#### Load Balancing Status")
@@ -1330,7 +1330,7 @@ class MultiCloudHybridModule:
                     {"Region": "us-west-1", "Status": "⚠️ Degraded", "Latency": "125 ms", "Load": "0%"}
                 ]
                 
-                st.dataframe(endpoints, use_container_width=True, hide_index=True)
+                st.dataframe(endpoints, use_container_width =True, hide_index =True)
                 
                 # Traffic flow
                 st.markdown("#### Traffic Flow (Last Hour)")
@@ -1354,7 +1354,7 @@ class MultiCloudHybridModule:
                     ["GDPR (EU)", "CCPA (California)", "LGPD (Brazil)",
                      "PIPEDA (Canada)", "APPI (Japan)", "PDPA (Singapore)",
                      "Data Protection Act (UK)", "Schrems II"],
-                    default=["GDPR (EU)", "CCPA (California)"]
+                    default =["GDPR (EU)", "CCPA (California)"]
                 )
                 
                 # Data classification
@@ -1365,7 +1365,7 @@ class MultiCloudHybridModule:
                     ["Personal Identifiable Information (PII)", "Protected Health Information (PHI)",
                      "Financial Data", "Intellectual Property", "Government Data",
                      "Customer Data", "Employee Data", "Transactional Data"],
-                    default=["Personal Identifiable Information (PII)", "Customer Data"]
+                    default =["Personal Identifiable Information (PII)", "Customer Data"]
                 )
                 
                 # Residency rules
@@ -1379,13 +1379,13 @@ class MultiCloudHybridModule:
                             allowed_regions = st.multiselect(
                                 "Allowed Regions",
                                 ["eu-west-1", "eu-central-1", "eu-west-2", "eu-north-1"],
-                                default=["eu-west-1", "eu-central-1"],
-                                key="gdpr_regions"
+                                default =["eu-west-1", "eu-central-1"],
+                                key ="gdpr_regions"
                             )
                         elif regulation == "CCPA (California)":
                             st.markdown("**Data Storage:** No specific location requirement")
                             st.markdown("**Transfer Mechanism:** Consumer consent required")
-                            st.checkbox("Obtain explicit consent for transfers", value=True, key="ccpa_consent")
+                            st.checkbox("Obtain explicit consent for transfers", value =True, key ="ccpa_consent")
             
             with col2:
                 st.markdown("#### Compliance Status")
@@ -1400,7 +1400,7 @@ class MultiCloudHybridModule:
                     {"Regulation": "PIPEDA", "Status": "✅ Compliant", "Coverage": "100%"}
                 ]
                 
-                st.dataframe(compliance_status, use_container_width=True, hide_index=True)
+                st.dataframe(compliance_status, use_container_width =True, hide_index =True)
                 
                 # Data location map
                 st.markdown("#### Data Location Map")
@@ -1413,7 +1413,7 @@ class MultiCloudHybridModule:
                     {"Region": "APAC", "Storage": "ap-southeast-1", "Data": "Customer, Analytics"}
                 ]
                 
-                st.dataframe(locations, use_container_width=True, hide_index=True)
+                st.dataframe(locations, use_container_width =True, hide_index =True)
                 
                 # Violation alerts
                 st.markdown("#### Compliance Alerts")
@@ -1421,7 +1421,7 @@ class MultiCloudHybridModule:
                 st.warning("⚠️ 1 potential violation detected:")
                 st.markdown("- Brazilian customer data found in us-east-1 (requires LGPD compliance)")
                 
-                if st.button("Auto-Remediate", key="remediate_violation"):
+                if st.button("Auto-Remediate", key ="remediate_violation"):
                     st.success("✅ Initiated data migration to sa-east-1")
         
         with global_tab4:
@@ -1446,14 +1446,14 @@ class MultiCloudHybridModule:
                     "RPO Target",
                     ["0 (Continuous)", "< 1 minute", "< 5 minutes", 
                      "< 15 minutes", "< 1 hour", "< 4 hours"],
-                    index=2
+                    index =2
                 )
                 
                 rto_target = st.selectbox(
                     "RTO Target",
                     ["< 1 minute", "< 5 minutes", "< 15 minutes",
                      "< 1 hour", "< 4 hours", "< 24 hours"],
-                    index=3
+                    index =3
                 )
                 
                 # DR regions
@@ -1473,7 +1473,7 @@ class MultiCloudHybridModule:
                     ["Compute (EC2/VMs)", "Databases (RDS/Azure SQL)", 
                      "Storage (S3/Blob)", "Kubernetes Clusters",
                      "Networking Config", "Security Policies", "IAM/RBAC"],
-                    default=["Compute (EC2/VMs)", "Databases (RDS/Azure SQL)", "Storage (S3/Blob)"]
+                    default =["Compute (EC2/VMs)", "Databases (RDS/Azure SQL)", "Storage (S3/Blob)"]
                 )
                 
                 replication_freq = st.selectbox(
@@ -1516,7 +1516,7 @@ class MultiCloudHybridModule:
                 
                 next_test = st.date_input("Next Scheduled Test")
                 
-                if st.button("Initiate DR Test", key="dr_test"):
+                if st.button("Initiate DR Test", key ="dr_test"):
                     st.warning("⚠️ DR test initiated - switching to DR region")
                     st.info("🔄 Monitoring failover process...")
                 
@@ -1529,12 +1529,12 @@ class MultiCloudHybridModule:
                     {"Date": "2025-09-20", "Type": "Unplanned Failover", "Duration": "12 min", "Result": "✅ Success"}
                 ]
                 
-                st.dataframe(dr_events, use_container_width=True, hide_index=True)
+                st.dataframe(dr_events, use_container_width =True, hide_index =True)
                 
                 # Runbook
                 st.markdown("#### DR Runbook")
                 
-                if st.button("View DR Runbook", key="view_runbook"):
+                if st.button("View DR Runbook", key ="view_runbook"):
                     st.success("📖 DR Runbook opened")
                     st.markdown("""
                     **Quick Reference:**
@@ -1559,15 +1559,15 @@ class MultiCloudHybridModule:
 terraform {{
   required_providers {{
     aws = {{
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
       version = "~> 5.0"
     }}
     azurerm = {{
-      source  = "hashicorp/azurerm"
+      source = "hashicorp/azurerm"
       version = "~> 3.0"
     }}
     google = {{
-      source  = "hashicorp/google"
+      source = "hashicorp/google"
       version = "~> 5.0"
     }}
   }}
@@ -1586,11 +1586,11 @@ provider "azurerm" {{
 # GCP Configuration
 provider "google" {{
   project = "my-project-id"
-  region  = "us-central1"
+  region = "us-central1"
 }}
 
 # Resources will be provisioned here
-            """, language="hcl")
+            """, language ="hcl")
     
     def _show_provisioning_workflow(self, providers, onprem_type):
         """Show provisioning workflow"""
@@ -1652,7 +1652,7 @@ provider "google" {{
     }}
   }}
 }}
-            """, language="json")
+            """, language ="json")
     
     def _get_framework_controls(self, framework):
         """Get compliance framework controls"""
@@ -1858,7 +1858,7 @@ network:
         routes:
           - destination: 0.0.0.0/0
             target: nat-gateway
-            """, language="yaml")
+            """, language ="yaml")
 
 # Demo data if needed
 def get_demo_data():

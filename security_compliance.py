@@ -1,7 +1,7 @@
 """
 Module 5: Security & Compliance
 Features:
-- RBAC & Identity Integration
+    - RBAC & Identity Integration
 - Network Micro-Segmentation Compliance
 - Encryption Defaults & Enforcement
 - Secrets Management Integration
@@ -18,7 +18,7 @@ import json
 class SecurityComplianceModule:
     """Security and Compliance Management"""
     
-    def __init__(self, demo_mode=True):
+    def __init__self, demo_mode =True:
         """Initialize Security & Compliance module"""
         self.demo_mode = demo_mode
         
@@ -122,7 +122,7 @@ class SecurityComplianceModule:
             )
             
             # Configuration based on provider
-            with st.expander("🔧 Provider Configuration", expanded=True):
+            with st.expander("🔧 Provider Configuration", expanded =True):
                 if idp_type == "AWS IAM Identity Center (SSO)":
                     st.text_input("SSO Instance ARN", "arn:aws:sso:::instance/ssoins-1234567890abcdef")
                     st.text_input("Identity Store ID", "d-1234567890")
@@ -131,15 +131,15 @@ class SecurityComplianceModule:
                 elif idp_type in ["Azure AD", "Okta", "Google Workspace"]:
                     st.text_input("Tenant ID / Domain", "example.okta.com")
                     st.text_input("Client ID", "")
-                    st.text_input("Client Secret", type="password")
+                    st.text_input("Client Secret", type ="password")
                     st.text_input("SSO URL", "")
                     st.checkbox("Enable SCIM Provisioning")
                 
                 col_a, col_b = st.columns(2)
                 with col_a:
-                    st.button("🔗 Test Connection", use_container_width=True)
+                    st.button("🔗 Test Connection", use_container_width =True)
                 with col_b:
-                    st.button("💾 Save Configuration", use_container_width=True)
+                    st.button("💾 Save Configuration", use_container_width =True)
             
             # Role-Based Access Control
             st.markdown("### 👥 Role Management")
@@ -153,29 +153,29 @@ class SecurityComplianceModule:
                 services_col1, services_col2, services_col3 = st.columns(3)
                 
                 with services_col1:
-                    st.checkbox("EC2", value=True)
-                    st.checkbox("S3", value=True)
-                    st.checkbox("Lambda", value=True)
-                    st.checkbox("RDS", value=False)
+                    st.checkbox("EC2", value =True)
+                    st.checkbox("S3", value =True)
+                    st.checkbox("Lambda", value =True)
+                    st.checkbox("RDS", value =False)
                 
                 with services_col2:
-                    st.checkbox("SageMaker", value=True)
-                    st.checkbox("Glue", value=True)
-                    st.checkbox("Athena", value=True)
-                    st.checkbox("EMR", value=True)
+                    st.checkbox("SageMaker", value =True)
+                    st.checkbox("Glue", value =True)
+                    st.checkbox("Athena", value =True)
+                    st.checkbox("EMR", value =True)
                 
                 with services_col3:
-                    st.checkbox("CloudWatch", value=True)
-                    st.checkbox("CloudTrail", value=False)
-                    st.checkbox("VPC", value=False)
-                    st.checkbox("IAM", value=False)
+                    st.checkbox("CloudWatch", value =True)
+                    st.checkbox("CloudTrail", value =False)
+                    st.checkbox("VPC", value =False)
+                    st.checkbox("IAM", value =False)
                 
                 permission_level = st.selectbox(
                     "Permission Level",
                     ["Read-Only", "Power User", "Administrator", "Custom"]
                 )
                 
-                st.button("✅ Create Role", type="primary", use_container_width=True)
+                st.button("✅ Create Role", type ="primary", use_container_width =True)
         
         with col2:
             st.markdown("### 📊 Current Roles")
@@ -191,9 +191,9 @@ class SecurityComplianceModule:
                     
                     col_edit, col_del = st.columns(2)
                     with col_edit:
-                        st.button("✏️", key=f"edit_{role['name']}", use_container_width=True)
+                        st.button("✏️", key =f"edit_{role['name']}", use_container_width =True)
                     with col_del:
-                        st.button("🗑️", key=f"del_{role['name']}", use_container_width=True)
+                        st.button("🗑️", key =f"del_{role['name']}", use_container_width =True)
                     st.markdown("---")
         
         # User-Role Mapping
@@ -208,15 +208,15 @@ class SecurityComplianceModule:
                 ["Administrator", "DataScientist", "Developer", "Analyst", "Viewer"]
             )
         with col3:
-            st.markdown("<br>", unsafe_allow_html=True)
-            st.button("➕ Assign", type="primary", use_container_width=True)
+            st.markdown("<br>", unsafe_allow_html =True)
+            st.button("➕ Assign", type ="primary", use_container_width =True)
         
         # Current assignments table
         st.markdown("**Current User Assignments:**")
         assignments_df = self._get_user_assignments()
-        st.dataframe(assignments_df, use_container_width=True, hide_index=True)
+        st.dataframe(assignments_df, use_container_width =True, hide_index =True)
     
-    # ==================== Network Micro-Segmentation ====================
+    # ==================== Network Micro_Segmentation ====================
     def network_micro_segmentation(self):
         """Network Micro-Segmentation Compliance"""
         st.subheader("🔗 Network Micro-Segmentation")
@@ -227,7 +227,7 @@ class SecurityComplianceModule:
             st.markdown("### 🌐 Network Zones Configuration")
             
             # Zone Definition
-            with st.expander("➕ Define Security Zone", expanded=True):
+            with st.expander("➕ Define Security Zone", expanded =True):
                 zone_name = st.text_input("Zone Name", "DMZ-Public")
                 zone_type = st.selectbox(
                     "Zone Type",
@@ -240,27 +240,27 @@ class SecurityComplianceModule:
                 st.markdown("**Security Controls:**")
                 col_a, col_b = st.columns(2)
                 with col_a:
-                    st.checkbox("Network ACL", value=True)
-                    st.checkbox("Security Group", value=True)
-                    st.checkbox("Route Table Isolation", value=True)
+                    st.checkbox("Network ACL", value =True)
+                    st.checkbox("Security Group", value =True)
+                    st.checkbox("Route Table Isolation", value =True)
                 
                 with col_b:
-                    st.checkbox("VPC Flow Logs", value=True)
-                    st.checkbox("Traffic Mirroring", value=False)
-                    st.checkbox("AWS Network Firewall", value=True)
+                    st.checkbox("VPC Flow Logs", value =True)
+                    st.checkbox("Traffic Mirroring", value =False)
+                    st.checkbox("AWS Network Firewall", value =True)
                 
                 compliance_frameworks = st.multiselect(
                     "Compliance Requirements",
                     ["PCI DSS", "HIPAA", "SOC 2", "ISO 27001", "NIST", "FedRAMP"]
                 )
                 
-                st.button("💾 Create Zone", type="primary", use_container_width=True)
+                st.button("💾 Create Zone", type ="primary", use_container_width =True)
             
             # Network Segmentation Rules
             st.markdown("### 🚦 Segmentation Rules")
             
             rules_df = self._get_segmentation_rules()
-            st.dataframe(rules_df, use_container_width=True, hide_index=True)
+            st.dataframe(rules_df, use_container_width =True, hide_index =True)
             
             # Add new rule
             with st.expander("➕ Add Segmentation Rule"):
@@ -282,7 +282,7 @@ class SecurityComplianceModule:
                 with col_act:
                     st.selectbox("Action", ["Allow", "Deny", "Log & Allow", "Log & Deny"])
                 
-                st.button("✅ Add Rule", use_container_width=True)
+                st.button("✅ Add Rule", use_container_width =True)
         
         with col2:
             st.markdown("### 📊 Zone Status")
@@ -301,12 +301,12 @@ class SecurityComplianceModule:
             
             # Compliance Status
             st.markdown("### ✅ Compliance")
-            st.metric("Overall Score", "87%", delta="3%")
+            st.metric("Overall Score", "87%", delta ="3%")
             
             st.markdown("**Frameworks:**")
-            st.progress(0.92, text="PCI DSS: 92%")
-            st.progress(0.88, text="HIPAA: 88%")
-            st.progress(0.85, text="SOC 2: 85%")
+            st.progress(0.92, text ="PCI DSS: 92%")
+            st.progress(0.88, text ="HIPAA: 88%")
+            st.progress(0.85, text ="SOC 2: 85%")
     
     # ==================== Encryption Management ====================
     def encryption_management(self):
@@ -316,15 +316,15 @@ class SecurityComplianceModule:
         # Encryption Policy Dashboard
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Encrypted Resources", "1,847", delta="12")
+            st.metric("Encrypted Resources", "1,847", delta ="12")
         with col2:
-            st.metric("Unencrypted", "23", delta="-5", delta_color="inverse")
+            st.metric("Unencrypted", "23", delta ="-5", delta_color ="inverse")
         with col3:
             # Mode-aware metric
             kms_keys_active_value = self._get_data('kms_keys_active', "47")
             st.metric("KMS Keys Active", kms_keys_active_value)
         with col4:
-            st.metric("Compliance Rate", "98.8%", delta="0.5%")
+            st.metric("Compliance Rate", "98.8%", delta ="0.5%")
         
         st.markdown("---")
         
@@ -344,7 +344,7 @@ class SecurityComplianceModule:
                 filter_service = st.multiselect(
                     "AWS Service",
                     ["All", "S3", "EBS", "RDS", "DynamoDB", "EFS", "Redshift", "SNS", "SQS"],
-                    default=["All"]
+                    default =["All"]
                 )
             with col_status:
                 filter_status = st.selectbox("Status", ["All", "Encrypted", "Unencrypted", "Default Encryption"])
@@ -353,16 +353,16 @@ class SecurityComplianceModule:
             
             # Encryption status table
             encryption_df = self._get_encryption_status()
-            st.dataframe(encryption_df, use_container_width=True, hide_index=True)
+            st.dataframe(encryption_df, use_container_width =True, hide_index =True)
             
             # Bulk actions
             col_action1, col_action2, col_action3 = st.columns(3)
             with col_action1:
-                st.button("🔒 Enable Encryption (Selected)", use_container_width=True)
+                st.button("🔒 Enable Encryption (Selected)", use_container_width =True)
             with col_action2:
-                st.button("🔄 Rotate Keys (Selected)", use_container_width=True)
+                st.button("🔄 Rotate Keys (Selected)", use_container_width =True)
             with col_action3:
-                st.button("📊 Export Report", use_container_width=True)
+                st.button("📊 Export Report", use_container_width =True)
         
         with tab2:
             st.markdown("### 🔐 KMS Key Management")
@@ -371,7 +371,7 @@ class SecurityComplianceModule:
             
             with col1:
                 # Create new KMS key
-                with st.expander("➕ Create KMS Key", expanded=False):
+                with st.expander("➕ Create KMS Key", expanded =False):
                     key_alias = st.text_input("Key Alias", "alias/production-data-key")
                     key_desc = st.text_area("Description", "Production data encryption key")
                     
@@ -382,21 +382,21 @@ class SecurityComplianceModule:
                     
                     key_usage = st.selectbox("Key Usage", ["ENCRYPT_DECRYPT", "SIGN_VERIFY"])
                     
-                    st.checkbox("Enable automatic key rotation (annual)", value=True)
+                    st.checkbox("Enable automatic key rotation (annual)", value =True)
                     
                     st.markdown("**Key Policy:**")
                     key_policy = st.text_area(
                         "Policy JSON",
-                        value='{\n  "Version": "2012-10-17",\n  "Statement": [{\n    "Sid": "Enable IAM User Permissions",\n    "Effect": "Allow",\n    "Principal": {"AWS": "arn:aws:iam::123456789012:root"},\n    "Action": "kms:*",\n    "Resource": "*"\n  }]\n}',
-                        height=150
+                        value ='{\n  "Version": "2012-10-17",\n  "Statement": [{\n    "Sid": "Enable IAM User Permissions",\n    "Effect": "Allow",\n    "Principal": {"AWS": "arn:aws:iam::123456789012:root"},\n    "Action": "kms:*",\n    "Resource": "*"\n  }]\n}',
+                        height =150
                     )
                     
-                    st.button("✅ Create Key", type="primary", use_container_width=True)
+                    st.button("✅ Create Key", type ="primary", use_container_width =True)
                 
                 # Existing keys table
                 st.markdown("**Existing KMS Keys:**")
                 kms_keys_df = self._get_kms_keys()
-                st.dataframe(kms_keys_df, use_container_width=True, hide_index=True)
+                st.dataframe(kms_keys_df, use_container_width =True, hide_index =True)
             
             with col2:
                 st.markdown("### 📊 Key Usage Stats")
@@ -412,7 +412,7 @@ class SecurityComplianceModule:
             st.metric("Pending Deletion", pending_deletion_value)
                 
                 st.markdown("### 🔄 Rotation Status")
-                st.progress(0.85, text="Auto-rotation: 85%")
+                st.progress(0.85, text ="Auto-rotation: 85%")
                 
                 st.markdown("### ⚠️ Alerts")
                 st.warning("2 keys not rotated in 365+ days")
@@ -427,32 +427,32 @@ class SecurityComplianceModule:
                 ["S3", "EBS", "RDS", "DynamoDB", "EFS", "Redshift", "Global Settings"]
             )
             
-            with st.expander(f"🔧 {service} Encryption Policy", expanded=True):
-                enforce_encryption = st.checkbox("Enforce encryption for all new resources", value=True)
+            with st.expander(f"🔧 {service} Encryption Policy", expanded =True):
+                enforce_encryption = st.checkbox("Enforce encryption for all new resources", value =True)
                 
                 if service == "S3":
-                    st.checkbox("Enforce bucket encryption (AES-256 or KMS)", value=True)
-                    st.checkbox("Block unencrypted uploads", value=True)
+                    st.checkbox("Enforce bucket encryption (AES-256 or KMS)", value =True)
+                    st.checkbox("Block unencrypted uploads", value =True)
                     default_key = st.selectbox("Default KMS Key", ["AWS Managed", "Customer Managed"])
-                    st.checkbox("Require SSL/TLS for data in transit", value=True)
+                    st.checkbox("Require SSL/TLS for data in transit", value =True)
                 
                 elif service == "EBS":
-                    st.checkbox("Enable default EBS encryption", value=True)
+                    st.checkbox("Enable default EBS encryption", value =True)
                     st.selectbox("Default encryption key", ["AWS Managed", "Customer Managed"])
-                    st.checkbox("Encrypt snapshots by default", value=True)
+                    st.checkbox("Encrypt snapshots by default", value =True)
                 
                 elif service == "RDS":
-                    st.checkbox("Enforce encryption for new DB instances", value=True)
-                    st.checkbox("Enforce encryption for read replicas", value=True)
-                    st.checkbox("Encrypt automated backups", value=True)
-                    st.checkbox("Enable storage encryption at rest", value=True)
+                    st.checkbox("Enforce encryption for new DB instances", value =True)
+                    st.checkbox("Enforce encryption for read replicas", value =True)
+                    st.checkbox("Encrypt automated backups", value =True)
+                    st.checkbox("Enable storage encryption at rest", value =True)
                 
-                st.button("💾 Save Policy", type="primary", use_container_width=True)
+                st.button("💾 Save Policy", type ="primary", use_container_width =True)
             
             # Policy Summary
             st.markdown("### 📋 Active Encryption Policies")
             policies_df = self._get_encryption_policies()
-            st.dataframe(policies_df, use_container_width=True, hide_index=True)
+            st.dataframe(policies_df, use_container_width =True, hide_index =True)
         
         with tab4:
             st.markdown("### 🔍 Encryption Compliance Scan")
@@ -465,22 +465,22 @@ class SecurityComplianceModule:
                 scan_scope = st.multiselect(
                     "Services to Scan",
                     ["S3", "EBS", "RDS", "DynamoDB", "EFS", "Redshift", "SNS", "SQS", "Lambda"],
-                    default=["S3", "EBS", "RDS"]
+                    default =["S3", "EBS", "RDS"]
                 )
                 
                 scan_regions = st.multiselect(
                     "Regions",
                     ["us-east-1", "us-west-2", "eu-west-1", "ap-southeast-1"],
-                    default=["us-east-1"]
+                    default =["us-east-1"]
                 )
                 
                 compliance_check = st.multiselect(
                     "Compliance Frameworks",
                     ["PCI DSS", "HIPAA", "GDPR", "SOC 2", "ISO 27001"],
-                    default=["PCI DSS", "HIPAA"]
+                    default =["PCI DSS", "HIPAA"]
                 )
                 
-                if st.button("🚀 Start Compliance Scan", type="primary", use_container_width=True):
+                if st.button("🚀 Start Compliance Scan", type ="primary", use_container_width =True):
                     with st.spinner("Scanning resources..."):
                         import time
                         progress_bar = st.progress(0)
@@ -498,7 +498,7 @@ class SecurityComplianceModule:
             compliant_value = self._get_data('compliant', "1,847")
             st.metric("Compliant", compliant_value)
                 # Mode-aware metric
-            non-compliant_value = self._get_data('non-compliant', "23")
+            non_compliant_value = self._get_data('non-compliant', "23")
             st.metric("Non-Compliant", non-compliant_value)
                 st.caption("Last scan: 2 hours ago")
             
@@ -506,7 +506,7 @@ class SecurityComplianceModule:
             if st.session_state.get('scan_complete', False):
                 st.markdown("### 📋 Scan Results")
                 scan_results_df = self._get_scan_results()
-                st.dataframe(scan_results_df, use_container_width=True, hide_index=True)
+                st.dataframe(scan_results_df, use_container_width =True, hide_index =True)
     
     # ==================== Secrets Management ====================
     def secrets_management(self):
@@ -520,13 +520,13 @@ class SecurityComplianceModule:
             total_secrets_value = self._get_data('total_secrets', "342")
             st.metric("Total Secrets", total_secrets_value)
         with col2:
-            st.metric("Expiring Soon", "12", delta="-3", delta_color="inverse")
+            st.metric("Expiring Soon", "12", delta ="-3", delta_color ="inverse")
         with col3:
             # Mode-aware metric
             recently_rotated_value = self._get_data('recently_rotated', "45")
             st.metric("Recently Rotated", recently_rotated_value)
         with col4:
-            st.metric("Access Violations", "0", delta="0")
+            st.metric("Access Violations", "0", delta ="0")
         
         st.markdown("---")
         
@@ -534,7 +534,7 @@ class SecurityComplianceModule:
         
         with col1:
             # Create new secret
-            with st.expander("➕ Create New Secret", expanded=False):
+            with st.expander("➕ Create New Secret", expanded =False):
                 secret_name = st.text_input("Secret Name", "prod/database/master-password")
                 secret_type = st.selectbox(
                     "Secret Type",
@@ -543,28 +543,28 @@ class SecurityComplianceModule:
                 
                 if secret_type == "Database Credentials":
                     st.text_input("Username", "admin")
-                    st.text_input("Password", type="password")
+                    st.text_input("Password", type ="password")
                     st.text_input("Database Host", "prod-db.abc123.us-east-1.rds.amazonaws.com")
                     st.text_input("Port", "5432")
                     st.text_input("Database Name", "production")
                 else:
-                    secret_value = st.text_area("Secret Value", type="password")
+                    secret_value = st.text_area("Secret Value", type ="password")
                 
                 st.text_area("Description", "Production database master credentials")
                 
                 col_a, col_b = st.columns(2)
                 with col_a:
-                    rotation_enabled = st.checkbox("Enable automatic rotation", value=True)
+                    rotation_enabled = st.checkbox("Enable automatic rotation", value =True)
                     if rotation_enabled:
-                        st.number_input("Rotation interval (days)", min_value=1, value=30)
+                        st.number_input("Rotation interval (days)", min_value =1, value =30)
                 
                 with col_b:
                     st.selectbox("Encryption Key", ["AWS Managed", "Customer Managed KMS"])
                     st.text_input("Lambda ARN (for rotation)", "arn:aws:lambda:...")
                 
-                tags = st.text_input("Tags (comma-separated)", "environment=prod,team=engineering")
+                tags = st.text_input("Tags (comma-separated)", "environment =prod,team =engineering")
                 
-                st.button("✅ Create Secret", type="primary", use_container_width=True)
+                st.button("✅ Create Secret", type ="primary", use_container_width =True)
             
             # Secrets table
             st.markdown("### 📋 Secrets Inventory")
@@ -579,16 +579,16 @@ class SecurityComplianceModule:
                 filter_env = st.selectbox("Environment", ["All", "Production", "Staging", "Development"])
             
             secrets_df = self._get_secrets_inventory()
-            st.dataframe(secrets_df, use_container_width=True, hide_index=True)
+            st.dataframe(secrets_df, use_container_width =True, hide_index =True)
             
             # Bulk actions
             col_action1, col_action2, col_action3 = st.columns(3)
             with col_action1:
-                st.button("🔄 Rotate Selected", use_container_width=True)
+                st.button("🔄 Rotate Selected", use_container_width =True)
             with col_action2:
-                st.button("📊 Access Report", use_container_width=True)
+                st.button("📊 Access Report", use_container_width =True)
             with col_action3:
-                st.button("📤 Export", use_container_width=True)
+                st.button("📤 Export", use_container_width =True)
         
         with col2:
             st.markdown("### ⚠️ Attention Required")
@@ -598,7 +598,7 @@ class SecurityComplianceModule:
                 st.error("**Expiring in 7 days:**")
                 st.caption("prod/api/stripe-key")
                 st.caption("prod/db/analytics-pwd")
-                st.button("Rotate Now", key="rotate1", use_container_width=True)
+                st.button("Rotate Now", key ="rotate1", use_container_width =True)
             
             st.markdown("---")
             
@@ -618,7 +618,7 @@ class SecurityComplianceModule:
             
             # Rotation schedule
             st.markdown("### 🔄 Rotation Schedule")
-            st.progress(0.75, text="Next rotation: 7 days")
+            st.progress(0.75, text ="Next rotation: 7 days")
             st.caption("12 secrets scheduled")
     
     # ==================== Certificate Management ====================
@@ -633,10 +633,10 @@ class SecurityComplianceModule:
             total_certificates_value = self._get_data('total_certificates', "127")
             st.metric("Total Certificates", total_certificates_value)
         with col2:
-            st.metric("Expiring (30 days)", "8", delta="-2", delta_color="inverse")
+            st.metric("Expiring (30 days)", "8", delta ="-2", delta_color ="inverse")
         with col3:
             # Mode-aware metric
-            auto-renewed_value = self._get_data('auto-renewed', "94")
+            auto_renewed_value = self._get_data('auto-renewed', "94")
             st.metric("Auto-Renewed", auto-renewed_value)
         with col4:
             # Mode-aware metric
@@ -663,16 +663,16 @@ class SecurityComplianceModule:
             
             # Certificates table
             certs_df = self._get_certificates()
-            st.dataframe(certs_df, use_container_width=True, hide_index=True)
+            st.dataframe(certs_df, use_container_width =True, hide_index =True)
             
             # Actions
             col_a1, col_a2, col_a3 = st.columns(3)
             with col_a1:
-                st.button("📥 Export Selected", use_container_width=True)
+                st.button("📥 Export Selected", use_container_width =True)
             with col_a2:
-                st.button("🔄 Renew Selected", use_container_width=True)
+                st.button("🔄 Renew Selected", use_container_width =True)
             with col_a3:
-                st.button("🗑️ Delete Selected", use_container_width=True)
+                st.button("🗑️ Delete Selected", use_container_width =True)
         
         with tab2:
             st.markdown("### ➕ Request New Certificate")
@@ -689,7 +689,7 @@ class SecurityComplianceModule:
                 if cert_type == "Public Certificate (ACM)":
                     domain_name = st.text_input("Domain Name", "www.example.com")
                     
-                    st.checkbox("Add additional names", value=False)
+                    st.checkbox("Add additional names", value =False)
                     additional_names = st.text_area("Additional Names (one per line)", "*.example.com\napi.example.com")
                     
                     validation_method = st.radio("Validation Method", ["DNS Validation", "Email Validation"])
@@ -697,22 +697,22 @@ class SecurityComplianceModule:
                     if validation_method == "Email Validation":
                         st.text_input("Contact Email", "admin@example.com")
                     
-                    st.checkbox("Enable transparency logging", value=True)
+                    st.checkbox("Enable transparency logging", value =True)
                     
                 elif cert_type == "Private Certificate (ACM PCA)":
                     st.text_input("Common Name (CN)", "internal.example.com")
                     st.selectbox("Certificate Authority", ["Production CA", "Development CA", "Test CA"])
-                    st.number_input("Validity Period (days)", min_value=1, max_value=3650, value=365)
+                    st.number_input("Validity Period (days)", min_value =1, max_value =3650, value =365)
                     st.selectbox("Key Algorithm", ["RSA 2048", "RSA 4096", "ECDSA P256", "ECDSA P384"])
                 
                 else:  # Import Certificate
-                    st.text_area("Certificate Body (PEM)", height=100)
-                    st.text_area("Private Key (PEM)", type="password", height=100)
-                    st.text_area("Certificate Chain (PEM)", height=100)
+                    st.text_area("Certificate Body (PEM)", height =100)
+                    st.text_area("Private Key (PEM)", type ="password", height =100)
+                    st.text_area("Certificate Chain (PEM)", height =100)
                 
-                tags = st.text_input("Tags", "Environment=Production,Team=DevOps")
+                tags = st.text_input("Tags", "Environment =Production,Team =DevOps")
                 
-                st.button("🚀 Request Certificate", type="primary", use_container_width=True)
+                st.button("🚀 Request Certificate", type ="primary", use_container_width =True)
             
             with col2:
                 st.markdown("### 📖 Guidelines")
@@ -735,27 +735,27 @@ class SecurityComplianceModule:
             st.markdown("### ⚙️ Certificate Management Settings")
             
             # Notification settings
-            with st.expander("📧 Notifications", expanded=True):
-                st.checkbox("Email alerts for expiring certificates", value=True)
-                st.number_input("Alert threshold (days before expiry)", min_value=1, value=30)
+            with st.expander("📧 Notifications", expanded =True):
+                st.checkbox("Email alerts for expiring certificates", value =True)
+                st.number_input("Alert threshold (days before expiry)", min_value =1, value =30)
                 st.text_input("Notification Email", "security-team@company.com")
-                st.checkbox("Send weekly certificate report", value=True)
+                st.checkbox("Send weekly certificate report", value =True)
             
             # Auto-renewal settings
-            with st.expander("🔄 Auto-Renewal Settings", expanded=True):
-                st.checkbox("Enable automatic renewal for eligible certificates", value=True)
-                st.number_input("Renewal attempt days before expiry", min_value=1, value=60)
-                st.checkbox("Send notification on renewal success", value=True)
-                st.checkbox("Send notification on renewal failure", value=True)
+            with st.expander("🔄 Auto-Renewal Settings", expanded =True):
+                st.checkbox("Enable automatic renewal for eligible certificates", value =True)
+                st.number_input("Renewal attempt days before expiry", min_value =1, value =60)
+                st.checkbox("Send notification on renewal success", value =True)
+                st.checkbox("Send notification on renewal failure", value =True)
             
             # Integration settings
-            with st.expander("🔗 Integrations", expanded=True):
-                st.checkbox("Integrate with CloudFront", value=True)
-                st.checkbox("Integrate with Elastic Load Balancer", value=True)
-                st.checkbox("Integrate with API Gateway", value=True)
-                st.checkbox("Sync with Route 53", value=True)
+            with st.expander("🔗 Integrations", expanded =True):
+                st.checkbox("Integrate with CloudFront", value =True)
+                st.checkbox("Integrate with Elastic Load Balancer", value =True)
+                st.checkbox("Integrate with API Gateway", value =True)
+                st.checkbox("Sync with Route 53", value =True)
             
-            st.button("💾 Save Settings", type="primary", use_container_width=True)
+            st.button("💾 Save Settings", type ="primary", use_container_width =True)
     
     # ==================== Audit Logging & Forensics ====================
     def audit_logging_forensics(self):
@@ -769,9 +769,9 @@ class SecurityComplianceModule:
             events_today_value = self._get_data('events_today', "47,523")
             st.metric("Events Today", events_today_value)
         with col2:
-            st.metric("Security Events", "127", delta="12")
+            st.metric("Security Events", "127", delta ="12")
         with col3:
-            st.metric("Failed Logins", "5", delta="-2", delta_color="inverse")
+            st.metric("Failed Logins", "5", delta ="-2", delta_color ="inverse")
         with col4:
             # Mode-aware metric
             log_storage_value = self._get_data('log_storage', "2.4 TB")
@@ -830,22 +830,22 @@ class SecurityComplianceModule:
             # Search button
             col_search, col_export = st.columns([3, 1])
             with col_search:
-                if st.button("🔍 Search Events", type="primary", use_container_width=True):
+                if st.button("🔍 Search Events", type ="primary", use_container_width =True):
                     st.session_state['search_executed'] = True
             with col_export:
-                st.button("📤 Export", use_container_width=True)
+                st.button("📤 Export", use_container_width =True)
             
             # Results
             if st.session_state.get('search_executed', False):
                 st.markdown("### 📋 Search Results")
                 events_df = self._get_audit_events()
-                st.dataframe(events_df, use_container_width=True, hide_index=True)
+                st.dataframe(events_df, use_container_width =True, hide_index =True)
                 
                 # Event details viewer
                 selected_event = st.selectbox("View Event Details", events_df['Event ID'].tolist())
                 
                 if selected_event:
-                    with st.expander("📄 Event Details", expanded=True):
+                    with st.expander("📄 Event Details", expanded =True):
                         event_details = self._get_event_details(selected_event)
                         
                         col_d1, col_d2 = st.columns(2)
@@ -866,18 +866,18 @@ class SecurityComplianceModule:
                 severity_filter = st.multiselect(
                     "Severity",
                     ["Critical", "High", "Medium", "Low"],
-                    default=["Critical", "High"]
+                    default =["Critical", "High"]
                 )
             with col_type:
                 security_type = st.multiselect(
                     "Event Category",
                     ["Unauthorized Access", "Policy Violation", "Configuration Change", "Suspicious Activity"],
-                    default=["Unauthorized Access"]
+                    default =["Unauthorized Access"]
                 )
             
             # Security events table
             security_events_df = self._get_security_events()
-            st.dataframe(security_events_df, use_container_width=True, hide_index=True)
+            st.dataframe(security_events_df, use_container_width =True, hide_index =True)
             
             # Incident response
             st.markdown("### 🚨 Incident Response")
@@ -897,7 +897,7 @@ class SecurityComplianceModule:
                         incident_priority = st.selectbox("Priority", ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low"])
                         assigned_to = st.text_input("Assign To", "security-team@company.com")
                         
-                        st.button("✅ Create Incident", type="primary", use_container_width=True)
+                        st.button("✅ Create Incident", type ="primary", use_container_width =True)
             
             with col_ir2:
                 st.markdown("### 📊 Security Trends")
@@ -933,19 +933,19 @@ class SecurityComplianceModule:
                 with col_format:
                     report_format = st.selectbox("Format", ["PDF", "CSV", "JSON", "Excel"])
                 
-                include_details = st.checkbox("Include detailed event information", value=True)
-                include_metadata = st.checkbox("Include resource metadata", value=True)
+                include_details = st.checkbox("Include detailed event information", value =True)
+                include_metadata = st.checkbox("Include resource metadata", value =True)
                 
-                if st.button("📊 Generate Report", type="primary", use_container_width=True):
+                if st.button("📊 Generate Report", type ="primary", use_container_width =True):
                     with st.spinner("Generating report..."):
                         import time
                         time.sleep(2)
                         st.success("✅ Report generated successfully!")
                         st.download_button(
                             "📥 Download Report",
-                            data="Sample report data",
-                            file_name=f"audit_report_{datetime.now().strftime('%Y%m%d')}.pdf",
-                            mime="application/pdf"
+                            data ="Sample report data",
+                            file_name =f"audit_report_{datetime.now().strftime('%Y%m%d')}.pdf",
+                            mime ="application/pdf"
                         )
             
             with col2:
@@ -965,48 +965,48 @@ class SecurityComplianceModule:
                 st.caption("Next: Dec 1st")
                 st.caption("Recipients: audit@company.com")
                 
-                st.button("➕ New Schedule", use_container_width=True)
+                st.button("➕ New Schedule", use_container_width =True)
         
         with tab4:
             st.markdown("### ⚙️ Audit Logging Configuration")
             
             # CloudTrail settings
-            with st.expander("☁️ CloudTrail Settings", expanded=True):
-                st.checkbox("Enable CloudTrail logging", value=True)
+            with st.expander("☁️ CloudTrail Settings", expanded =True):
+                st.checkbox("Enable CloudTrail logging", value =True)
                 st.text_input("S3 Bucket", "company-audit-logs-bucket")
-                st.checkbox("Log file validation", value=True)
-                st.checkbox("Multi-region logging", value=True)
-                st.checkbox("Organization trail", value=True)
+                st.checkbox("Log file validation", value =True)
+                st.checkbox("Multi-region logging", value =True)
+                st.checkbox("Organization trail", value =True)
             
             # Log retention
-            with st.expander("📦 Log Retention", expanded=True):
+            with st.expander("📦 Log Retention", expanded =True):
                 retention_period = st.selectbox(
                     "CloudWatch Logs Retention",
                     ["7 days", "14 days", "30 days", "90 days", "180 days", "1 year", "Never expire"]
                 )
                 
-                st.checkbox("Archive logs to S3 Glacier after 90 days", value=True)
-                st.checkbox("Enable log encryption", value=True)
+                st.checkbox("Archive logs to S3 Glacier after 90 days", value =True)
+                st.checkbox("Enable log encryption", value =True)
                 st.selectbox("Encryption Key", ["AWS Managed", "Customer Managed"])
             
             # Event filtering
-            with st.expander("🔍 Event Filtering", expanded=True):
-                st.checkbox("Log read-only events", value=True)
-                st.checkbox("Log write-only events", value=True)
-                st.checkbox("Log data events (S3/Lambda)", value=False)
-                st.checkbox("Exclude AWS service events", value=False)
+            with st.expander("🔍 Event Filtering", expanded =True):
+                st.checkbox("Log read-only events", value =True)
+                st.checkbox("Log write-only events", value =True)
+                st.checkbox("Log data events (S3/Lambda)", value =False)
+                st.checkbox("Exclude AWS service events", value =False)
             
             # Alerts and notifications
-            with st.expander("🔔 Alerts & Notifications", expanded=True):
-                st.checkbox("Alert on root account usage", value=True)
-                st.checkbox("Alert on unauthorized API calls", value=True)
-                st.checkbox("Alert on IAM policy changes", value=True)
-                st.checkbox("Alert on network changes", value=True)
-                st.checkbox("Alert on S3 bucket policy changes", value=True)
+            with st.expander("🔔 Alerts & Notifications", expanded =True):
+                st.checkbox("Alert on root account usage", value =True)
+                st.checkbox("Alert on unauthorized API calls", value =True)
+                st.checkbox("Alert on IAM policy changes", value =True)
+                st.checkbox("Alert on network changes", value =True)
+                st.checkbox("Alert on S3 bucket policy changes", value =True)
                 
                 st.text_input("SNS Topic ARN", "arn:aws:sns:us-east-1:123456789012:security-alerts")
             
-            st.button("💾 Save Configuration", type="primary", use_container_width=True)
+            st.button("💾 Save Configuration", type ="primary", use_container_width =True)
     
     # ==================== Vulnerability Scanning ====================
     def vulnerability_scanning(self):
@@ -1020,9 +1020,9 @@ class SecurityComplianceModule:
             total_scans_value = self._get_data('total_scans', "1,247")
             st.metric("Total Scans", total_scans_value)
         with col2:
-            st.metric("Critical Vulns", "3", delta="-2", delta_color="inverse")
+            st.metric("Critical Vulns", "3", delta ="-2", delta_color ="inverse")
         with col3:
-            st.metric("High Vulns", "47", delta="5")
+            st.metric("High Vulns", "47", delta ="5")
         with col4:
             # Mode-aware metric
             last_scan_value = self._get_data('last_scan', "2h ago")
@@ -1044,7 +1044,7 @@ class SecurityComplianceModule:
             
             with col1:
                 # New scan configuration
-                with st.expander("➕ Start New Scan", expanded=False):
+                with st.expander("➕ Start New Scan", expanded =False):
                     scan_name = st.text_input("Scan Name", "Production Infrastructure Scan")
                     
                     scan_type = st.selectbox(
@@ -1077,23 +1077,23 @@ class SecurityComplianceModule:
                     st.markdown("**Vulnerability Categories:**")
                     col_vuln1, col_vuln2, col_vuln3 = st.columns(3)
                     with col_vuln1:
-                        st.checkbox("CVEs", value=True)
-                        st.checkbox("Misconfigurations", value=True)
-                        st.checkbox("Exposed Secrets", value=True)
+                        st.checkbox("CVEs", value =True)
+                        st.checkbox("Misconfigurations", value =True)
+                        st.checkbox("Exposed Secrets", value =True)
                     with col_vuln2:
-                        st.checkbox("Weak Encryption", value=True)
-                        st.checkbox("Outdated Software", value=True)
-                        st.checkbox("Network Issues", value=True)
+                        st.checkbox("Weak Encryption", value =True)
+                        st.checkbox("Outdated Software", value =True)
+                        st.checkbox("Network Issues", value =True)
                     with col_vuln3:
-                        st.checkbox("Compliance Violations", value=True)
-                        st.checkbox("Best Practice Gaps", value=True)
-                        st.checkbox("License Issues", value=False)
+                        st.checkbox("Compliance Violations", value =True)
+                        st.checkbox("Best Practice Gaps", value =True)
+                        st.checkbox("License Issues", value =False)
                     
                     schedule = st.checkbox("Schedule recurring scan")
                     if schedule:
                         st.selectbox("Frequency", ["Daily", "Weekly", "Monthly"])
                     
-                    if st.button("🚀 Start Scan", type="primary", use_container_width=True):
+                    if st.button("🚀 Start Scan", type ="primary", use_container_width =True):
                         with st.spinner("Initializing scan..."):
                             import time
                             time.sleep(2)
@@ -1102,21 +1102,21 @@ class SecurityComplianceModule:
                 # Active scans table
                 st.markdown("**Running Scans:**")
                 active_scans_df = self._get_active_scans()
-                st.dataframe(active_scans_df, use_container_width=True, hide_index=True)
+                st.dataframe(active_scans_df, use_container_width =True, hide_index =True)
                 
                 # Recent scan history
                 st.markdown("**Recent Scan History:**")
                 scan_history_df = self._get_scan_history()
-                st.dataframe(scan_history_df, use_container_width=True, hide_index=True)
+                st.dataframe(scan_history_df, use_container_width =True, hide_index =True)
             
             with col2:
                 st.markdown("### 📊 Scan Progress")
                 
-                st.progress(0.65, text="Infrastructure Scan: 65%")
+                st.progress(0.65, text ="Infrastructure Scan: 65%")
                 st.caption("ETA: 15 minutes")
                 st.markdown("---")
                 
-                st.progress(0.30, text="Container Scan: 30%")
+                st.progress(0.30, text ="Container Scan: 30%")
                 st.caption("ETA: 25 minutes")
                 st.markdown("---")
                 
@@ -1135,7 +1135,7 @@ class SecurityComplianceModule:
                 severity_filter = st.multiselect(
                     "Severity",
                     ["Critical", "High", "Medium", "Low", "Info"],
-                    default=["Critical", "High"]
+                    default =["Critical", "High"]
                 )
             with col_f2:
                 status_filter = st.selectbox("Status", ["All", "Open", "In Progress", "Resolved", "Ignored"])
@@ -1146,13 +1146,13 @@ class SecurityComplianceModule:
             
             # Vulnerabilities table
             vulns_df = self._get_vulnerabilities()
-            st.dataframe(vulns_df, use_container_width=True, hide_index=True)
+            st.dataframe(vulns_df, use_container_width =True, hide_index =True)
             
             # Vulnerability details
             selected_vuln = st.selectbox("View Details", vulns_df['CVE/ID'].tolist() if not vulns_df.empty else [])
             
             if selected_vuln:
-                with st.expander("📄 Vulnerability Details", expanded=True):
+                with st.expander("📄 Vulnerability Details", expanded =True):
                     vuln_details = self._get_vulnerability_details(selected_vuln)
                     
                     col_d1, col_d2 = st.columns([2, 1])
@@ -1165,17 +1165,17 @@ class SecurityComplianceModule:
                         st.write(vuln_details['description'])
                         
                         st.markdown("**Affected Resources:**")
-                        st.dataframe(pd.DataFrame(vuln_details['affected_resources']), hide_index=True)
+                        st.dataframe(pd.DataFrame(vuln_details['affected_resources']), hide_index =True)
                         
                         st.markdown("**Remediation:**")
                         st.info(vuln_details['remediation'])
                     
                     with col_d2:
                         st.markdown("**Actions:**")
-                        st.button("🔧 Create Ticket", use_container_width=True)
-                        st.button("✅ Mark Resolved", use_container_width=True)
-                        st.button("🚫 Ignore", use_container_width=True)
-                        st.button("📊 Export", use_container_width=True)
+                        st.button("🔧 Create Ticket", use_container_width =True)
+                        st.button("✅ Mark Resolved", use_container_width =True)
+                        st.button("🚫 Ignore", use_container_width =True)
+                        st.button("📊 Export", use_container_width =True)
                         
                         st.markdown("---")
                         st.markdown("**References:**")
@@ -1186,36 +1186,36 @@ class SecurityComplianceModule:
             st.markdown("---")
             col_action1, col_action2, col_action3 = st.columns(3)
             with col_action1:
-                st.button("🎫 Create Tickets (Selected)", use_container_width=True)
+                st.button("🎫 Create Tickets (Selected)", use_container_width =True)
             with col_action2:
-                st.button("✅ Mark Resolved (Selected)", use_container_width=True)
+                st.button("✅ Mark Resolved (Selected)", use_container_width =True)
             with col_action3:
-                st.button("📤 Export Report", use_container_width=True)
+                st.button("📤 Export Report", use_container_width =True)
         
         with tab3:
             st.markdown("### 🔧 Vulnerability Scan Configuration")
             
             # Scanner integrations
-            with st.expander("🔌 Scanner Integrations", expanded=True):
+            with st.expander("🔌 Scanner Integrations", expanded =True):
                 st.markdown("**AWS Native Services:**")
                 col_aws1, col_aws2 = st.columns(2)
                 with col_aws1:
-                    aws_inspector = st.checkbox("AWS Inspector", value=True)
+                    aws_inspector = st.checkbox("AWS Inspector", value =True)
                     if aws_inspector:
                         st.caption("EC2 instance scanning")
                         st.selectbox("Assessment Template", ["CIS Level 1", "CIS Level 2", "Custom"])
                     
-                    ecr_scanning = st.checkbox("ECR Image Scanning", value=True)
+                    ecr_scanning = st.checkbox("ECR Image Scanning", value =True)
                     if ecr_scanning:
                         st.caption("Container image scanning")
-                        st.checkbox("Scan on push", value=True)
+                        st.checkbox("Scan on push", value =True)
                 
                 with col_aws2:
-                    guardduty = st.checkbox("GuardDuty", value=True)
+                    guardduty = st.checkbox("GuardDuty", value =True)
                     if guardduty:
                         st.caption("Threat detection")
                     
-                    codeguru = st.checkbox("CodeGuru Security", value=False)
+                    codeguru = st.checkbox("CodeGuru Security", value =False)
                     if codeguru:
                         st.caption("Code vulnerability detection")
                 
@@ -1223,50 +1223,50 @@ class SecurityComplianceModule:
                 st.markdown("**Third-Party Scanners:**")
                 col_3rd1, col_3rd2 = st.columns(2)
                 with col_3rd1:
-                    trivy = st.checkbox("Trivy", value=False)
+                    trivy = st.checkbox("Trivy", value =False)
                     if trivy:
                         st.text_input("Trivy Server URL", "")
                     
-                    snyk = st.checkbox("Snyk", value=False)
+                    snyk = st.checkbox("Snyk", value =False)
                     if snyk:
-                        st.text_input("Snyk API Token", type="password")
+                        st.text_input("Snyk API Token", type ="password")
                 
                 with col_3rd2:
-                    aqua = st.checkbox("Aqua Security", value=False)
+                    aqua = st.checkbox("Aqua Security", value =False)
                     if aqua:
                         st.text_input("Aqua Console URL", "")
                     
-                    prisma = st.checkbox("Prisma Cloud", value=False)
+                    prisma = st.checkbox("Prisma Cloud", value =False)
                     if prisma:
-                        st.text_input("Prisma API Key", type="password")
+                        st.text_input("Prisma API Key", type ="password")
             
             # Scan policies
-            with st.expander("📜 Scan Policies", expanded=True):
+            with st.expander("📜 Scan Policies", expanded =True):
                 st.markdown("**Automated Scanning:**")
-                st.checkbox("Scan all EC2 instances on launch", value=True)
-                st.checkbox("Scan all container images on push", value=True)
-                st.checkbox("Scan Lambda functions on deployment", value=True)
-                st.checkbox("Scan S3 buckets for exposed data", value=True)
+                st.checkbox("Scan all EC2 instances on launch", value =True)
+                st.checkbox("Scan all container images on push", value =True)
+                st.checkbox("Scan Lambda functions on deployment", value =True)
+                st.checkbox("Scan S3 buckets for exposed data", value =True)
                 
                 st.markdown("**Scan Scheduling:**")
-                st.checkbox("Daily infrastructure scan", value=True)
+                st.checkbox("Daily infrastructure scan", value =True)
                 st.selectbox("Scan time", ["00:00 UTC", "02:00 UTC", "06:00 UTC"])
                 
-                st.checkbox("Weekly comprehensive scan", value=True)
+                st.checkbox("Weekly comprehensive scan", value =True)
                 st.selectbox("Scan day", ["Sunday", "Monday", "Friday"])
             
             # Notification settings
-            with st.expander("🔔 Notifications", expanded=True):
-                st.checkbox("Alert on critical vulnerabilities", value=True)
-                st.checkbox("Alert on high vulnerabilities", value=True)
-                st.checkbox("Daily vulnerability summary", value=True)
-                st.checkbox("Weekly scan report", value=True)
+            with st.expander("🔔 Notifications", expanded =True):
+                st.checkbox("Alert on critical vulnerabilities", value =True)
+                st.checkbox("Alert on high vulnerabilities", value =True)
+                st.checkbox("Daily vulnerability summary", value =True)
+                st.checkbox("Weekly scan report", value =True)
                 
                 st.text_input("Notification Email", "security-team@company.com")
                 st.text_input("Slack Webhook URL", "")
                 st.text_input("SNS Topic ARN", "arn:aws:sns:us-east-1:123456789012:vuln-alerts")
             
-            st.button("💾 Save Configuration", type="primary", use_container_width=True)
+            st.button("💾 Save Configuration", type ="primary", use_container_width =True)
         
         with tab4:
             st.markdown("### 📊 Vulnerability Reports")
@@ -1296,18 +1296,18 @@ class SecurityComplianceModule:
                 include_options = st.multiselect(
                     "Include",
                     ["Executive Summary", "Vulnerability Details", "Remediation Steps", "Compliance Mapping", "Trend Charts"],
-                    default=["Executive Summary", "Vulnerability Details"]
+                    default =["Executive Summary", "Vulnerability Details"]
                 )
                 
-                if st.button("📊 Generate Report", type="primary", use_container_width=True):
+                if st.button("📊 Generate Report", type ="primary", use_container_width =True):
                     with st.spinner("Generating report..."):
                         import time
                         time.sleep(2)
                         st.success("✅ Report generated!")
                         st.download_button(
                             "📥 Download Report",
-                            data="Sample vulnerability report",
-                            file_name=f"vulnerability_report_{datetime.now().strftime('%Y%m%d')}.pdf"
+                            data ="Sample vulnerability report",
+                            file_name =f"vulnerability_report_{datetime.now().strftime('%Y%m%d')}.pdf"
                         )
             
             with col2:
@@ -1327,7 +1327,7 @@ class SecurityComplianceModule:
                 st.caption("1st of each month")
                 st.caption("To: compliance@company.com")
                 
-                st.button("➕ New Schedule", use_container_width=True)
+                st.button("➕ New Schedule", use_container_width =True)
     
     # ==================== Security Dashboard ====================
     def security_dashboard(self):
@@ -1340,24 +1340,24 @@ class SecurityComplianceModule:
             st.markdown("### 🎯 Overall Security Posture")
             score = 87
             st.progress(score / 100)
-            st.metric("Security Score", f"{score}/100", delta="3")
+            st.metric("Security Score", f"{score}/100", delta ="3")
         
         st.markdown("---")
         
         # Key metrics
         col1, col2, col3, col4, col5 = st.columns(5)
         with col1:
-            st.metric("Encrypted Resources", "98.8%", delta="0.5%")
+            st.metric("Encrypted Resources", "98.8%", delta ="0.5%")
         with col2:
-            st.metric("Compliant Zones", "94%", delta="2%")
+            st.metric("Compliant Zones", "94%", delta ="2%")
         with col3:
             # Mode-aware metric
             active_secrets_value = self._get_data('active_secrets', "342")
             st.metric("Active Secrets", active_secrets_value)
         with col4:
-            st.metric("Critical Vulns", "3", delta="-2", delta_color="inverse")
+            st.metric("Critical Vulns", "3", delta ="-2", delta_color ="inverse")
         with col5:
-            st.metric("Certificates OK", "127", delta="5")
+            st.metric("Certificates OK", "127", delta ="5")
         
         st.markdown("---")
         
@@ -1396,7 +1396,7 @@ class SecurityComplianceModule:
                 with col_name:
                     st.write(item["Framework"])
                 with col_score:
-                    st.progress(item["Score"] / 100, text=f"{item['Score']}%")
+                    st.progress(item["Score"] / 100, text =f"{item['Score']}%")
                 with col_status:
                     if item["Score"] >= 85:
                         st.success("✓")
@@ -1471,7 +1471,7 @@ class SecurityComplianceModule:
             }
         ])
         
-        st.dataframe(activity_df, use_container_width=True, hide_index=True)
+        st.dataframe(activity_df, use_container_width =True, hide_index =True)
     
     # ==================== Demo Data Methods ====================
     def _get_rbac_roles(self):

@@ -42,7 +42,7 @@ class PolicyGuardrailsModule:
 
 
     
-    def __init__(self):
+    def __init__self:
         self.demo_data = DemoDataProvider()
     
 
@@ -110,8 +110,8 @@ class PolicyGuardrailsModule:
             st.metric("Violations Today", violations_today_value, violations_today_delta)
         with col4:
             # Mode-aware metric
-            auto-remediated_value = self._get_data('auto-remediated', "18")
-            auto-remediated_delta = self._get_data('auto-remediated_delta', "+5")
+            auto_remediated_value = self._get_data('auto-remediated', "18")
+            auto_remediated_delta = self._get_data('auto-remediated_delta', "+5")
             st.metric("Auto-Remediated", auto-remediated_value, auto-remediated_delta)
         
         st.markdown("---")
@@ -150,7 +150,7 @@ class PolicyGuardrailsModule:
         cols = st.columns(2)
         for idx, (title, details) in enumerate(capabilities.items()):
             with cols[idx % 2]:
-                with st.expander(f"{details['icon']} {title}", expanded=False):
+                with st.expander(f"{details['icon']} {title}", expanded =False):
                     st.markdown(f"**{details['desc']}**")
                     for feature in details['features']:
                         st.markdown(f"- {feature}")
@@ -186,7 +186,7 @@ class PolicyGuardrailsModule:
 │  └──────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────┘
         '''
-        st.code(architecture_code, language='text')
+        st.code(architecture_code, language ='text')
         
         # Recent activity
         st.markdown("---")
@@ -196,7 +196,7 @@ class PolicyGuardrailsModule:
         
         for activity in activities[:5]:
             status_icon = "✅" if activity['status'] == "Compliant" else "⚠️"
-            with st.expander(f"{status_icon} {activity['policy']} - {activity['resource']}", expanded=False):
+            with st.expander(f"{status_icon} {activity['policy']} - {activity['resource']}", expanded =False):
                 col1, col2 = st.columns(2)
                 with col1:
                     st.markdown(f"**Action:** {activity['action']}")
@@ -244,7 +244,7 @@ class PolicyGuardrailsModule:
         policies = self.demo_data.get_policy_as_code()
         
         for policy in policies:
-            with st.expander(f"📜 {policy['name']} (v{policy['version']})", expanded=False):
+            with st.expander(f"📜 {policy['name']} (v{policy['version']})", expanded =False):
                 col1, col2 = st.columns([2, 1])
                 
                 with col1:
@@ -261,16 +261,16 @@ class PolicyGuardrailsModule:
                 
                 # Policy code
                 st.markdown("**Policy Code:**")
-                st.code(policy['policy_code'], language='yaml')
+                st.code(policy['policy_code'], language ='yaml')
                 
                 # Actions
                 col1, col2, col3 = st.columns(3)
                 with col1:
-                    st.button(f"✏️ Edit", key=f"edit_{policy['id']}")
+                    st.button(f"✏️ Edit", key =f"edit_{policy['id']}")
                 with col2:
-                    st.button(f"🧪 Test", key=f"test_{policy['id']}")
+                    st.button(f"🧪 Test", key =f"test_{policy['id']}")
                 with col3:
-                    st.button(f"🚀 Deploy", key=f"deploy_{policy['id']}")
+                    st.button(f"🚀 Deploy", key =f"deploy_{policy['id']}")
     
     def _render_create_policy(self):
         """Create new policy"""
@@ -316,7 +316,7 @@ deny[msg] {
     msg = "EC2 instances must have Owner tag"
 }'''
         
-        policy_code = st.text_area("Policy Code", default_policy, height=300)
+        policy_code = st.text_area("Policy Code", default_policy, height =300)
         
         # Test data
         st.markdown("**Test Data (Optional):**")
@@ -325,7 +325,7 @@ deny[msg] {
   "tags": {
     "Environment": "production"
   }
-}''', height=150)
+}''', height =150)
         
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -365,7 +365,7 @@ deny[msg] {
         versions = self.demo_data.get_policy_versions()
         
         for version in versions:
-            with st.expander(f"v{version['version']} - {version['commit_message']}", expanded=False):
+            with st.expander(f"v{version['version']} - {version['commit_message']}", expanded =False):
                 col1, col2 = st.columns(2)
                 with col1:
                     st.markdown(f"**Author:** {version['author']}")
@@ -376,8 +376,8 @@ deny[msg] {
                     st.markdown(f"**Status:** {version['status']}")
                 
                 # Diff view
-                if st.button(f"View Diff", key=f"diff_{version['version']}"):
-                    st.code(version['diff'], language='diff')
+                if st.button(f"View Diff", key =f"diff_{version['version']}"):
+                    st.code(version['diff'], language ='diff')
     
     def _render_policy_testing(self):
         """Policy testing framework"""
@@ -399,12 +399,12 @@ deny[msg] {
                 "Invalid naming format",
                 "Non-compliant encryption",
                 "Quota exceeded"
-            ], default=["Valid resource configuration"])
+            ], default =["Valid resource configuration"])
         
         with col2:
             st.markdown("**Test Configuration:**")
             test_env = st.selectbox("Test Environment", ["Development", "Staging", "Production"])
-            auto_fix = st.checkbox("Enable Auto-Remediation Suggestions", value=True)
+            auto_fix = st.checkbox("Enable Auto-Remediation Suggestions", value =True)
         
         if st.button("▶️ Run Tests"):
             st.markdown("---")
@@ -453,11 +453,11 @@ deny[msg] {
         # Cloud provider selection
         col1, col2, col3 = st.columns(3)
         with col1:
-            aws_enabled = st.checkbox("AWS", value=True)
+            aws_enabled = st.checkbox("AWS", value =True)
         with col2:
-            azure_enabled = st.checkbox("Azure", value=True)
+            azure_enabled = st.checkbox("Azure", value =True)
         with col3:
-            gcp_enabled = st.checkbox("GCP", value=True)
+            gcp_enabled = st.checkbox("GCP", value =True)
         
         st.markdown("---")
         
@@ -465,7 +465,7 @@ deny[msg] {
         mappings = self.demo_data.get_cross_cloud_mappings()
         
         for mapping in mappings:
-            with st.expander(f"🔗 {mapping['policy_name']}", expanded=False):
+            with st.expander(f"🔗 {mapping['policy_name']}", expanded =False):
                 st.markdown(f"**Description:** {mapping['description']}")
                 
                 # Cloud-specific implementations
@@ -474,17 +474,17 @@ deny[msg] {
                 if aws_enabled:
                     with cols[0]:
                         st.markdown("**AWS Implementation:**")
-                        st.code(mapping['aws_implementation'], language='yaml')
+                        st.code(mapping['aws_implementation'], language ='yaml')
                 
                 if azure_enabled:
                     with cols[1]:
                         st.markdown("**Azure Implementation:**")
-                        st.code(mapping['azure_implementation'], language='yaml')
+                        st.code(mapping['azure_implementation'], language ='yaml')
                 
                 if gcp_enabled:
                     with cols[2]:
                         st.markdown("**GCP Implementation:**")
-                        st.code(mapping['gcp_implementation'], language='yaml')
+                        st.code(mapping['gcp_implementation'], language ='yaml')
                 
                 # Sync status
                 st.markdown("**Sync Status:**")
@@ -526,7 +526,7 @@ deny[msg] {
         
         for sync in sync_history:
             status_icon = "✅" if sync['status'] == "Success" else "❌"
-            with st.expander(f"{status_icon} {sync['policy']} - {sync['timestamp']}", expanded=False):
+            with st.expander(f"{status_icon} {sync['policy']} - {sync['timestamp']}", expanded =False):
                 col1, col2 = st.columns(2)
                 with col1:
                     st.markdown(f"**Clouds:** {sync['clouds']}")
@@ -560,7 +560,7 @@ deny[msg] {
         }
         
         df = pd.DataFrame(compliance_data)
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.dataframe(df, use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -638,7 +638,7 @@ deny[msg] {
         
         # Policy list
         for policy in policies:
-            with st.expander(f"🏷️ {policy['name']}", expanded=False):
+            with st.expander(f"🏷️ {policy['name']}", expanded =False):
                 col1, col2 = st.columns(2)
                 
                 with col1:
@@ -700,8 +700,8 @@ deny[msg] {
             st.metric("Compliant", compliant_value, compliant_delta)
             with col3:
                 # Mode-aware metric
-            non-compliant_value = self._get_data('non-compliant', "107")
-            non-compliant_delta = self._get_data('non-compliant_delta', "-12")
+            non_compliant_value = self._get_data('non-compliant', "107")
+            non_compliant_delta = self._get_data('non-compliant_delta', "-12")
             st.metric("Non-Compliant", non-compliant_value, non-compliant_delta)
             with col4:
                 # Mode-aware metric
@@ -750,7 +750,7 @@ deny[msg] {
         }
         
         df = pd.DataFrame(compliance_data)
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.dataframe(df, use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -772,9 +772,9 @@ deny[msg] {
         col1, col2 = st.columns(2)
         
         with col1:
-            auto_remediate = st.checkbox("Enable Auto-Remediation", value=True)
-            default_tags = st.checkbox("Apply Default Tags", value=True)
-            notify_owner = st.checkbox("Notify Resource Owner", value=True)
+            auto_remediate = st.checkbox("Enable Auto-Remediation", value =True)
+            default_tags = st.checkbox("Apply Default Tags", value =True)
+            notify_owner = st.checkbox("Notify Resource Owner", value =True)
         
         with col2:
             remediation_delay = st.slider("Remediation Delay (hours)", 0, 72, 24)
@@ -796,7 +796,7 @@ deny[msg] {
         for action in actions:
             col1, col2 = st.columns([1, 3])
             with col1:
-                st.checkbox(action['action'], value=True, key=f"action_{action['action']}")
+                st.checkbox(action['action'], value =True, key =f"action_{action['action']}")
             with col2:
                 st.markdown(f"*{action['description']}*")
         
@@ -829,7 +829,7 @@ deny[msg] {
         rules = self.demo_data.get_naming_enforcement_rules()
         
         for rule in rules:
-            with st.expander(f"📝 {rule['resource_type']} Naming Rule", expanded=False):
+            with st.expander(f"📝 {rule['resource_type']} Naming Rule", expanded =False):
                 col1, col2 = st.columns(2)
                 
                 with col1:
@@ -849,8 +849,8 @@ deny[msg] {
                 
                 # Test the pattern
                 st.markdown("**Test This Pattern:**")
-                test_name = st.text_input("Enter name to test", key=f"test_{rule['resource_type']}")
-                if st.button("Validate", key=f"validate_{rule['resource_type']}"):
+                test_name = st.text_input("Enter name to test", key =f"test_{rule['resource_type']}")
+                if st.button("Validate", key =f"validate_{rule['resource_type']}"):
                     # Simple regex test (demo)
                     import re
                     pattern = rule['pattern'].replace('*', '.*')
@@ -868,7 +868,7 @@ deny[msg] {
         placement_rules = self.demo_data.get_placement_rules()
         
         for rule in placement_rules:
-            with st.expander(f"🗺️ {rule['name']}", expanded=False):
+            with st.expander(f"🗺️ {rule['name']}", expanded =False):
                 st.markdown(f"**Description:** {rule['description']}")
                 
                 col1, col2 = st.columns(2)
@@ -896,7 +896,7 @@ deny[msg] {
         # Bulk validation
         st.markdown("**Bulk Validation:**")
         
-        uploaded_file = st.file_uploader("Upload CSV with resource names", type=['csv'])
+        uploaded_file = st.file_uploader("Upload CSV with resource names", type =['csv'])
         
         if st.button("🔍 Validate All Resources"):
             st.markdown("---")
@@ -957,14 +957,14 @@ deny[msg] {
             st.metric("Monitored Quotas", monitored_quotas_value)
         with col2:
             # Mode-aware metric
-            at_risk_(>80pct)_value = self._get_data('at_risk_(>80pct)', "23")
-            at_risk_(>80pct)_delta = self._get_data('at_risk_(>80pct)_delta', "⚠️")
-            st.metric("At Risk (>80%)", at_risk_(>80pct)_value, at_risk_(>80pct)_delta)
+            at_risk_gt80pct_value = self._get_data('at_risk_gt80pct', "23")
+            at_risk_gt80pct_delta = self._get_data('at_risk_gt80pct_delta', "⚠️")
+            st.metric("At Risk (>80%)", at_risk_gt80pct_value, at_risk_gt80pct_delta)
         with col3:
             # Mode-aware metric
-            critical_(>90pct)_value = self._get_data('critical_(>90pct)', "5")
-            critical_(>90pct)_delta = self._get_data('critical_(>90pct)_delta', "🔴")
-            st.metric("Critical (>90%)", critical_(>90pct)_value, critical_(>90pct)_delta)
+            critical_gt90pct_value = self._get_data('critical_gt90pct', "5")
+            critical_gt90pct_delta = self._get_data('critical_gt90pct_delta', "🔴")
+            st.metric("Critical (>90%)", critical_gt90pct_value, critical_gt90pct_delta)
         with col4:
             # Mode-aware metric
             increase_requests_value = self._get_data('increase_requests', "12")
@@ -992,7 +992,7 @@ deny[msg] {
                 status_color = "🟢"
                 status_text = "OK"
             
-            with st.expander(f"{status_color} {quota['service']} - {quota['quota_name']}", expanded=usage_pct >= 90):
+            with st.expander(f"{status_color} {quota['service']} - {quota['quota_name']}", expanded =usage_pct >= 90):
                 col1, col2, col3 = st.columns(3)
                 
                 with col1:
@@ -1015,10 +1015,10 @@ deny[msg] {
                 # Actions
                 col1, col2 = st.columns(2)
                 with col1:
-                    if st.button("📈 Request Increase", key=f"increase_{quota['quota_name']}"):
+                    if st.button("📈 Request Increase", key =f"increase_{quota['quota_name']}"):
                         st.success("Quota increase request submitted")
                 with col2:
-                    if st.button("📧 Set Alert", key=f"alert_{quota['quota_name']}"):
+                    if st.button("📧 Set Alert", key =f"alert_{quota['quota_name']}"):
                         st.success("Alert configured")
     
     def _render_quota_alerts(self):
@@ -1041,13 +1041,13 @@ deny[msg] {
         
         col1, col2 = st.columns(2)
         with col1:
-            email_alerts = st.checkbox("Email Alerts", value=True)
-            slack_alerts = st.checkbox("Slack Alerts", value=True)
-            sns_alerts = st.checkbox("AWS SNS", value=True)
+            email_alerts = st.checkbox("Email Alerts", value =True)
+            slack_alerts = st.checkbox("Slack Alerts", value =True)
+            sns_alerts = st.checkbox("AWS SNS", value =True)
         
         with col2:
-            pagerduty_alerts = st.checkbox("PagerDuty", value=False)
-            webhook_alerts = st.checkbox("Custom Webhook", value=False)
+            pagerduty_alerts = st.checkbox("PagerDuty", value =False)
+            webhook_alerts = st.checkbox("Custom Webhook", value =False)
         
         if email_alerts:
             email_recipients = st.text_area("Email Recipients (one per line)", "devops@company.com\ncloudops@company.com")
@@ -1075,7 +1075,7 @@ deny[msg] {
         st.markdown("### 📝 Quota Increase Requests")
         
         # New request form
-        with st.expander("➕ Request Quota Increase", expanded=False):
+        with st.expander("➕ Request Quota Increase", expanded =False):
             col1, col2 = st.columns(2)
             
             with col1:
@@ -1088,8 +1088,8 @@ deny[msg] {
                 ])
             
             with col2:
-                current_limit = st.number_input("Current Limit", value=100)
-                requested_limit = st.number_input("Requested Limit", value=200)
+                current_limit = st.number_input("Current Limit", value =100)
+                requested_limit = st.number_input("Requested Limit", value =200)
             
             region = st.selectbox("Region", ["us-east-1", "us-west-2", "eu-west-1"])
             justification = st.text_area("Business Justification", "Scaling for Q4 traffic increase...")
@@ -1107,7 +1107,7 @@ deny[msg] {
         for req in requests:
             status_icon = {"Approved": "✅", "Pending": "⏳", "Rejected": "❌"}[req['status']]
             
-            with st.expander(f"{status_icon} {req['service']} - {req['quota']} ({req['status']})", expanded=False):
+            with st.expander(f"{status_icon} {req['service']} - {req['quota']} ({req['status']})", expanded =False):
                 col1, col2 = st.columns(2)
                 
                 with col1:
@@ -1164,9 +1164,9 @@ deny[msg] {
             st.metric("Current Usage", current_usage_value, current_usage_delta)
         with col2:
             # Mode-aware metric
-            forecasted_(30d)_value = self._get_data('forecasted_(30d)', "96%")
-            forecasted_(30d)_delta = self._get_data('forecasted_(30d)_delta', "+9%")
-            st.metric("Forecasted (30d)", forecasted_(30d)_value, forecasted_(30d)_delta)
+            forecasted_30d_value = self._get_data('forecasted_30d', "96%")
+            forecasted_30d_delta = self._get_data('forecasted_30d_delta', "+9%")
+            st.metric("Forecasted (30d)", forecasted_30d_value, forecasted_30d_delta)
         with col3:
             # Mode-aware metric
             days_to_limit_value = self._get_data('days_to_limit', "23")

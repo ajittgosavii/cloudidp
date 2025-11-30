@@ -48,7 +48,7 @@ class DeveloperExperienceModule:
 
 
     
-    def __init__(self):
+    def __init__self:
         self.module_name = "Developer Experience & Self-Service"
     
     @staticmethod
@@ -200,8 +200,8 @@ class DeveloperExperienceModule:
             st.metric("Active Developers", active_developers_value, active_developers_delta)
         with col2:
             # Mode-aware metric
-            self-service_requests_value = self._get_data('self-service_requests', "12.4K")
-            self-service_requests_delta = self._get_data('self-service_requests_delta', "+2.3K")
+            self_service_requests_value = self._get_data('self-service_requests', "12.4K")
+            self_service_requests_delta = self._get_data('self-service_requests_delta', "+2.3K")
             st.metric("Self-Service Requests", self-service_requests_value, self-service_requests_delta)
         with col3:
             # Mode-aware metric
@@ -281,7 +281,7 @@ class DeveloperExperienceModule:
         ]
         
         df_catalog = pd.DataFrame(catalog_items)
-        st.dataframe(df_catalog, use_container_width=True, hide_index=True)
+        st.dataframe(df_catalog, use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -304,12 +304,12 @@ class DeveloperExperienceModule:
             
             project_code = st.text_input(
                 "Project Code:",
-                placeholder="PRJ-2025-XXX"
+                placeholder ="PRJ-2025-XXX"
             )
             
             cost_center = st.text_input(
                 "Cost Center:",
-                placeholder="CC-ENGINEERING-001"
+                placeholder ="CC-ENGINEERING-001"
             )
         
         with col2:
@@ -324,9 +324,9 @@ class DeveloperExperienceModule:
                  "X-Large (t3.xlarge)"]
             )
             
-            high_availability = st.checkbox("Enable High Availability", value=True)
+            high_availability = st.checkbox("Enable High Availability", value =True)
             
-            auto_scaling = st.checkbox("Enable Auto-Scaling", value=True)
+            auto_scaling = st.checkbox("Enable Auto-Scaling", value =True)
         
         st.markdown("---")
         
@@ -357,7 +357,7 @@ class DeveloperExperienceModule:
             st.metric("HA Cost", f"${ha_cost:.0f}/mo")
         with col4:
             st.metric("Total Estimated", f"${total_monthly_cost:.0f}/mo", 
-                     help="Monthly cost estimate")
+                     help ="Monthly cost estimate")
         
         st.markdown("---")
         
@@ -383,7 +383,7 @@ class DeveloperExperienceModule:
         st.markdown("---")
         
         # Submit Request
-        if st.button("🚀 Submit Provisioning Request", type="primary", use_container_width=True):
+        if st.button("🚀 Submit Provisioning Request", type ="primary", use_container_width =True):
             with st.spinner("Validating request and initiating provisioning..."):
                 import time
                 time.sleep(2)
@@ -437,7 +437,7 @@ class DeveloperExperienceModule:
         ]
         
         df_requests = pd.DataFrame(recent_requests)
-        st.dataframe(df_requests, use_container_width=True, hide_index=True)
+        st.dataframe(df_requests, use_container_width =True, hide_index =True)
     
     @staticmethod
     def render_gitops_integration():
@@ -480,7 +480,7 @@ class DeveloperExperienceModule:
 └── workflows/
     ├── ci-cd/
     └── automation/
-            """, language="text")
+            """, language ="text")
         
         with col2:
             st.markdown("**GitOps Workflow:**")
@@ -510,8 +510,8 @@ class DeveloperExperienceModule:
         with col1:
             repo_url = st.text_input(
                 "Git Repository URL:",
-                value="https://github.com/org/infrastructure-platform.git",
-                disabled=st.session_state.get('demo_mode', True)
+                value ="https://github.com/org/infrastructure-platform.git",
+                disabled =st.session_state.get('demo_mode', True)
             )
             
             branch_strategy = st.selectbox(
@@ -519,8 +519,8 @@ class DeveloperExperienceModule:
                 ["GitFlow", "Trunk-Based", "GitHub Flow", "GitLab Flow"]
             )
             
-            auto_sync = st.checkbox("Enable Auto-Sync", value=True,
-                                   help="Automatically sync repo changes to infrastructure")
+            auto_sync = st.checkbox("Enable Auto-Sync", value =True,
+                                   help ="Automatically sync repo changes to infrastructure")
         
         with col2:
             sync_interval = st.selectbox(
@@ -534,7 +534,7 @@ class DeveloperExperienceModule:
                 ["Rolling Update", "Blue-Green", "Canary", "Recreate"]
             )
             
-            auto_rollback = st.checkbox("Auto-Rollback on Failure", value=True)
+            auto_rollback = st.checkbox("Auto-Rollback on Failure", value =True)
         
         st.markdown("---")
         
@@ -581,7 +581,7 @@ class DeveloperExperienceModule:
         ]
         
         df_pipelines = pd.DataFrame(pipelines)
-        st.dataframe(df_pipelines, use_container_width=True, hide_index=True)
+        st.dataframe(df_pipelines, use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -628,7 +628,7 @@ class DeveloperExperienceModule:
         ]
         
         df_deployments = pd.DataFrame(deployments)
-        st.dataframe(df_deployments, use_container_width=True, hide_index=True)
+        st.dataframe(df_deployments, use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -646,7 +646,7 @@ class DeveloperExperienceModule:
         with col2:
             git_branch = st.text_input(
                 "Git Branch/Tag:",
-                value="main"
+                value ="main"
             )
         
         with col3:
@@ -655,7 +655,7 @@ class DeveloperExperienceModule:
                 ["Standard", "Blue-Green", "Canary"]
             )
         
-        if st.button("🚀 Trigger Deployment", type="primary"):
+        if st.button("🚀 Trigger Deployment", type ="primary"):
             with st.spinner(f"Deploying to {target_env}..."):
                 import time
                 time.sleep(2)
@@ -693,9 +693,9 @@ class DeveloperExperienceModule:
             st.metric("Avg Deploy Time", avg_deploy_time_value, avg_deploy_time_delta)
         with col4:
             # Mode-aware metric
-            rollbacks_(24h)_value = self._get_data('rollbacks_(24h)', "1")
-            rollbacks_(24h)_delta = self._get_data('rollbacks_(24h)_delta', "-2")
-            st.metric("Rollbacks (24h)", rollbacks_(24h)_value, rollbacks_(24h)_delta)
+            rollbacks_24h_value = self._get_data('rollbacks_24h', "1")
+            rollbacks_24h_delta = self._get_data('rollbacks_24h_delta', "-2")
+            st.metric("Rollbacks (24h)", rollbacks_24h_value, rollbacks_24h_delta)
     
     @staticmethod
     def render_drift_notification():
@@ -720,13 +720,13 @@ class DeveloperExperienceModule:
             st.metric("Resources Monitored", resources_monitored_value, resources_monitored_delta)
         with col2:
             # Mode-aware metric
-            drifts_detected_(24h)_value = self._get_data('drifts_detected_(24h)', "23")
-            drifts_detected_(24h)_delta = self._get_data('drifts_detected_(24h)_delta', "+8")
-            st.metric("Drifts Detected (24h)", drifts_detected_(24h)_value, drifts_detected_(24h)_delta)
+            drifts_detected_24h_value = self._get_data('drifts_detected_24h', "23")
+            drifts_detected_24h_delta = self._get_data('drifts_detected_24h_delta', "+8")
+            st.metric("Drifts Detected (24h)", drifts_detected_24h_value, drifts_detected_24h_delta)
         with col3:
             # Mode-aware metric
-            auto-remediated_value = self._get_data('auto-remediated', "18")
-            auto-remediated_delta = self._get_data('auto-remediated_delta', "+5")
+            auto_remediated_value = self._get_data('auto-remediated', "18")
+            auto_remediated_delta = self._get_data('auto-remediated_delta', "+5")
             st.metric("Auto-Remediated", auto-remediated_value, auto-remediated_delta)
         with col4:
             # Mode-aware metric
@@ -788,7 +788,7 @@ class DeveloperExperienceModule:
         ]
         
         df_drift_alerts = pd.DataFrame(drift_alerts)
-        st.dataframe(df_drift_alerts, use_container_width=True, hide_index=True)
+        st.dataframe(df_drift_alerts, use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -809,58 +809,58 @@ class DeveloperExperienceModule:
             st.code("""
 # Security Group Configuration
 resource "aws_security_group" "web" {
-  name        = "web-sg"
+  name = "web-sg"
   description = "Web tier security group"
-  vpc_id      = aws_vpc.main.id
+  vpc_id = aws_vpc.main.id
 
   ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
     cidr_blocks = ["10.0.0.0/8"]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-            """, language="hcl")
+            """, language ="hcl")
         
         with col2:
             st.markdown("**Actual State (AWS):**")
             st.code("""
 # Security Group Configuration
 resource "aws_security_group" "web" {
-  name        = "web-sg"
+  name = "web-sg"
   description = "Web tier security group"
-  vpc_id      = aws_vpc.main.id
+  vpc_id = aws_vpc.main.id
 
   ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
     cidr_blocks = ["10.0.0.0/8"]
   }
 
   # ⚠️ DRIFT: Manually added rule
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]  # ❌ Public SSH
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-            """, language="hcl")
+            """, language ="hcl")
         
         st.markdown("---")
         
@@ -884,7 +884,7 @@ resource "aws_security_group" "web" {
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            if st.button("🔄 Auto-Remediate", type="primary", use_container_width=True):
+            if st.button("🔄 Auto-Remediate", type ="primary", use_container_width =True):
                 with st.spinner("Remediating drift..."):
                     import time
                     time.sleep(2)
@@ -892,12 +892,12 @@ resource "aws_security_group" "web" {
                     st.info("Security group reverted to IaC-defined state.")
         
         with col2:
-            if st.button("✅ Accept Change", use_container_width=True):
+            if st.button("✅ Accept Change", use_container_width =True):
                 st.warning("⚠️ This will update IaC to match actual state.")
                 st.info("Requires approval from Security Team.")
         
         with col3:
-            if st.button("📝 Create Ticket", use_container_width=True):
+            if st.button("📝 Create Ticket", use_container_width =True):
                 st.info("Ticket created: JIRA-SEC-1234")
                 st.success("Assigned to: Security Operations Team")
         
@@ -910,19 +910,19 @@ resource "aws_security_group" "web" {
         
         with col1:
             st.markdown("**Notification Channels:**")
-            notify_slack = st.checkbox("Slack (#infrastructure-alerts)", value=True)
-            notify_email = st.checkbox("Email (ops-team@company.com)", value=True)
-            notify_teams = st.checkbox("Microsoft Teams", value=False)
-            notify_pagerduty = st.checkbox("PagerDuty (Critical only)", value=True)
+            notify_slack = st.checkbox("Slack (#infrastructure-alerts)", value =True)
+            notify_email = st.checkbox("Email (ops-team@company.com)", value =True)
+            notify_teams = st.checkbox("Microsoft Teams", value =False)
+            notify_pagerduty = st.checkbox("PagerDuty (Critical only)", value =True)
         
         with col2:
             st.markdown("**Severity Thresholds:**")
-            critical_notify = st.checkbox("Critical - Immediate notification", value=True)
-            high_notify = st.checkbox("High - Within 15 minutes", value=True)
-            medium_notify = st.checkbox("Medium - Within 1 hour", value=True)
-            low_notify = st.checkbox("Low - Daily digest", value=False)
+            critical_notify = st.checkbox("Critical - Immediate notification", value =True)
+            high_notify = st.checkbox("High - Within 15 minutes", value =True)
+            medium_notify = st.checkbox("Medium - Within 1 hour", value =True)
+            low_notify = st.checkbox("Low - Daily digest", value =False)
         
-        if st.button("💾 Save Notification Settings", use_container_width=True):
+        if st.button("💾 Save Notification Settings", use_container_width =True):
             st.success("✅ Notification settings saved successfully!")
         
         st.markdown("---")
@@ -931,7 +931,7 @@ resource "aws_security_group" "web" {
         st.markdown("### 📈 Drift Trends")
         
         trend_data = pd.DataFrame({
-            'Date': pd.date_range(start='2025-01-08', end='2025-01-15', freq='D'),
+            'Date': pd.date_rangestart ='2025-01-08', end ='2025-01-15', freq ='D'),
             'Critical': [2, 1, 3, 2, 4, 1, 5, 3],
             'High': [5, 7, 6, 8, 7, 9, 6, 10],
             'Medium': [12, 15, 14, 11, 13, 16, 14, 12],
@@ -984,7 +984,7 @@ resource "aws_security_group" "web" {
         ]
         
         df_history = pd.DataFrame(history)
-        st.dataframe(df_history, use_container_width=True, hide_index=True)
+        st.dataframe(df_history, use_container_width =True, hide_index =True)
     
     @staticmethod
     def render_documentation_examples():
@@ -1022,7 +1022,7 @@ aws configure
 # Clone infrastructure repository
 git clone https://github.com/org/infrastructure-platform.git
 cd infrastructure-platform
-            """, language="bash")
+            """, language ="bash")
             
             st.markdown("#### Your First Deployment")
             
@@ -1039,7 +1039,7 @@ ls -la
 # - variables.tf
 # - outputs.tf
 # - README.md
-                """, language="bash")
+                """, language ="bash")
                 
                 st.markdown("**2. Customize Variables**")
                 st.code("""
@@ -1048,7 +1048,7 @@ environment = "development"
 project_name = "my-web-app"
 instance_type = "t3.small"
 enable_ha = false
-                """, language="hcl")
+                """, language ="hcl")
             
             with col2:
                 st.markdown("**3. Deploy Infrastructure**")
@@ -1061,7 +1061,7 @@ terraform plan
 
 # Apply changes
 terraform apply
-                """, language="bash")
+                """, language ="bash")
                 
                 st.markdown("**4. Verify Deployment**")
                 st.code("""
@@ -1073,7 +1073,7 @@ terraform output
 
 # Test application
 curl https://my-web-app.example.com
-                """, language="bash")
+                """, language ="bash")
             
             st.markdown("---")
             
@@ -1092,12 +1092,12 @@ curl https://my-web-app.example.com
                 st.code("""
 tags = {
   Environment = "production"
-  Project     = "PRJ-2025-001"
-  CostCenter  = "CC-ENG-001"
-  Owner       = "platform-team@company.com"
-  ManagedBy   = "terraform"
+  Project = "PRJ-2025-001"
+  CostCenter = "CC-ENG-001"
+  Owner = "platform-team@company.com"
+  ManagedBy = "terraform"
 }
-                """, language="hcl")
+                """, language ="hcl")
             
             with st.expander("📝 Naming Conventions"):
                 st.markdown("""
@@ -1143,9 +1143,9 @@ module "vpc" {
   name = "\${var.environment}-\${var.project_name}-vpc"
   cidr = "10.0.0.0/16"
   
-  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  azs = ["us-east-1a", "us-east-1b", "us-east-1c"]
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  public_subnets = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
   
   enable_nat_gateway = true
   enable_vpn_gateway = false
@@ -1157,16 +1157,16 @@ module "vpc" {
 module "alb" {
   source = "../../modules/compute/alb"
   
-  name               = "\${var.environment}-\${var.project_name}-alb"
-  vpc_id             = module.vpc.vpc_id
-  subnets            = module.vpc.public_subnets
+  name = "\${var.environment}-\${var.project_name}-alb"
+  vpc_id = module.vpc.vpc_id
+  subnets = module.vpc.public_subnets
   security_group_ids = [module.alb_sg.security_group_id]
   
   certificate_arn = var.ssl_certificate_arn
   
   target_groups = [{
-    name     = "web-servers"
-    port     = 80
+    name = "web-servers"
+    port = 80
     protocol = "HTTP"
   }]
   
@@ -1177,19 +1177,19 @@ module "alb" {
 module "asg" {
   source = "../../modules/compute/asg"
   
-  name                 = "\${var.environment}-\${var.project_name}-asg"
-  vpc_zone_identifier  = module.vpc.private_subnets
-  target_group_arns    = [module.alb.target_group_arns[0]]
+  name = "\${var.environment}-\${var.project_name}-asg"
+  vpc_zone_identifier = module.vpc.private_subnets
+  target_group_arns = [module.alb.target_group_arns[0]]
   
-  min_size         = var.asg_min_size
-  max_size         = var.asg_max_size
+  min_size = var.asg_min_size
+  max_size = var.asg_max_size
   desired_capacity = var.asg_desired_capacity
   
   launch_template = {
-    name          = "\${var.environment}-\${var.project_name}-lt"
-    image_id      = data.aws_ami.amazon_linux_2.id
+    name = "\${var.environment}-\${var.project_name}-lt"
+    image_id = data.aws_ami.amazon_linux_2.id
     instance_type = var.instance_type
-    user_data     = base64encode(file("user-data.sh"))
+    user_data = base64encode(file("user-data.sh"))
   }
   
   tags = local.common_tags
@@ -1201,25 +1201,25 @@ module "rds" {
   
   identifier = "\${var.environment}-\${var.project_name}-mysql"
   
-  engine         = "mysql"
+  engine = "mysql"
   engine_version = "8.0"
   instance_class = var.db_instance_class
   
-  allocated_storage     = 100
+  allocated_storage = 100
   max_allocated_storage = 500
-  storage_encrypted     = true
+  storage_encrypted = true
   
-  db_name  = var.db_name
+  db_name = var.db_name
   username = var.db_username
   password = data.aws_secretsmanager_secret_version.db_password.secret_string
   
-  multi_az               = var.enable_ha
+  multi_az = var.enable_ha
   vpc_security_group_ids = [module.rds_sg.security_group_id]
-  db_subnet_group_name   = module.vpc.database_subnet_group
+  db_subnet_group_name = module.vpc.database_subnet_group
   
   backup_retention_period = 7
-  backup_window          = "03:00-04:00"
-  maintenance_window     = "sun:04:00-sun:05:00"
+  backup_window = "03:00-04:00"
+  maintenance_window = "sun:04:00-sun:05:00"
   
   tags = local.common_tags
 }
@@ -1243,11 +1243,11 @@ module "s3_static_assets" {
   }
   
   lifecycle_rule = [{
-    id      = "transition-old-versions"
+    id = "transition-old-versions"
     enabled = true
     
     noncurrent_version_transition = [{
-      days          = 30
+      days = 30
       storage_class = "STANDARD_IA"
     }]
   }]
@@ -1271,20 +1271,20 @@ module "cloudwatch_alarms" {
 # Outputs
 output "alb_dns_name" {
   description = "DNS name of the load balancer"
-  value       = module.alb.dns_name
+  value = module.alb.dns_name
 }
 
 output "rds_endpoint" {
   description = "RDS database endpoint"
-  value       = module.rds.endpoint
-  sensitive   = true
+  value = module.rds.endpoint
+  sensitive = true
 }
 
 output "static_assets_bucket" {
   description = "S3 bucket for static assets"
-  value       = module.s3_static_assets.bucket_name
+  value = module.s3_static_assets.bucket_name
 }
-                """, language="hcl")
+                """, language ="hcl")
             
             elif example_category == "Serverless":
                 st.markdown("#### Serverless REST API")
@@ -1294,24 +1294,24 @@ output "static_assets_bucket" {
 
 # Lambda Function
 resource "aws_lambda_function" "api" {
-  filename         = "lambda.zip"
-  function_name    = "\${var.environment}-\${var.project_name}-api"
-  role            = aws_iam_role.lambda_exec.arn
-  handler         = "index.handler"
+  filename = "lambda.zip"
+  function_name = "\${var.environment}-\${var.project_name}-api"
+  role = aws_iam_role.lambda_exec.arn
+  handler = "index.handler"
   source_code_hash = filebase64sha256("lambda.zip")
-  runtime         = "nodejs18.x"
-  timeout         = 30
-  memory_size     = 512
+  runtime = "nodejs18.x"
+  timeout = 30
+  memory_size = 512
   
   environment {
     variables = {
       DYNAMODB_TABLE = aws_dynamodb_table.main.name
-      STAGE          = var.environment
+      STAGE = var.environment
     }
   }
   
   vpc_config {
-    subnet_ids         = var.private_subnet_ids
+    subnet_ids = var.private_subnet_ids
     security_group_ids = [aws_security_group.lambda.id]
   }
   
@@ -1320,14 +1320,14 @@ resource "aws_lambda_function" "api" {
 
 # API Gateway REST API
 resource "aws_apigatewayv2_api" "main" {
-  name          = "\${var.environment}-\${var.project_name}-api"
+  name = "\${var.environment}-\${var.project_name}-api"
   protocol_type = "HTTP"
   
   cors_configuration {
     allow_origins = ["https://app.example.com"]
     allow_methods = ["GET", "POST", "PUT", "DELETE"]
     allow_headers = ["content-type", "authorization"]
-    max_age       = 300
+    max_age = 300
   }
   
   tags = local.common_tags
@@ -1338,27 +1338,27 @@ resource "aws_apigatewayv2_integration" "lambda" {
   api_id = aws_apigatewayv2_api.main.id
   
   integration_type = "AWS_PROXY"
-  integration_uri  = aws_lambda_function.api.invoke_arn
+  integration_uri = aws_lambda_function.api.invoke_arn
   
   payload_format_version = "2.0"
 }
 
 # API Gateway Routes
 resource "aws_apigatewayv2_route" "get_items" {
-  api_id    = aws_apigatewayv2_api.main.id
+  api_id = aws_apigatewayv2_api.main.id
   route_key = "GET /items"
-  target    = "integrations/\${aws_apigatewayv2_integration.lambda.id}"
+  target = "integrations/\${aws_apigatewayv2_integration.lambda.id}"
   
   authorization_type = "JWT"
-  authorizer_id      = aws_apigatewayv2_authorizer.cognito.id
+  authorizer_id = aws_apigatewayv2_authorizer.cognito.id
 }
 
 # DynamoDB Table
 resource "aws_dynamodb_table" "main" {
-  name           = "\${var.environment}-\${var.project_name}-data"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
-  range_key      = "timestamp"
+  name = "\${var.environment}-\${var.project_name}-data"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key = "id"
+  range_key = "timestamp"
   
   attribute {
     name = "id"
@@ -1372,7 +1372,7 @@ resource "aws_dynamodb_table" "main" {
   
   ttl {
     attribute_name = "expires_at"
-    enabled        = true
+    enabled = true
   }
   
   point_in_time_recovery {
@@ -1388,16 +1388,16 @@ resource "aws_dynamodb_table" "main" {
 
 # Lambda Permission for API Gateway
 resource "aws_lambda_permission" "apigw" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action        = "lambda:InvokeFunction"
+  statement_id = "AllowAPIGatewayInvoke"
+  action = "lambda:InvokeFunction"
   function_name = aws_lambda_function.api.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "\${aws_apigatewayv2_api.main.execution_arn}/*/*"
+  principal = "apigateway.amazonaws.com"
+  source_arn = "\${aws_apigatewayv2_api.main.execution_arn}/*/*"
 }
 
 # CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "lambda" {
-  name              = "/aws/lambda/\${aws_lambda_function.api.function_name}"
+  name = "/aws/lambda/\${aws_lambda_function.api.function_name}"
   retention_in_days = 7
   
   tags = local.common_tags
@@ -1406,14 +1406,14 @@ resource "aws_cloudwatch_log_group" "lambda" {
 # Outputs
 output "api_endpoint" {
   description = "API Gateway endpoint URL"
-  value       = aws_apigatewayv2_api.main.api_endpoint
+  value = aws_apigatewayv2_api.main.api_endpoint
 }
 
 output "dynamodb_table_name" {
   description = "DynamoDB table name"
-  value       = aws_dynamodb_table.main.name
+  value = aws_dynamodb_table.main.name
 }
-                """, language="hcl")
+                """, language ="hcl")
             
             st.markdown("---")
             st.info("💡 **Tip**: Copy the code above and modify it for your use case. All examples follow best practices.")
@@ -1449,7 +1449,7 @@ output "dynamodb_table_name" {
                 """)
                 
                 st.image("https://d1.awsstatic.com/architecture-diagrams/ArchitectureDiagrams/web-app-hosting-scalable-ra.5c92c17891c1baebea7bd8ca8e738c066a8eb01c.png",
-                        caption="High Availability Web Application Architecture")
+                        caption ="High Availability Web Application Architecture")
             
             elif architecture_type == "Microservices on EKS":
                 st.markdown("#### Microservices on Amazon EKS")
@@ -1614,7 +1614,7 @@ output "dynamodb_table_name" {
                     aws cloudwatch get-metric-statistics \\
                       --namespace AWS/ApplicationELB \\
                       --metric-name TargetResponseTime \\
-                      --dimensions Name=LoadBalancer,Value=app/my-alb/abc123 \\
+                      --dimensions Name =LoadBalancer,Value =app/my-alb/abc123 \\
                       --start-time 2025-01-15T00:00:00Z \\
                       --end-time 2025-01-15T23:59:59Z \\
                       --period 3600 \\
@@ -1665,8 +1665,8 @@ kubectl get pods                              # List pods
 kubectl describe pod <pod-name>               # Pod details
 kubectl logs <pod-name>                       # View logs
 kubectl exec -it <pod-name> -- /bin/bash     # Access pod shell
-kubectl get events --sort-by='.lastTimestamp' # Recent events
-            """, language="bash")
+kubectl get events --sort_by ='.lastTimestamp' # Recent events
+            """, language ="bash")
         
         st.markdown("---")
         
@@ -1679,7 +1679,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             st.markdown("**Internal Links:**")
             st.markdown("- [Wiki Documentation](https://wiki.company.com/infrastructure)")
             st.markdown("- [Video Tutorials](https://videos.company.com/infrastructure)")
-            st.markdown("- [Slack Channel: #infrastructure](slack://channel?id=infra)")
+            st.markdown("- [Slack Channel: #infrastructure](slack://channel?id =infra)")
             st.markdown("- [Office Hours: Tuesdays 2-3 PM](https://meet.company.com)")
         
         with col2:
@@ -1723,9 +1723,9 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             # Mode-aware metric
-            security_scans_(24h)_value = self._get_data('security_scans_(24h)', "342")
-            security_scans_(24h)_delta = self._get_data('security_scans_(24h)_delta', "+28")
-            st.metric("Security Scans (24h)", security_scans_(24h)_value, security_scans_(24h)_delta)
+            security_scans_24h_value = self._get_data('security_scans_24h', "342")
+            security_scans_24h_delta = self._get_data('security_scans_24h_delta', "+28")
+            st.metric("Security Scans (24h)", security_scans_24h_value, security_scans_24h_delta)
         with col2:
             # Mode-aware metric
             vulnerabilities_found_value = self._get_data('vulnerabilities_found', "47")
@@ -1733,8 +1733,8 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             st.metric("Vulnerabilities Found", vulnerabilities_found_value, vulnerabilities_found_delta)
         with col3:
             # Mode-aware metric
-            auto-remediated_value = self._get_data('auto-remediated', "39")
-            auto-remediated_delta = self._get_data('auto-remediated_delta', "+10")
+            auto_remediated_value = self._get_data('auto-remediated', "39")
+            auto_remediated_delta = self._get_data('auto-remediated_delta', "+10")
             st.metric("Auto-Remediated", auto-remediated_value, auto-remediated_delta)
         with col4:
             # Mode-aware metric
@@ -1787,7 +1787,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
         ]
         
         df_scans = pd.DataFrame(scan_results)
-        st.dataframe(df_scans, use_container_width=True, hide_index=True)
+        st.dataframe(df_scans, use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -1837,7 +1837,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
         ]
         
         df_vulns = pd.DataFrame(vulnerabilities)
-        st.dataframe(df_vulns, use_container_width=True, hide_index=True)
+        st.dataframe(df_vulns, use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -1929,7 +1929,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
         ]
         
         df_compliance = pd.DataFrame(compliance_results)
-        st.dataframe(df_compliance, use_container_width=True, hide_index=True)
+        st.dataframe(df_compliance, use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -1939,7 +1939,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            if st.button("🔄 Auto-Remediate All", type="primary", use_container_width=True):
+            if st.button("🔄 Auto-Remediate All", type ="primary", use_container_width =True):
                 with st.spinner("Running automated remediation..."):
                     import time
                     time.sleep(3)
@@ -1953,12 +1953,12 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
                     """)
         
         with col2:
-            if st.button("📝 Generate Report", use_container_width=True):
+            if st.button("📝 Generate Report", use_container_width =True):
                 st.info("Security report generated: SEC-RPT-20250115.pdf")
                 st.success("Report sent to security-team@company.com")
         
         with col3:
-            if st.button("🎫 Create Jira Tickets", use_container_width=True):
+            if st.button("🎫 Create Jira Tickets", use_container_width =True):
                 st.success("Created 8 Jira tickets for manual review items")
                 st.info("Tickets assigned to Security Team")
         
@@ -1968,7 +1968,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
         st.markdown("### 📊 Security Metrics & Trends")
         
         metrics_data = pd.DataFrame({
-            'Date': pd.date_range(start='2025-01-08', end='2025-01-15', freq='D'),
+            'Date': pd.date_rangestart ='2025-01-08', end ='2025-01-15', freq ='D'),
             'Critical': [5, 4, 6, 3, 5, 2, 4, 2],
             'High': [15, 18, 16, 14, 17, 12, 15, 13],
             'Medium': [32, 28, 35, 30, 33, 25, 31, 27],
@@ -2105,7 +2105,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             ]
             
             df_discussions = pd.DataFrame(discussions)
-            st.dataframe(df_discussions, use_container_width=True, hide_index=True)
+            st.dataframe(df_discussions, use_container_width =True, hide_index =True)
             
             st.markdown("---")
             
@@ -2115,7 +2115,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             col1, col2 = st.columns([2, 1])
             
             with col1:
-                discussion_title = st.text_input("Title:", placeholder="What's your question?")
+                discussion_title = st.text_input("Title:", placeholder ="What's your question?")
                 discussion_category = st.selectbox(
                     "Category:",
                     ["General", "Kubernetes", "CI/CD", "Database", "Security", 
@@ -2131,11 +2131,11 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             
             discussion_content = st.text_area(
                 "Question Details:",
-                placeholder="Provide detailed context, what you've tried, and what you're trying to achieve...",
-                height=150
+                placeholder ="Provide detailed context, what you've tried, and what you're trying to achieve...",
+                height =150
             )
             
-            if st.button("📤 Post Question", type="primary"):
+            if st.button("📤 Post Question", type ="primary"):
                 st.success("✅ Question posted successfully!")
                 st.info("Community members will be notified. Expect responses within 1-2 hours.")
         
@@ -2193,14 +2193,14 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             ]
             
             df_features = pd.DataFrame(feature_requests)
-            st.dataframe(df_features, use_container_width=True, hide_index=True)
+            st.dataframe(df_features, use_container_width =True, hide_index =True)
             
             st.markdown("---")
             
             # Submit Feature Request
             st.markdown("#### ✨ Submit New Feature Request")
             
-            feature_title = st.text_input("Feature Title:", placeholder="Brief description of the feature")
+            feature_title = st.text_input("Feature Title:", placeholder ="Brief description of the feature")
             
             col1, col2 = st.columns(2)
             
@@ -2219,17 +2219,17 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             
             feature_description = st.text_area(
                 "Detailed Description:",
-                placeholder="Explain the feature, use case, and expected benefits...",
-                height=120
+                placeholder ="Explain the feature, use case, and expected benefits...",
+                height =120
             )
             
             feature_justification = st.text_area(
                 "Business Justification:",
-                placeholder="Why is this feature needed? What problem does it solve?",
-                height=80
+                placeholder ="Why is this feature needed? What problem does it solve?",
+                height =80
             )
             
-            if st.button("📤 Submit Feature Request", type="primary"):
+            if st.button("📤 Submit Feature Request", type ="primary"):
                 st.success("✅ Feature request submitted!")
                 st.info("""
                 **Next Steps:**
@@ -2252,7 +2252,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             leaderboard_category = st.radio(
                 "Category:",
                 ["🌟 Top Contributors", "💬 Most Helpful", "🚀 Most Active", "📚 Best Answers"],
-                horizontal=True
+                horizontal =True
             )
             
             if leaderboard_category == "🌟 Top Contributors":
@@ -2300,7 +2300,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
                 ]
                 
                 df_leaders = pd.DataFrame(leaders)
-                st.dataframe(df_leaders, use_container_width=True, hide_index=True)
+                st.dataframe(df_leaders, use_container_width =True, hide_index =True)
             
             st.markdown("---")
             
@@ -2367,7 +2367,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             st.markdown("#### Daily Usage Trends")
             
             usage_data = pd.DataFrame({
-                'Date': pd.date_range(start='2025-01-08', end='2025-01-15', freq='D'),
+                'Date': pd.date_rangestart ='2025-01-08', end ='2025-01-15', freq ='D'),
                 'Deployments': [42, 38, 51, 47, 56, 44, 52, 48],
                 'Service Requests': [28, 32, 27, 35, 31, 38, 29, 33],
                 'Forum Posts': [15, 18, 16, 22, 19, 25, 20, 24]
@@ -2389,7 +2389,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             ]
             
             df_services = pd.DataFrame(services)
-            st.dataframe(df_services, use_container_width=True, hide_index=True)
+            st.dataframe(df_services, use_container_width =True, hide_index =True)
             
             st.markdown("---")
             
@@ -2418,7 +2418,7 @@ kubectl get events --sort-by='.lastTimestamp' # Recent events
             ]
             
             df_feedback = pd.DataFrame(feedback)
-            st.dataframe(df_feedback, use_container_width=True, hide_index=True)
+            st.dataframe(df_feedback, use_container_width =True, hide_index =True)
         
         st.markdown("---")
         

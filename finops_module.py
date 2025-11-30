@@ -180,7 +180,7 @@ class FinOpsModule:
                 {"Environment": "Development", "Monthly Cost": "$32,450", "Budget": "$40,000", "Utilization": "81%", "Trend": "📉 -2%", "Resources": 789},
                 {"Environment": "Testing", "Monthly Cost": "$10,557", "Budget": "$15,000", "Utilization": "70%", "Trend": "📊 Stable", "Resources": 234}
             ]
-            st.dataframe(pd.DataFrame(env_data), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(env_data), use_container_width =True, hide_index =True)
         
         with tab2:
             st.markdown("#### Cost by Project")
@@ -191,7 +191,7 @@ class FinOpsModule:
                 {"Project": "ML Pipeline", "Owner": "AI/ML", "Cost": "$38,650", "Budget": "$45,000", "Variance": "+$6,350", "Status": "✅"},
                 {"Project": "Infrastructure Migration", "Owner": "Platform", "Cost": "$30,497", "Budget": "$35,000", "Variance": "+$4,503", "Status": "✅"}
             ]
-            st.dataframe(pd.DataFrame(project_data), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(project_data), use_container_width =True, hide_index =True)
         
         with tab3:
             st.markdown("#### Cost by Department")
@@ -201,7 +201,7 @@ class FinOpsModule:
                 {"Department": "Data & Analytics", "Head Count": 18, "Cost": "$43,220", "Per Employee": "$2,401", "Budget": "$50,000", "Variance": "13.6%"},
                 {"Department": "DevOps", "Head Count": 12, "Cost": "$22,227", "Per Employee": "$1,852", "Budget": "$25,000", "Variance": "11.1%"}
             ]
-            st.dataframe(pd.DataFrame(dept_data), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(dept_data), use_container_width =True, hide_index =True)
         
         with tab4:
             st.markdown("#### Cost by Owner/Team")
@@ -211,7 +211,7 @@ class FinOpsModule:
                 {"Owner": "bob.wilson@company.com", "Team": "Data", "Resources": 234, "Cost": "$45,670", "Untagged": 12, "Compliance": "95%"},
                 {"Owner": "alice.brown@company.com", "Team": "ML/AI", "Resources": 67, "Cost": "$18,900", "Untagged": 2, "Compliance": "97%"}
             ]
-            st.dataframe(pd.DataFrame(owner_data), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(owner_data), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -222,11 +222,11 @@ class FinOpsModule:
             {"Resource ID": "vol-0xyz789abc123", "Type": "EBS Volume", "Region": "us-west-2", "Cost (MTD)": "$12.45", "Age": "12 days", "Action": "Tag Now"},
             {"Resource ID": "db-prod-untagged", "Type": "RDS Instance", "Region": "eu-west-1", "Cost (MTD)": "$456.78", "Age": "3 days", "Action": "Tag Now"}
         ]
-        st.dataframe(pd.DataFrame(untagged), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(untagged), use_container_width =True, hide_index =True)
         
         col1, col2 = st.columns([3, 1])
         with col2:
-            if st.button("🏷️ Auto-Tag Resources", type="primary"):
+            if st.button("🏷️ Auto-Tag Resources", type ="primary"):
                 st.success("✅ Initiated auto-tagging for 23 resources")
     
     @staticmethod
@@ -252,8 +252,8 @@ class FinOpsModule:
             st.metric("Alerts Triggered", alerts_triggered_value, alerts_triggered_delta)
         with col3:
             # Mode-aware metric
-            auto-actions_value = self._get_data('auto-actions', "12")
-            auto-actions_delta = self._get_data('auto-actions_delta', "+3")
+            auto_actions_value = self._get_data('auto-actions', "12")
+            auto_actions_delta = self._get_data('auto-actions_delta', "+3")
             st.metric("Auto-Actions", auto-actions_value, auto-actions_delta)
         with col4:
             # Mode-aware metric
@@ -308,7 +308,7 @@ class FinOpsModule:
                 "Alert": "Email + Auto-stop"
             }
         ]
-        st.dataframe(pd.DataFrame(budgets), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(budgets), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -321,7 +321,7 @@ class FinOpsModule:
             budget_name = st.text_input("Budget Name", "Q1 Development Budget")
             budget_scope = st.selectbox("Scope", ["Account", "Tag: Environment", "Tag: Project", "Tag: Department", "Service Type"])
             budget_period = st.selectbox("Period", ["Monthly", "Quarterly", "Annually"])
-            budget_amount = st.number_input("Budget Amount ($)", min_value=1000, value=50000, step=1000)
+            budget_amount = st.number_input("Budget Amount ($)", min_value =1000, value =50000, step =1000)
             
             st.markdown("#### Alert Thresholds")
             threshold_1 = st.slider("Warning Threshold (%)", 50, 100, 80)
@@ -331,17 +331,17 @@ class FinOpsModule:
             st.markdown("#### Actions on Threshold Breach")
             
             st.markdown("**At 80% (Warning):**")
-            st.checkbox("📧 Send email to budget owner", value=True)
-            st.checkbox("💬 Send Slack notification", value=True)
-            st.checkbox("📊 Generate cost report", value=True)
+            st.checkbox("📧 Send email to budget owner", value =True)
+            st.checkbox("💬 Send Slack notification", value =True)
+            st.checkbox("📊 Generate cost report", value =True)
             
             st.markdown("**At 90% (Critical):**")
-            st.checkbox("🚨 Send escalation email to leadership", value=True)
-            st.checkbox("🛑 Block new resource provisioning", value=False)
-            st.checkbox("⏸️ Stop non-production resources", value=False)
-            st.checkbox("📈 Require approval for new spend", value=True)
+            st.checkbox("🚨 Send escalation email to leadership", value =True)
+            st.checkbox("🛑 Block new resource provisioning", value =False)
+            st.checkbox("⏸️ Stop non-production resources", value =False)
+            st.checkbox("📈 Require approval for new spend", value =True)
             
-            if st.button("💾 Save Budget Policy", type="primary"):
+            if st.button("💾 Save Budget Policy", type ="primary"):
                 st.success("✅ Budget policy created successfully")
         
         st.markdown("---")
@@ -375,7 +375,7 @@ class FinOpsModule:
                 "Status": "✅ Resolved"
             }
         ]
-        st.dataframe(pd.DataFrame(alerts), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(alerts), use_container_width =True, hide_index =True)
     
     @staticmethod
     def render_forecasting_chargebacks():
@@ -416,7 +416,7 @@ class FinOpsModule:
             {"Month": "Apr 2025", "Actual": "", "Forecast": "$325,450", "Lower Bound": "$304,800", "Upper Bound": "$346,100", "Confidence": "70%"},
             {"Month": "May 2025", "Actual": "", "Forecast": "$332,120", "Lower Bound": "$309,500", "Upper Bound": "$354,740", "Confidence": "66%"}
         ]
-        st.dataframe(pd.DataFrame(forecast_data), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(forecast_data), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -432,7 +432,7 @@ class FinOpsModule:
                 {"Factor": "Right-sizing initiatives", "Impact": "-5%", "Confidence": "High"},
                 {"Factor": "RI/SP coverage increase", "Impact": "-8%", "Confidence": "Medium"}
             ]
-            st.dataframe(pd.DataFrame(drivers), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(drivers), use_container_width =True, hide_index =True)
         
         with col2:
             st.markdown("### 🎯 Forecast Accuracy (Last 6 Months)")
@@ -442,7 +442,7 @@ class FinOpsModule:
                 {"Month": "Sep 2024", "Actual": "$219,890", "Forecast": "$215,670", "Variance": "+1.9%", "Accuracy": "98.1%"},
                 {"Month": "Aug 2024", "Actual": "$212,450", "Forecast": "$218,900", "Variance": "-3.0%", "Accuracy": "97.0%"}
             ]
-            st.dataframe(pd.DataFrame(accuracy), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(accuracy), use_container_width =True, hide_index =True)
             # Mode-aware metric
             average_forecast_accuracy_value = self._get_data('average_forecast_accuracy', "98.2%")
             average_forecast_accuracy_delta = self._get_data('average_forecast_accuracy_delta', "+1.2%")
@@ -503,7 +503,7 @@ class FinOpsModule:
                     "% of Total": "16.1%"
                 }
             ]
-            st.dataframe(pd.DataFrame(chargeback), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(chargeback), use_container_width =True, hide_index =True)
             
             col1, col2 = st.columns([3, 1])
             with col2:
@@ -520,7 +520,7 @@ class FinOpsModule:
                 {"Department": "Data & Analytics", "Q1": "$134,560", "Q2": "$148,900", "Q3": "$167,890", "Q4 (PTD)": "$49,120", "YTD Total": "$500,470", "Trend": "📈"},
                 {"Department": "DevOps/Platform", "Q1": "$98,760", "Q2": "$112,340", "Q3": "$123,450", "Q4 (PTD)": "$37,727", "YTD Total": "$372,277", "Trend": "📈"}
             ]
-            st.dataframe(pd.DataFrame(ytd), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(ytd), use_container_width =True, hide_index =True)
         
         with tab3:
             st.markdown("#### Generate Custom Chargeback Report")
@@ -529,14 +529,14 @@ class FinOpsModule:
             with col1:
                 report_period = st.selectbox("Period", ["Last Month", "Last Quarter", "Last 6 Months", "Year to Date", "Custom Range"])
                 allocation_method = st.selectbox("Allocation Method", ["Tag-Based", "Resource-Based", "Proportional", "Usage-Based"])
-                group_by = st.multiselect("Group By", ["Department", "Project", "Environment", "Owner", "Service"], default=["Department"])
+                group_by = st.multiselect("Group By", ["Department", "Project", "Environment", "Owner", "Service"], default =["Department"])
             
             with col2:
-                include_untagged = st.checkbox("Include untagged resources", value=True)
-                include_shared = st.checkbox("Include shared services", value=True)
+                include_untagged = st.checkbox("Include untagged resources", value =True)
+                include_shared = st.checkbox("Include shared services", value =True)
                 breakdown_level = st.selectbox("Detail Level", ["Summary", "Detailed", "Full Itemization"])
                 
-                if st.button("🔄 Generate Report", type="primary"):
+                if st.button("🔄 Generate Report", type ="primary"):
                     st.success("✅ Custom chargeback report generated")
     
     @staticmethod
@@ -614,7 +614,7 @@ class FinOpsModule:
                 "Monthly Savings": "$4,110"
             }
         ]
-        st.dataframe(pd.DataFrame(schedules), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(schedules), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -634,7 +634,7 @@ class FinOpsModule:
             resource_types = st.multiselect(
                 "Resource Types",
                 ["EC2 Instances", "RDS Databases", "Auto Scaling Groups", "ECS Services", "EKS Clusters"],
-                default=["EC2 Instances"]
+                default =["EC2 Instances"]
             )
         
         with col2:
@@ -644,14 +644,14 @@ class FinOpsModule:
             
             if schedule_type == "Time-based":
                 st.markdown("**Weekday Schedule:**")
-                start_time = st.time_input("Start Time", value=None)
-                stop_time = st.time_input("Stop Time", value=None)
+                start_time = st.time_input("Start Time", value =None)
+                stop_time = st.time_input("Stop Time", value =None)
                 
                 weekend_action = st.selectbox("Weekend Action", ["Stop All Weekend", "Run Normal Schedule", "Custom Weekend Schedule"])
                 
                 timezone = st.selectbox("Timezone", ["UTC", "America/New_York", "America/Los_Angeles", "Europe/London"])
             
-            if st.button("💾 Create Schedule", type="primary"):
+            if st.button("💾 Create Schedule", type ="primary"):
                 st.success("✅ Schedule policy created successfully")
         
         st.markdown("---")
@@ -665,7 +665,7 @@ class FinOpsModule:
             {"Timestamp": "2024-11-17 21:00", "Schedule": "Test Environment Management", "Action": "Stop 45 resources", "Duration": "2m 18s", "Status": "✅ Success", "Savings": "$98"},
             {"Timestamp": "2024-11-17 20:00", "Schedule": "Staging Auto-scaling", "Action": "Scale down to 50%", "Duration": "1m 34s", "Status": "✅ Success", "Savings": "$67"}
         ]
-        st.dataframe(pd.DataFrame(executions), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(executions), use_container_width =True, hide_index =True)
     
     @staticmethod
     def render_spot_instance_orchestration():
@@ -738,7 +738,7 @@ class FinOpsModule:
                 "Savings": "$2,890/day"
             }
         ]
-        st.dataframe(pd.DataFrame(fleets), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(fleets), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -753,7 +753,7 @@ class FinOpsModule:
                 {"Time": "2024-11-18 11:45", "Instance": "i-0def456", "Type": "t3.large", "AZ": "us-east-1b", "Action": "Replaced", "Downtime": "42s"},
                 {"Time": "2024-11-18 09:12", "Instance": "i-0ghi789", "Type": "c5a.xlarge", "AZ": "us-east-1c", "Action": "Replaced", "Downtime": "35s"}
             ]
-            st.dataframe(pd.DataFrame(interruptions), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(interruptions), use_container_width =True, hide_index =True)
             
             st.markdown("**Interruption Handling Strategy:**")
             st.markdown("- ✅ 2-minute warning monitoring enabled")
@@ -770,7 +770,7 @@ class FinOpsModule:
                 {"Instance Type": "p3.2xlarge", "Current": "$0.9180", "Avg (7d)": "$0.9250", "On-Demand": "$3.0600", "Savings": "70%"},
                 {"Instance Type": "r5.large", "Current": "$0.0315", "Avg (7d)": "$0.0325", "On-Demand": "$0.1260", "Savings": "75%"}
             ]
-            st.dataframe(pd.DataFrame(price_history), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(price_history), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -781,7 +781,7 @@ class FinOpsModule:
         
         with col1:
             fleet_name = st.text_input("Fleet Name", "My Spot Fleet")
-            target_capacity = st.number_input("Target Capacity (vCPUs)", min_value=1, value=100)
+            target_capacity = st.number_input("Target Capacity (vCPUs)", min_value =1, value =100)
             
             allocation_strategy = st.selectbox(
                 "Allocation Strategy",
@@ -791,7 +791,7 @@ class FinOpsModule:
             instance_types = st.multiselect(
                 "Instance Types",
                 ["t3.large", "t3a.large", "t2.large", "c5.xlarge", "c5a.xlarge", "c5n.xlarge"],
-                default=["t3.large", "t3a.large"]
+                default =["t3.large", "t3a.large"]
             )
         
         with col2:
@@ -800,10 +800,10 @@ class FinOpsModule:
             
             st.markdown("#### Interruption Handling")
             interruption_behavior = st.selectbox("Behavior", ["Terminate", "Stop", "Hibernate"])
-            enable_fallback = st.checkbox("Enable On-Demand Fallback", value=True)
-            enable_rebalancing = st.checkbox("Enable Capacity Rebalancing", value=True)
+            enable_fallback = st.checkbox("Enable On-Demand Fallback", value =True)
+            enable_rebalancing = st.checkbox("Enable Capacity Rebalancing", value =True)
             
-            if st.button("🚀 Launch Spot Fleet", type="primary"):
+            if st.button("🚀 Launch Spot Fleet", type ="primary"):
                 st.success("✅ Spot fleet request submitted")
     
     @staticmethod
@@ -819,9 +819,9 @@ class FinOpsModule:
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             # Mode-aware metric
-            anomalies_(24h)_value = self._get_data('anomalies_(24h)', "3")
-            anomalies_(24h)_delta = self._get_data('anomalies_(24h)_delta', "-1")
-            st.metric("Anomalies (24h)", anomalies_(24h)_value, anomalies_(24h)_delta)
+            anomalies_24h_value = self._get_data('anomalies_24h', "3")
+            anomalies_24h_delta = self._get_data('anomalies_24h_delta', "-1")
+            st.metric("Anomalies (24h)", anomalies_24h_value, anomalies_24h_delta)
         with col2:
             # Mode-aware metric
             false_positives_value = self._get_data('false_positives', "1")
@@ -878,7 +878,7 @@ class FinOpsModule:
                 "Severity": "High"
             }
         ]
-        st.dataframe(pd.DataFrame(anomalies), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(anomalies), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -894,7 +894,7 @@ class FinOpsModule:
                 {"Metric": "Mean Time to Detect", "Value": "8 minutes", "Target": "<15 min", "Status": "✅"},
                 {"Metric": "Coverage", "Value": "98.7%", "Target": ">95%", "Status": "✅"}
             ]
-            st.dataframe(pd.DataFrame(model_metrics), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(model_metrics), use_container_width =True, hide_index =True)
             
             st.markdown("**Detection Methods:**")
             st.markdown("- Statistical (Z-score, IQR)")
@@ -911,7 +911,7 @@ class FinOpsModule:
                 {"Type": "Resource Provisioning", "Count (30d)": 12, "Avg Impact": "$2,450", "Resolution Time": "0.5h"},
                 {"Type": "Service Degradation", "Count (30d)": 8, "Avg Impact": "$567", "Resolution Time": "3.1h"}
             ]
-            st.dataframe(pd.DataFrame(types), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(types), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -922,34 +922,34 @@ class FinOpsModule:
         
         with col1:
             sensitivity = st.slider("Detection Sensitivity", 1, 10, 7,
-                help="Higher = More sensitive (more alerts)")
+                help ="Higher = More sensitive (more alerts)")
             
             monitored_services = st.multiselect(
                 "Monitored Services",
                 ["EC2", "RDS", "Lambda", "S3", "DynamoDB", "Data Transfer", "All"],
-                default=["All"]
+                default =["All"]
             )
             
-            threshold_pct = st.number_input("Alert Threshold (% change)", min_value=10, value=50, step=10)
+            threshold_pct = st.number_input("Alert Threshold (% change)", min_value =10, value =50, step =10)
             
             notification_channels = st.multiselect(
                 "Notification Channels",
                 ["Email", "Slack", "PagerDuty", "SNS Topic"],
-                default=["Email", "Slack"]
+                default =["Email", "Slack"]
             )
         
         with col2:
             st.markdown("#### Anomaly Actions")
             
-            auto_investigate = st.checkbox("Auto-investigate anomalies", value=True)
-            create_ticket = st.checkbox("Auto-create JIRA ticket", value=False)
-            send_report = st.checkbox("Send daily anomaly report", value=True)
+            auto_investigate = st.checkbox("Auto-investigate anomalies", value =True)
+            create_ticket = st.checkbox("Auto-create JIRA ticket", value =False)
+            send_report = st.checkbox("Send daily anomaly report", value =True)
             
             st.markdown("#### Exclusions")
-            exclude_planned = st.checkbox("Exclude planned maintenance windows", value=True)
-            exclude_dev = st.checkbox("Exclude development resources", value=False)
+            exclude_planned = st.checkbox("Exclude planned maintenance windows", value =True)
+            exclude_dev = st.checkbox("Exclude development resources", value =False)
             
-            if st.button("💾 Save Configuration", type="primary"):
+            if st.button("💾 Save Configuration", type ="primary"):
                 st.success("✅ Anomaly detection rules updated")
         
         st.markdown("---")
@@ -963,7 +963,7 @@ class FinOpsModule:
             {"Date": "Nov 16", "Detected": 2, "Confirmed": 2, "False Positives": 0, "Avg Resolution": "1.5h", "Cost Impact": "$2,340"},
             {"Date": "Nov 15", "Detected": 4, "Confirmed": 3, "False Positives": 1, "Avg Resolution": "2.5h", "Cost Impact": "$5,670"}
         ]
-        st.dataframe(pd.DataFrame(history), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(history), use_container_width =True, hide_index =True)
     
     @staticmethod
     def render_reporting_dashboards():
@@ -1023,7 +1023,7 @@ class FinOpsModule:
                 {"Rank": 3, "Department": "Data & Analytics", "Current": "$49,120", "Budget": "$50,000", "Variance": "+2%", "Trend": "📈 Growing"},
                 {"Rank": 4, "Department": "DevOps/Platform", "Current": "$37,727", "Budget": "$45,000", "Variance": "+16%", "Trend": "📊 Stable"}
             ]
-            st.dataframe(pd.DataFrame(cost_centers), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(cost_centers), use_container_width =True, hide_index =True)
             
             if st.button("📧 Email Executive Summary"):
                 st.success("✅ Executive summary sent to leadership")
@@ -1045,7 +1045,7 @@ class FinOpsModule:
                     {"Service": "Data Transfer", "Cost": "$18,900", "% of Total": "8.1%", "Trend": "📊 Stable", "Top Resource": "CloudFront"},
                     {"Service": "Other", "Cost": "$44,973", "% of Total": "19.1%", "Trend": "📊 Stable", "Top Resource": "Various"}
                 ]
-                st.dataframe(pd.DataFrame(service_costs), use_container_width=True, hide_index=True)
+                st.dataframe(pd.DataFrame(service_costs), use_container_width =True, hide_index =True)
         
         with tab3:
             st.markdown("### 💡 Cost Optimization Reports")
@@ -1084,7 +1084,7 @@ class FinOpsModule:
                     "Priority": "🟡 Medium"
                 }
             ]
-            st.dataframe(pd.DataFrame(opportunities), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(opportunities), use_container_width =True, hide_index =True)
             
             col1, col2 = st.columns([3, 1])
             with col2:
@@ -1103,13 +1103,13 @@ class FinOpsModule:
                 metrics = st.multiselect(
                     "Include Metrics",
                     ["Total Spend", "Budget Variance", "Cost by Service", "Cost by Project", "Optimization Savings", "Forecast"],
-                    default=["Total Spend", "Cost by Service"]
+                    default =["Total Spend", "Cost by Service"]
                 )
                 
                 grouping = st.multiselect(
                     "Group By",
                     ["Service", "Region", "Environment", "Project", "Department", "Owner"],
-                    default=["Service"]
+                    default =["Service"]
                 )
             
             with col2:
@@ -1121,7 +1121,7 @@ class FinOpsModule:
                 if schedule != "One-time":
                     schedule_day = st.selectbox("Day", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"])
                 
-                if st.button("📊 Generate Report", type="primary"):
+                if st.button("📊 Generate Report", type ="primary"):
                     st.success("✅ Custom report generated")
     
     @staticmethod
@@ -1153,7 +1153,7 @@ class FinOpsModule:
                 "Metric": ["Active Projects", "Avg Project Cost", "On-Budget Projects", "Resource Utilization", "Velocity Score"],
                 "Value": ["18", "$13,031/mo", "14 (78%)", "87%", "8.5/10"]
             }
-            st.dataframe(pd.DataFrame(pmo_metrics), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(pmo_metrics), use_container_width =True, hide_index =True)
         
         with col2:
             st.markdown("### 💰 FMO Perspective")
@@ -1172,7 +1172,7 @@ class FinOpsModule:
                 "Metric": ["Total Budget", "Actual Spend", "Variance", "Budget Utilization", "Forecast Accuracy"],
                 "Value": ["$300,000", "$234,567", "+$65,433", "78%", "98.2%"]
             }
-            st.dataframe(pd.DataFrame(fmo_metrics), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(fmo_metrics), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -1216,7 +1216,7 @@ class FinOpsModule:
                     "Alignment": "✅ Aligned"
                 }
             ]
-            st.dataframe(pd.DataFrame(projects), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(projects), use_container_width =True, hide_index =True)
         
         with tab2:
             st.markdown("#### Cost Attribution Methodology")
@@ -1227,7 +1227,7 @@ class FinOpsModule:
                 {"Method": "Time-based Split", "PMO Use": "Occasional", "FMO Use": "Secondary", "Coverage": "100%", "Accuracy": "Medium"},
                 {"Method": "Cost Center Mapping", "PMO Use": "Low", "FMO Use": "Primary", "Coverage": "100%", "Accuracy": "High"}
             ]
-            st.dataframe(pd.DataFrame(attribution), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(attribution), use_container_width =True, hide_index =True)
         
         with tab3:
             st.markdown("#### PMO-FMO Alignment Dashboard")
@@ -1257,7 +1257,7 @@ class FinOpsModule:
                 {"Issue": "Untagged infrastructure costs", "PMO Impact": "Can't attribute to projects", "FMO Impact": "Department allocation unclear", "Resolution": "✅ Auto-tagging deployed"},
                 {"Issue": "Shared service allocation", "PMO Impact": "Project cost inflation", "FMO Impact": "Complex chargeback rules", "Resolution": "📋 Policy review needed"}
             ]
-            st.dataframe(pd.DataFrame(issues), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(issues), use_container_width =True, hide_index =True)
     
     @staticmethod
     def render_ri_recommendations():
@@ -1347,11 +1347,11 @@ class FinOpsModule:
                 "Payback": "5 months"
             }
         ]
-        st.dataframe(pd.DataFrame(recommendations), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(recommendations), use_container_width =True, hide_index =True)
         
         col1, col2 = st.columns([3, 1])
         with col2:
-            if st.button("📊 Purchase RIs", type="primary"):
+            if st.button("📊 Purchase RIs", type ="primary"):
                 st.info("Redirecting to AWS Console...")
         
         st.markdown("---")
@@ -1368,14 +1368,14 @@ class FinOpsModule:
                 {"Instance Type": "c5.2xlarge", "Count": "12", "Region": "us-west-2", "Term": "1-Year", "Expires": "2025-01-10", "Utilization": "89%", "Savings": "$1,567/mo"},
                 {"Instance Type": "db.r5.large", "Count": "6", "Region": "us-east-1", "Term": "3-Year", "Expires": "2027-02-18", "Utilization": "98%", "Savings": "$678/mo"}
             ]
-            st.dataframe(pd.DataFrame(active_ris), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(active_ris), use_container_width =True, hide_index =True)
         
         with tab2:
             savings_plans = [
                 {"Type": "Compute SP", "Commitment": "$50/hour", "Region": "All", "Term": "1-Year", "Expires": "2025-06-30", "Utilization": "92%", "Savings": "$2,340/mo"},
                 {"Type": "EC2 Instance SP", "Commitment": "$30/hour", "Region": "us-east-1", "Term": "3-Year", "Expires": "2026-12-15", "Utilization": "88%", "Savings": "$1,450/mo"}
             ]
-            st.dataframe(pd.DataFrame(savings_plans), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(savings_plans), use_container_width =True, hide_index =True)
         
         with tab3:
             expiring = [
@@ -1383,7 +1383,7 @@ class FinOpsModule:
                 {"Type": "EC2 RI", "Instance": "m5.large", "Count": "15", "Expires": "2025-03-15", "Days Left": "117", "Action": "✅ Auto-renew enabled", "Recommendation": "Keep current"},
                 {"Type": "RDS RI", "Instance": "db.m5.xlarge", "Count": "4", "Expires": "2025-02-28", "Days Left": "102", "Action": "🔄 Review needed", "Recommendation": "Downsize to db.m5.large"}
             ]
-            st.dataframe(pd.DataFrame(expiring), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(expiring), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -1398,7 +1398,7 @@ class FinOpsModule:
                 {"Category": "Good Utilization (75-90%)", "Count": 12, "Percentage": "27%", "Status": "✅ Acceptable"},
                 {"Category": "Low Utilization (<75%)", "Count": 5, "Percentage": "11%", "Status": "⚠️ Review needed"}
             ]
-            st.dataframe(pd.DataFrame(utilization), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(utilization), use_container_width =True, hide_index =True)
         
         with col2:
             st.markdown("### 💰 Savings Summary")
@@ -1409,7 +1409,7 @@ class FinOpsModule:
                 {"Category": "Compute SP", "Monthly": "$2,340", "Annual": "$28,080", "Percentage": "27%"},
                 {"Category": "EC2 Instance SP", "Monthly": "$619", "Annual": "$7,428", "Percentage": "7%"}
             ]
-            st.dataframe(pd.DataFrame(savings), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(savings), use_container_width =True, hide_index =True)
             
             # Mode-aware metric
             total_ri_sp_savings_value = self._get_data('total_ri_sp_savings', "$8,760/mo")
@@ -1496,7 +1496,7 @@ class FinOpsModule:
                     "Business Value": "Medium"
                 }
             ]
-            st.dataframe(pd.DataFrame(categories), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(categories), use_container_width =True, hide_index =True)
         
         with tab2:
             st.markdown("#### Top 10 Use Cases by Cost")
@@ -1508,7 +1508,7 @@ class FinOpsModule:
                 {"Rank": 4, "Use Case": "ML Recommendation Engine", "Category": "Data & Analytics", "Cost": "$18,760/mo", "Resources": 67, "Business Owner": "AI/ML", "ROI": "Medium"},
                 {"Rank": 5, "Use Case": "Video Processing Pipeline", "Category": "Customer-Facing", "Cost": "$15,670/mo", "Resources": 45, "Business Owner": "Media Team", "ROI": "Medium"}
             ]
-            st.dataframe(pd.DataFrame(use_cases), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(use_cases), use_container_width =True, hide_index =True)
         
         with tab3:
             st.markdown("#### Use Cases by Business Value")
@@ -1542,7 +1542,7 @@ class FinOpsModule:
                     "Status": "✅ Optimized"
                 }
             ]
-            st.dataframe(pd.DataFrame(value_analysis), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(value_analysis), use_container_width =True, hide_index =True)
         
         st.markdown("---")
         
@@ -1559,20 +1559,20 @@ class FinOpsModule:
             st.markdown("#### Resource Tagging Rules")
             tag_rules = st.text_area(
                 "Tag Matching Rules",
-                "UseCase=customer-notifications\nProject=notifications",
-                height=100
+                "UseCase =customer-notifications\nProject =notifications",
+                height =100
             )
         
         with col2:
-            business_value = st.select_slider("Business Value", options=["Low", "Medium", "High", "Critical"], value="High")
+            business_value = st.select_slider("Business Value", options =["Low", "Medium", "High", "Critical"], value ="High")
             revenue_impact = st.text_input("Monthly Revenue/Savings Impact", "$125,000")
             
             st.markdown("#### Cost Allocation")
             allocation_method = st.selectbox("Method", ["Direct Tagging", "Resource ID", "Proportional Split"])
             
-            expected_monthly_cost = st.number_input("Expected Monthly Cost ($)", min_value=0, value=8500)
+            expected_monthly_cost = st.number_input("Expected Monthly Cost ($)", min_value =0, value =8500)
             
-            if st.button("💾 Save Use Case", type="primary"):
+            if st.button("💾 Save Use Case", type ="primary"):
                 st.success("✅ Use case created successfully")
         
         st.markdown("---")
@@ -1590,7 +1590,7 @@ class FinOpsModule:
                 {"Use Case": "E-commerce Platform", "Cost/Transaction": "$0.034", "Cost/User": "$4.56", "Efficiency": "✅ Good"},
                 {"Use Case": "Video Processing", "Cost/Video": "$0.23", "Cost/Minute": "$0.045", "Efficiency": "⚠️ Review"}
             ]
-            st.dataframe(pd.DataFrame(efficiency), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(efficiency), use_container_width =True, hide_index =True)
         
         with col2:
             st.markdown("#### Resource Utilization")
@@ -1600,4 +1600,4 @@ class FinOpsModule:
                 {"Use Case": "E-commerce Platform", "Avg CPU": "45%", "Avg Memory": "38%", "Status": "⚠️ Over-provisioned"},
                 {"Use Case": "ML Training Pipeline", "Avg CPU": "92%", "Avg Memory": "88%", "Status": "✅ Well-utilized"}
             ]
-            st.dataframe(pd.DataFrame(utilization), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(utilization), use_container_width =True, hide_index =True)

@@ -130,20 +130,20 @@ class ObservabilityIntegrationModule:
         └─────────────────────────────────────────────────────────────────┘
         """
         
-        st.code(architecture, language="")
+        st.code(architecture, language ="")
         
         # Value Proposition
         st.markdown("### 💡 Business Value")
         
         metrics_cols = st.columns(4)
         with metrics_cols[0]:
-            st.metric("MTTD", "< 5 min", help="Mean Time To Detect")
+            st.metric("MTTD", "< 5 min", help ="Mean Time To Detect")
         with metrics_cols[1]:
-            st.metric("MTTR", "< 15 min", help="Mean Time To Resolve")
+            st.metric("MTTR", "< 15 min", help ="Mean Time To Resolve")
         with metrics_cols[2]:
-            st.metric("Compliance", "99.9%", help="Policy Compliance Rate")
+            st.metric("Compliance", "99.9%", help ="Policy Compliance Rate")
         with metrics_cols[3]:
-            st.metric("Coverage", "100%", help="Resource Observability Coverage")
+            st.metric("Coverage", "100%", help ="Resource Observability Coverage")
     
     @staticmethod
     def render_logging_stack():
@@ -166,31 +166,31 @@ class ObservabilityIntegrationModule:
             log_retention = st.selectbox(
                 "CloudWatch Logs Retention",
                 ["7 days", "30 days", "90 days", "180 days", "1 year", "Never expire"],
-                index=2
+                index =2
             )
             
             s3_lifecycle = st.selectbox(
                 "S3 Logs Lifecycle",
                 ["30 days to Glacier", "90 days to Glacier", "180 days to Glacier", 
                  "1 year to Glacier Deep Archive"],
-                index=1
+                index =1
             )
             
-            enable_kinesis = st.checkbox("Enable Kinesis Data Streams for real-time processing", value=True)
+            enable_kinesis = st.checkbox("Enable Kinesis Data Streams for real-time processing", value =True)
         
         with col2:
             log_aggregation = st.selectbox(
                 "Log Aggregation Strategy",
                 ["CloudWatch Logs Insights", "OpenSearch", "S3 + Athena", "Third-party SIEM"],
-                index=0
+                index =0
             )
             
             encryption_key = st.text_input(
                 "KMS Key for Encryption",
-                placeholder="arn:aws:kms:us-east-1:123456789012:key/..."
+                placeholder ="arn:aws:kms:us-east-1:123456789012:key/..."
             )
             
-            cross_account = st.checkbox("Enable cross-account log aggregation", value=True)
+            cross_account = st.checkbox("Enable cross-account log aggregation", value =True)
         
         # IaC Templates
         st.subheader("📜 Infrastructure as Code Templates")
@@ -355,7 +355,7 @@ Outputs:
   KinesisStreamArn:
     Description: Log Processing Stream ARN
     Value: !GetAtt LogStream.Arn
-""", language="yaml")
+""", language ="yaml")
         
         with tab2:
             st.code("""# Standard Logging Stack - Terraform
@@ -363,44 +363,44 @@ terraform {
   required_version = ">= 1.0"
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
       version = "~> 5.0"
     }
   }
 }
 
 variable "environment" {
-  type        = string
-  default     = "production"
+  type = string
+  default = "production"
   description = "Environment name"
 }
 
 variable "log_retention_days" {
-  type        = number
-  default     = 90
+  type = number
+  default = 90
   description = "CloudWatch Logs retention in days"
 }
 
 # KMS Key for Log Encryption
 resource "aws_kms_key" "logs" {
-  description             = "KMS key for log encryption"
+  description = "KMS key for log encryption"
   deletion_window_in_days = 30
-  enable_key_rotation     = true
+  enable_key_rotation = true
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "Enable IAM User Permissions"
+        Sid = "Enable IAM User Permissions"
         Effect = "Allow"
         Principal = {
           AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         }
-        Action   = "kms:*"
+        Action = "kms:*"
         Resource = "*"
       },
       {
-        Sid    = "Allow CloudWatch Logs"
+        Sid = "Allow CloudWatch Logs"
         Effect = "Allow"
         Principal = {
           Service = "logs.${data.aws_region.current.name}.amazonaws.com"
@@ -420,46 +420,46 @@ resource "aws_kms_key" "logs" {
 
   tags = {
     Environment = var.environment
-    Purpose     = "LogEncryption"
+    Purpose = "LogEncryption"
   }
 }
 
 resource "aws_kms_alias" "logs" {
-  name          = "alias/logs-${var.environment}"
+  name = "alias/logs-${var.environment}"
   target_key_id = aws_kms_key.logs.key_id
 }
 
 # CloudWatch Log Groups
 resource "aws_cloudwatch_log_group" "application" {
-  name              = "/aws/application/${var.environment}"
+  name = "/aws/application/${var.environment}"
   retention_in_days = var.log_retention_days
-  kms_key_id        = aws_kms_key.logs.arn
+  kms_key_id = aws_kms_key.logs.arn
 
   tags = {
     Environment = var.environment
-    Type        = "Application"
+    Type = "Application"
   }
 }
 
 resource "aws_cloudwatch_log_group" "infrastructure" {
-  name              = "/aws/infrastructure/${var.environment}"
+  name = "/aws/infrastructure/${var.environment}"
   retention_in_days = var.log_retention_days
-  kms_key_id        = aws_kms_key.logs.arn
+  kms_key_id = aws_kms_key.logs.arn
 
   tags = {
     Environment = var.environment
-    Type        = "Infrastructure"
+    Type = "Infrastructure"
   }
 }
 
 resource "aws_cloudwatch_log_group" "security" {
-  name              = "/aws/security/${var.environment}"
+  name = "/aws/security/${var.environment}"
   retention_in_days = 365  # Security logs kept longer
-  kms_key_id        = aws_kms_key.logs.arn
+  kms_key_id = aws_kms_key.logs.arn
 
   tags = {
     Environment = var.environment
-    Type        = "Security"
+    Type = "Security"
   }
 }
 
@@ -469,7 +469,7 @@ resource "aws_s3_bucket" "log_archive" {
 
   tags = {
     Environment = var.environment
-    Purpose     = "LogArchive"
+    Purpose = "LogArchive"
   }
 }
 
@@ -478,7 +478,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "log_archive" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "aws:kms"
+      sse_algorithm = "aws:kms"
       kms_master_key_id = aws_kms_key.logs.arn
     }
   }
@@ -488,16 +488,16 @@ resource "aws_s3_bucket_lifecycle_configuration" "log_archive" {
   bucket = aws_s3_bucket.log_archive.id
 
   rule {
-    id     = "transition-to-glacier"
+    id = "transition-to-glacier"
     status = "Enabled"
 
     transition {
-      days          = 90
+      days = 90
       storage_class = "GLACIER"
     }
 
     transition {
-      days          = 365
+      days = 365
       storage_class = "DEEP_ARCHIVE"
     }
 
@@ -510,9 +510,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "log_archive" {
 resource "aws_s3_bucket_public_access_block" "log_archive" {
   bucket = aws_s3_bucket.log_archive.id
 
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
+  block_public_acls = true
+  block_public_policy = true
+  ignore_public_acls = true
   restrict_public_buckets = true
 }
 
@@ -526,8 +526,8 @@ resource "aws_s3_bucket_versioning" "log_archive" {
 
 # Kinesis Data Stream
 resource "aws_kinesis_stream" "logs" {
-  name             = "log-stream-${var.environment}"
-  shard_count      = 2
+  name = "log-stream-${var.environment}"
+  shard_count = 2
   retention_period = 24
 
   stream_mode_details {
@@ -535,11 +535,11 @@ resource "aws_kinesis_stream" "logs" {
   }
 
   encryption_type = "KMS"
-  kms_key_id      = aws_kms_key.logs.id
+  kms_key_id = aws_kms_key.logs.id
 
   tags = {
     Environment = var.environment
-    Purpose     = "LogProcessing"
+    Purpose = "LogProcessing"
   }
 }
 
@@ -573,7 +573,7 @@ resource "aws_iam_role_policy" "logs_to_kinesis" {
           "kinesis:PutRecord",
           "kinesis:PutRecords"
         ]
-        Effect   = "Allow"
+        Effect = "Allow"
         Resource = aws_kinesis_stream.logs.arn
       }
     ]
@@ -582,23 +582,23 @@ resource "aws_iam_role_policy" "logs_to_kinesis" {
 
 # CloudWatch Logs Subscription Filter
 resource "aws_cloudwatch_log_subscription_filter" "kinesis" {
-  name            = "kinesis-stream-${var.environment}"
-  log_group_name  = aws_cloudwatch_log_group.application.name
-  filter_pattern  = ""
+  name = "kinesis-stream-${var.environment}"
+  log_group_name = aws_cloudwatch_log_group.application.name
+  filter_pattern = ""
   destination_arn = aws_kinesis_stream.logs.arn
-  role_arn        = aws_iam_role.logs_to_kinesis.arn
+  role_arn = aws_iam_role.logs_to_kinesis.arn
 }
 
 # CloudWatch Metric Filter for Errors
 resource "aws_cloudwatch_log_metric_filter" "errors" {
-  name           = "application-errors"
+  name = "application-errors"
   log_group_name = aws_cloudwatch_log_group.application.name
-  pattern        = "[time, request_id, event_type = ERROR, ...]"
+  pattern = "[time, request_id, event_type = ERROR, ...]"
 
   metric_transformation {
-    name      = "ApplicationErrors"
+    name = "ApplicationErrors"
     namespace = "${var.environment}/Application"
-    value     = "1"
+    value = "1"
     default_value = 0
   }
 }
@@ -611,22 +611,22 @@ data "aws_region" "current" {}
 output "log_group_arns" {
   description = "ARNs of created log groups"
   value = {
-    application    = aws_cloudwatch_log_group.application.arn
+    application = aws_cloudwatch_log_group.application.arn
     infrastructure = aws_cloudwatch_log_group.infrastructure.arn
-    security       = aws_cloudwatch_log_group.security.arn
+    security = aws_cloudwatch_log_group.security.arn
   }
 }
 
 output "archive_bucket_name" {
   description = "Name of log archive S3 bucket"
-  value       = aws_s3_bucket.log_archive.id
+  value = aws_s3_bucket.log_archive.id
 }
 
 output "kinesis_stream_arn" {
   description = "ARN of log processing Kinesis stream"
-  value       = aws_kinesis_stream.logs.arn
+  value = aws_kinesis_stream.logs.arn
 }
-""", language="hcl")
+""", language ="hcl")
         
         with tab3:
             st.code("""# Standard Logging Stack - AWS CDK (Python)
@@ -643,84 +643,84 @@ from aws_cdk import (
 from constructs import Construct
 
 class LoggingStack(Stack):
-    def __init__(self, scope: Construct, construct_id: str, 
-                 environment: str = "production", **kwargs) -> None:
-        super().__init__(scope, construct_id, **kwargs)
+    def __init__self, scope: Construct, construct_id: str, 
+                 environment: str = "production", **kwargs -> None:
+        super().__init__scope, construct_id, **kwargs
         
         # KMS Key for Encryption
         log_key = kms.Key(
             self, "LogEncryptionKey",
-            description="KMS key for log encryption",
-            enable_key_rotation=True,
-            removal_policy=RemovalPolicy.RETAIN
+            description ="KMS key for log encryption",
+            enable_key_rotation =True,
+            removal_policy =RemovalPolicy.RETAIN
         )
         
         # CloudWatch Log Groups
         app_log_group = logs.LogGroup(
             self, "ApplicationLogGroup",
-            log_group_name=f"/aws/application/{environment}",
-            retention=logs.RetentionDays.THREE_MONTHS,
-            encryption_key=log_key,
-            removal_policy=RemovalPolicy.RETAIN
+            log_group_name =f"/aws/application/{environment}",
+            retention =logs.RetentionDays.THREE_MONTHS,
+            encryption_key =log_key,
+            removal_policy =RemovalPolicy.RETAIN
         )
         
         infra_log_group = logs.LogGroup(
             self, "InfrastructureLogGroup",
-            log_group_name=f"/aws/infrastructure/{environment}",
-            retention=logs.RetentionDays.THREE_MONTHS,
-            encryption_key=log_key,
-            removal_policy=RemovalPolicy.RETAIN
+            log_group_name =f"/aws/infrastructure/{environment}",
+            retention =logs.RetentionDays.THREE_MONTHS,
+            encryption_key =log_key,
+            removal_policy =RemovalPolicy.RETAIN
         )
         
         security_log_group = logs.LogGroup(
             self, "SecurityLogGroup",
-            log_group_name=f"/aws/security/{environment}",
-            retention=logs.RetentionDays.ONE_YEAR,
-            encryption_key=log_key,
-            removal_policy=RemovalPolicy.RETAIN
+            log_group_name =f"/aws/security/{environment}",
+            retention =logs.RetentionDays.ONE_YEAR,
+            encryption_key =log_key,
+            removal_policy =RemovalPolicy.RETAIN
         )
         
         # S3 Bucket for Log Archive
         archive_bucket = s3.Bucket(
             self, "LogArchiveBucket",
-            bucket_name=f"{self.account}-logs-archive-{environment}",
-            encryption=s3.BucketEncryption.KMS,
-            encryption_key=log_key,
-            versioned=True,
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-            lifecycle_rules=[
+            bucket_name =f"{self.account}-logs-archive-{environment}",
+            encryption =s3.BucketEncryption.KMS,
+            encryption_key =log_key,
+            versioned =True,
+            block_public_access =s3.BlockPublicAccess.BLOCK_ALL,
+            lifecycle_rules =[
                 s3.LifecycleRule(
-                    enabled=True,
-                    transitions=[
+                    enabled =True,
+                    transitions =[
                         s3.Transition(
-                            storage_class=s3.StorageClass.GLACIER,
-                            transition_after=Duration.days(90)
+                            storage_class =s3.StorageClass.GLACIER,
+                            transition_after =Duration.days(90)
                         ),
                         s3.Transition(
-                            storage_class=s3.StorageClass.DEEP_ARCHIVE,
-                            transition_after=Duration.days(365)
+                            storage_class =s3.StorageClass.DEEP_ARCHIVE,
+                            transition_after =Duration.days(365)
                         )
                     ],
-                    expiration=Duration.days(2555)  # 7 years
+                    expiration =Duration.days(2555)  # 7 years
                 )
             ],
-            removal_policy=RemovalPolicy.RETAIN
+            removal_policy =RemovalPolicy.RETAIN
         )
         
         # Kinesis Data Stream
         log_stream = kinesis.Stream(
             self, "LogStream",
-            stream_name=f"log-stream-{environment}",
-            shard_count=2,
-            retention_period=Duration.hours(24),
-            encryption=kinesis.StreamEncryption.KMS,
-            encryption_key=log_key
+            stream_name =f"log-stream-{environment}",
+            shard_count =2,
+            retention_period =Duration.hours(24),
+            encryption =kinesis.StreamEncryption.KMS,
+            encryption_key =log_key
         )
         
         # IAM Role for CloudWatch Logs to Kinesis
         logs_to_kinesis_role = iam.Role(
             self, "LogsToKinesisRole",
-            assumed_by=iam.ServicePrincipal("logs.amazonaws.com")
+            assumed_by =iam.ServicePrincipal("logs.amazonaws.com")
         )
         
         log_stream.grant_write(logs_to_kinesis_role)
@@ -728,21 +728,21 @@ class LoggingStack(Stack):
         # Subscription Filter
         logs.SubscriptionFilter(
             self, "KinesisSubscription",
-            log_group=app_log_group,
-            destination=logs.KinesisDestination(log_stream),
-            filter_pattern=logs.FilterPattern.all_events()
+            log_group =app_log_group,
+            destination =logs.KinesisDestination(log_stream),
+            filter_pattern =logs.FilterPattern.all_events()
         )
         
         # Metric Filters
         app_log_group.add_metric_filter(
             "ErrorMetricFilter",
-            filter_pattern=logs.FilterPattern.literal(
+            filter_pattern =logs.FilterPattern.literal(
                 "[time, request_id, event_type = ERROR, ...]"
             ),
-            metric_name="ApplicationErrors",
-            metric_namespace=f"{environment}/Application",
-            metric_value="1",
-            default_value=0
+            metric_name ="ApplicationErrors",
+            metric_namespace =f"{environment}/Application",
+            metric_value ="1",
+            default_value =0
         )
         
         # Store attributes
@@ -754,7 +754,7 @@ class LoggingStack(Stack):
         self.archive_bucket = archive_bucket
         self.log_stream = log_stream
         self.encryption_key = log_key
-""", language="python")
+""", language ="python")
         
         # Deployment Actions
         st.subheader("🚀 Deployment Actions")
@@ -762,7 +762,7 @@ class LoggingStack(Stack):
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            if st.button("🔨 Deploy to Account", key="deploy_logging"):
+            if st.button("🔨 Deploy to Account", key ="deploy_logging"):
                 with st.spinner("Deploying logging stack..."):
                     st.success("✅ Logging stack deployed successfully!")
                     st.info("""
@@ -775,11 +775,11 @@ class LoggingStack(Stack):
                     """)
         
         with col2:
-            if st.button("📋 Validate Template", key="validate_logging"):
+            if st.button("📋 Validate Template", key ="validate_logging"):
                 st.success("✅ Template validation passed!")
         
         with col3:
-            if st.button("📊 View Existing Stacks", key="view_stacks"):
+            if st.button("📊 View Existing Stacks", key ="view_stacks"):
                 st.info("Showing deployed logging stacks across accounts...")
     
     @staticmethod
@@ -836,33 +836,33 @@ class LoggingStack(Stack):
         with col1:
             st.markdown("#### Standard Metrics")
             metrics_config = {
-                "EC2 Metrics": st.checkbox("CPU, Memory, Disk, Network", value=True),
-                "RDS Metrics": st.checkbox("Connections, IOPS, Replication Lag", value=True),
-                "Lambda Metrics": st.checkbox("Invocations, Duration, Errors, Throttles", value=True),
-                "ECS/EKS Metrics": st.checkbox("Container CPU/Memory, Service Health", value=True),
-                "API Gateway": st.checkbox("Latency, 4xx/5xx Errors, Request Count", value=True),
+                "EC2 Metrics": st.checkbox("CPU, Memory, Disk, Network", value =True),
+                "RDS Metrics": st.checkbox("Connections, IOPS, Replication Lag", value =True),
+                "Lambda Metrics": st.checkbox("Invocations, Duration, Errors, Throttles", value =True),
+                "ECS/EKS Metrics": st.checkbox("Container CPU/Memory, Service Health", value =True),
+                "API Gateway": st.checkbox("Latency, 4xx/5xx Errors, Request Count", value =True),
             }
             
             collection_interval = st.selectbox(
                 "Collection Interval",
                 ["1 minute", "5 minutes (standard)", "15 minutes"],
-                index=1
+                index =1
             )
         
         with col2:
             st.markdown("#### Custom Metrics")
-            enable_custom = st.checkbox("Enable custom application metrics", value=True)
+            enable_custom = st.checkbox("Enable custom application metrics", value =True)
             
             if enable_custom:
                 custom_namespace = st.text_input(
                     "Custom Namespace",
-                    placeholder="MyApp/Production"
+                    placeholder ="MyApp/Production"
                 )
                 
                 st.text_area(
                     "Custom Dimensions (JSON)",
-                    value='{\n  "Environment": "Production",\n  "Application": "WebApp",\n  "Version": "1.0"\n}',
-                    height=150
+                    value ='{\n  "Environment": "Production",\n  "Application": "WebApp",\n  "Version": "1.0"\n}',
+                    height =150
                 )
         
         # CloudWatch Agent Configuration
@@ -951,7 +951,7 @@ class LoggingStack(Stack):
       }
     }
   }
-}""", language="json")
+}""", language ="json")
         
         # Sample Metrics Dashboard
         st.subheader("📈 Real-Time Metrics Dashboard")
@@ -963,7 +963,7 @@ class LoggingStack(Stack):
             
             # Generate sample time series data
             now = datetime.now()
-            times = [now - timedelta(minutes=x) for x in range(60, 0, -1)]
+            times = [now - timedeltaminutes =x) for x in range(60, 0, -1)]
             
             metrics_data = {
                 'Time': times,
@@ -979,16 +979,16 @@ class LoggingStack(Stack):
             metric_cols = st.columns(4)
             with metric_cols[0]:
                 st.metric("Avg CPU", f"{df['CPU Usage (%)'].mean():.1f}%", 
-                         delta=f"{random.uniform(-5, 5):.1f}%")
+                         delta =f"{random.uniform(-5, 5):.1f}%")
             with metric_cols[1]:
                 st.metric("Avg Memory", f"{df['Memory Usage (%)'].mean():.1f}%",
-                         delta=f"{random.uniform(-3, 3):.1f}%")
+                         delta =f"{random.uniform(-3, 3):.1f}%")
             with metric_cols[2]:
                 st.metric("Avg Disk I/O", f"{df['Disk I/O (MB/s)'].mean():.1f} MB/s",
-                         delta=f"{random.uniform(-10, 10):.1f} MB/s")
+                         delta =f"{random.uniform(-10, 10):.1f} MB/s")
             with metric_cols[3]:
                 st.metric("Avg Network", f"{df['Network In (MB/s)'].mean():.1f} MB/s",
-                         delta=f"{random.uniform(-5, 5):.1f} MB/s")
+                         delta =f"{random.uniform(-5, 5):.1f} MB/s")
             
             # Line chart
             st.line_chart(df.set_index('Time')[['CPU Usage (%)', 'Memory Usage (%)']])
@@ -1033,16 +1033,16 @@ class LoggingStack(Stack):
         else:
             query = "fields @timestamp, @message\n| limit 20"
         
-        st.code(query, language="sql")
+        st.code(query, language ="sql")
         
-        if st.button("🔍 Run Query", key="run_log_query"):
+        if st.button("🔍 Run Query", key ="run_log_query"):
             with st.spinner("Executing query..."):
                 st.success("✅ Query executed successfully!")
                 
                 if st.session_state.demo_mode:
                     # Demo results
                     results_data = {
-                        'Timestamp': [datetime.now() - timedelta(minutes=x) for x in range(10)],
+                        'Timestamp': [datetime.now() - timedeltaminutes =x) for x in range(10)],
                         'Message': [
                             'ERROR: Database connection timeout',
                             'ERROR: Failed to authenticate user',
@@ -1057,7 +1057,7 @@ class LoggingStack(Stack):
                         ],
                         'Count': [45, 32, 28, 25, 22, 18, 15, 12, 10, 8]
                     }
-                    st.dataframe(pd.DataFrame(results_data), use_container_width=True)
+                    st.dataframe(pd.DataFrame(results_data), use_container_width =True)
     
     @staticmethod
     def render_change_tracking():
@@ -1079,17 +1079,17 @@ class LoggingStack(Stack):
         with col1:
             st.markdown("#### Resource Types to Track")
             resource_types = {
-                "EC2 Instances": st.checkbox("EC2::Instance", value=True),
-                "Security Groups": st.checkbox("EC2::SecurityGroup", value=True),
-                "IAM Roles": st.checkbox("IAM::Role", value=True),
-                "S3 Buckets": st.checkbox("S3::Bucket", value=True),
-                "RDS Instances": st.checkbox("RDS::DBInstance", value=True),
-                "Lambda Functions": st.checkbox("Lambda::Function", value=True),
-                "VPCs": st.checkbox("EC2::VPC", value=True),
-                "Load Balancers": st.checkbox("ElasticLoadBalancingV2::LoadBalancer", value=True)
+                "EC2 Instances": st.checkbox("EC2::Instance", value =True),
+                "Security Groups": st.checkbox("EC2::SecurityGroup", value =True),
+                "IAM Roles": st.checkbox("IAM::Role", value =True),
+                "S3 Buckets": st.checkbox("S3::Bucket", value =True),
+                "RDS Instances": st.checkbox("RDS::DBInstance", value =True),
+                "Lambda Functions": st.checkbox("Lambda::Function", value =True),
+                "VPCs": st.checkbox("EC2::VPC", value =True),
+                "Load Balancers": st.checkbox("ElasticLoadBalancingV2::LoadBalancer", value =True)
             }
             
-            track_all = st.checkbox("Track all supported resource types", value=False)
+            track_all = st.checkbox("Track all supported resource types", value =False)
         
         with col2:
             st.markdown("#### Change Detection Settings")
@@ -1097,16 +1097,16 @@ class LoggingStack(Stack):
             snapshot_frequency = st.selectbox(
                 "Configuration Snapshot Frequency",
                 ["Every 1 hour", "Every 3 hours", "Every 6 hours", "Every 12 hours", "Daily"],
-                index=0
+                index =0
             )
             
-            enable_notifications = st.checkbox("Send notifications on changes", value=True)
+            enable_notifications = st.checkbox("Send notifications on changes", value =True)
             
             if enable_notifications:
                 notification_channels = st.multiselect(
                     "Notification Channels",
                     ["SNS Topic", "EventBridge", "CloudWatch Logs", "CMDB Webhook"],
-                    default=["SNS Topic", "EventBridge"]
+                    default =["SNS Topic", "EventBridge"]
                 )
         
         # CMDB Integration
@@ -1118,37 +1118,37 @@ class LoggingStack(Stack):
             cmdb_system = st.selectbox(
                 "CMDB System",
                 ["ServiceNow", "BMC Remedy", "Cherwell", "Custom CMDB API"],
-                index=0
+                index =0
             )
             
             cmdb_endpoint = st.text_input(
                 "CMDB API Endpoint",
-                placeholder="https://your-instance.service-now.com/api"
+                placeholder ="https://your-instance.service-now.com/api"
             )
             
             sync_frequency = st.selectbox(
                 "Sync Frequency",
                 ["Real-time (on change)", "Every 5 minutes", "Every 15 minutes", "Hourly"],
-                index=0
+                index =0
             )
         
         with col2:
             cmdb_auth = st.selectbox(
                 "Authentication Method",
                 ["API Key", "OAuth 2.0", "Basic Auth", "IAM Role"],
-                index=0
+                index =0
             )
             
             cmdb_api_key = st.text_input(
                 "API Key / Credentials",
-                type="password",
-                placeholder="Enter CMDB credentials"
+                type ="password",
+                placeholder ="Enter CMDB credentials"
             )
             
             enable_bidirectional = st.checkbox(
                 "Enable bidirectional sync",
-                value=False,
-                help="Sync changes from CMDB back to AWS tags"
+                value =False,
+                help ="Sync changes from CMDB back to AWS tags"
             )
         
         # Config Rules for Change Validation
@@ -1189,10 +1189,10 @@ def lambda_handler(event, context):
     
     # Query CloudTrail for change events
     events = cloudtrail_client.lookup_events(
-        LookupAttributes=[
+        LookupAttributes =[
             {'AttributeKey': 'ResourceName', 'AttributeValue': resource_id}
         ],
-        MaxResults=1
+        MaxResults =1
     )
     
     if events['Events']:
@@ -1217,21 +1217,21 @@ def lambda_handler(event, context):
     
     # Report compliance result
     config_client.put_evaluations(
-        Evaluations=[{
+        Evaluations =[{
             'ComplianceResourceType': resource_type,
             'ComplianceResourceId': resource_id,
             'ComplianceType': compliance_type,
             'Annotation': annotation,
             'OrderingTimestamp': configuration_item['configurationItemCaptureTime']
         }],
-        ResultToken=event['resultToken']
+        ResultToken =event['resultToken']
     )
     
     return {
         'statusCode': 200,
         'body': json.dumps(f'Compliance evaluation: {compliance_type}')
     }
-""", language="python")
+""", language ="python")
         
         # Change Timeline View
         st.subheader("📅 Configuration Change Timeline")
@@ -1239,7 +1239,7 @@ def lambda_handler(event, context):
         if st.session_state.demo_mode:
             # Demo change history
             changes_data = {
-                'Timestamp': [datetime.now() - timedelta(hours=x) for x in range(10)],
+                'Timestamp': [datetime.now() - timedeltahours =x) for x in range(10)],
                 'Resource Type': [
                     'EC2::Instance',
                     'IAM::Role',
@@ -1303,20 +1303,20 @@ def lambda_handler(event, context):
             }
             
             df_changes = pd.DataFrame(changes_data)
-            st.dataframe(df_changes, use_container_width=True)
+            st.dataframe(df_changes, use_container_width =True)
             
             # Summary metrics
             col1, col2, col3, col4 = st.columns(4)
             with col1:
                 # Mode-aware metric
-            total_changes_(24h)_value = self._get_data('total_changes_(24h)', "247")
-            st.metric("Total Changes (24h)", total_changes_(24h)_value)
+            total_changes_24h_value = self._get_data('total_changes_24h', "247")
+            st.metric("Total Changes (24h)", total_changes_24h_value)
             with col2:
-                st.metric("Unauthorized Changes", "3", delta="-2")
+                st.metric("Unauthorized Changes", "3", delta ="-2")
             with col3:
-                st.metric("CMDB Sync Rate", "99.2%", delta="0.5%")
+                st.metric("CMDB Sync Rate", "99.2%", delta ="0.5%")
             with col4:
-                st.metric("Avg Sync Latency", "12 sec", delta="-3 sec")
+                st.metric("Avg Sync Latency", "12 sec", delta ="-3 sec")
         else:
             st.info("💡 Connect to AWS to view real configuration change history")
         
@@ -1337,7 +1337,7 @@ def lambda_handler(event, context):
                 'Compliance Rate': ['95.1%', '98.9%', '95.8%', '92.0%', '98.2%']
             }
             
-            st.dataframe(pd.DataFrame(compliance_data), use_container_width=True)
+            st.dataframe(pd.DataFrame(compliance_data), use_container_width =True)
     
     @staticmethod
     def render_policy_violations():
@@ -1358,13 +1358,13 @@ def lambda_handler(event, context):
             # Summary metrics
             col1, col2, col3, col4 = st.columns(4)
             with col1:
-                st.metric("Critical Violations", "5", delta="2", delta_color="inverse")
+                st.metric("Critical Violations", "5", delta ="2", delta_color ="inverse")
             with col2:
-                st.metric("High Priority", "12", delta="-3", delta_color="normal")
+                st.metric("High Priority", "12", delta ="-3", delta_color ="normal")
             with col3:
-                st.metric("Medium Priority", "28", delta="5", delta_color="inverse")
+                st.metric("Medium Priority", "28", delta ="5", delta_color ="inverse")
             with col4:
-                st.metric("Low Priority", "47", delta="-8", delta_color="normal")
+                st.metric("Low Priority", "47", delta ="-8", delta_color ="normal")
             
             st.markdown("---")
             
@@ -1443,7 +1443,7 @@ def lambda_handler(event, context):
             }
             
             df_violations = pd.DataFrame(violations_data)
-            st.dataframe(df_violations, use_container_width=True)
+            st.dataframe(df_violations, use_container_width =True)
         else:
             st.info("💡 Connect to AWS to view real policy violations")
         
@@ -1465,7 +1465,7 @@ def lambda_handler(event, context):
                 'Violations': [8, 15, 3, 22, 6],
                 'Auto-Remediate': ['✅', '✅', '❌', '⚠️', '✅']
             })
-            st.dataframe(security_policies, use_container_width=True)
+            st.dataframe(security_policies, use_container_width =True)
         
         with col2:
             st.markdown("#### Compliance Policies")
@@ -1480,7 +1480,7 @@ def lambda_handler(event, context):
                 'Violations': [42, 5, 2, 18, 8],
                 'Auto-Remediate': ['✅', '⚠️', '❌', '✅', '✅']
             })
-            st.dataframe(compliance_policies, use_container_width=True)
+            st.dataframe(compliance_policies, use_container_width =True)
         
         # Auto-Remediation Configuration
         st.subheader("🔧 Auto-Remediation Configuration")
@@ -1522,9 +1522,9 @@ def lambda_handler(event, context):
         # Send notification
         sns = boto3.client('sns')
         sns.publish(
-            TopicArn='arn:aws:sns:us-east-1:123456789012:policy-violations',
-            Subject=f'Auto-Remediation: {config_rule}',
-            Message=json.dumps({
+            TopicArn ='arn:aws:sns:us-east-1:123456789012:policy-violations',
+            Subject =f'Auto-Remediation: {config_rule}',
+            Message =json.dumps({
                 'rule': config_rule,
                 'resource': resource_id,
                 'action': 'auto_remediated',
@@ -1541,8 +1541,8 @@ def lambda_handler(event, context):
 def remediate_s3_public_access(bucket_name):
     s3 = boto3.client('s3')
     s3.put_public_access_block(
-        Bucket=bucket_name,
-        PublicAccessBlockConfiguration={
+        Bucket =bucket_name,
+        PublicAccessBlockConfiguration ={
             'BlockPublicAcls': True,
             'IgnorePublicAcls': True,
             'BlockPublicPolicy': True,
@@ -1555,8 +1555,8 @@ def remediate_ebs_encryption(volume_id):
     ec2 = boto3.client('ec2')
     # Create encrypted snapshot and new volume
     response = ec2.create_snapshot(
-        VolumeId=volume_id,
-        Description='Remediation snapshot for encryption'
+        VolumeId =volume_id,
+        Description ='Remediation snapshot for encryption'
     )
     snapshot_id = response['SnapshotId']
     
@@ -1567,8 +1567,8 @@ def remediate_security_group(sg_id):
     ec2 = boto3.client('ec2')
     # Remove overly permissive rules
     ec2.revoke_security_group_ingress(
-        GroupId=sg_id,
-        IpPermissions=[{
+        GroupId =sg_id,
+        IpPermissions =[{
             'IpProtocol': '-1',
             'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
         }]
@@ -1579,22 +1579,22 @@ def remediate_iam_keys(key_id):
     iam = boto3.client('iam')
     # Deactivate unused key
     iam.update_access_key(
-        AccessKeyId=key_id,
-        Status='Inactive'
+        AccessKeyId =key_id,
+        Status ='Inactive'
     )
     return 'Unused access key deactivated'
 
 def create_ops_item(rule, resource_type, resource_id):
     ssm = boto3.client('ssm')
     ssm.create_ops_item(
-        Title=f'Policy Violation: {rule}',
-        Description=f'Manual remediation required for {resource_type} {resource_id}',
-        Priority=2,
-        Source='AWS Config',
-        Category='Security',
-        Severity='2'
+        Title =f'Policy Violation: {rule}',
+        Description =f'Manual remediation required for {resource_type} {resource_id}',
+        Priority =2,
+        Source ='AWS Config',
+        Category ='Security',
+        Severity ='2'
     )
-""", language="python")
+""", language ="python")
         
         # Violation Trends
         st.subheader("📈 Violation Trends")
@@ -1602,7 +1602,7 @@ def create_ops_item(rule, resource_type, resource_id):
         if st.session_state.demo_mode:
             import random
             trend_data = {
-                'Date': [(datetime.now() - timedelta(days=x)).strftime('%Y-%m-%d') for x in range(30, 0, -1)],
+                'Date': [(datetime.now() - timedeltadays =x)).strftime('%Y-%m-%d') for x in range(30, 0, -1)],
                 'Critical': [random.randint(2, 8) for _ in range(30)],
                 'High': [random.randint(5, 15) for _ in range(30)],
                 'Medium': [random.randint(15, 35) for _ in range(30)],
@@ -1632,53 +1632,53 @@ def create_ops_item(rule, resource_type, resource_id):
         with col1:
             st.markdown("#### Primary Channels")
             
-            enable_email = st.checkbox("📧 Email Notifications", value=True)
+            enable_email = st.checkbox("📧 Email Notifications", value =True)
             if enable_email:
                 email_recipients = st.text_area(
                     "Email Recipients",
-                    placeholder="ops-team@company.com\nsecurity-team@company.com",
-                    height=80
+                    placeholder ="ops-team@company.com\nsecurity-team@company.com",
+                    height =80
                 )
             
-            enable_slack = st.checkbox("💬 Slack Integration", value=True)
+            enable_slack = st.checkbox("💬 Slack Integration", value =True)
             if enable_slack:
                 slack_webhook = st.text_input(
                     "Slack Webhook URL",
-                    type="password",
-                    placeholder="https://hooks.slack.com/services/..."
+                    type ="password",
+                    placeholder ="https://hooks.slack.com/services/..."
                 )
-                slack_channel = st.text_input("Default Channel", value="#aws-alerts")
+                slack_channel = st.text_input("Default Channel", value ="#aws-alerts")
             
-            enable_pagerduty = st.checkbox("📟 PagerDuty Integration", value=True)
+            enable_pagerduty = st.checkbox("📟 PagerDuty Integration", value =True)
             if enable_pagerduty:
                 pagerduty_key = st.text_input(
                     "PagerDuty Integration Key",
-                    type="password"
+                    type ="password"
                 )
         
         with col2:
             st.markdown("#### Secondary Channels")
             
-            enable_sms = st.checkbox("📱 SMS Alerts (SNS)", value=False)
+            enable_sms = st.checkbox("📱 SMS Alerts (SNS)", value =False)
             if enable_sms:
                 sms_numbers = st.text_area(
                     "Phone Numbers",
-                    placeholder="+1-555-0100\n+1-555-0101",
-                    height=80
+                    placeholder ="+1-555-0100\n+1-555-0101",
+                    height =80
                 )
             
-            enable_webhook = st.checkbox("🔗 Custom Webhook", value=False)
+            enable_webhook = st.checkbox("🔗 Custom Webhook", value =False)
             if enable_webhook:
                 webhook_url = st.text_input(
                     "Webhook URL",
-                    placeholder="https://your-system.com/webhook"
+                    placeholder ="https://your-system.com/webhook"
                 )
             
-            enable_teams = st.checkbox("👥 Microsoft Teams", value=False)
+            enable_teams = st.checkbox("👥 Microsoft Teams", value =False)
             if enable_teams:
                 teams_webhook = st.text_input(
                     "Teams Webhook URL",
-                    type="password"
+                    type ="password"
                 )
         
         # Alert Rules
@@ -1691,15 +1691,15 @@ def create_ops_item(rule, resource_type, resource_id):
             
             st.code("""# High CPU Utilization Alert
 resource "aws_cloudwatch_metric_alarm" "high_cpu" {
-  alarm_name          = "high-cpu-utilization"
+  alarm_name = "high-cpu-utilization"
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/EC2"
-  period              = "300"
-  statistic           = "Average"
-  threshold           = "80"
-  alarm_description   = "Alert when CPU exceeds 80% for 10 minutes"
+  evaluation_periods = "2"
+  metric_name = "CPUUtilization"
+  namespace = "AWS/EC2"
+  period = "300"
+  statistic = "Average"
+  threshold = "80"
+  alarm_description = "Alert when CPU exceeds 80% for 10 minutes"
   
   alarm_actions = [
     aws_sns_topic.alerts.arn
@@ -1712,15 +1712,15 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
 
 # Database Connection Spike Alert
 resource "aws_cloudwatch_metric_alarm" "db_connections" {
-  alarm_name          = "high-db-connections"
+  alarm_name = "high-db-connections"
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "DatabaseConnections"
-  namespace           = "AWS/RDS"
-  period              = "60"
-  statistic           = "Average"
-  threshold           = "80"
-  treat_missing_data  = "notBreaching"
+  evaluation_periods = "1"
+  metric_name = "DatabaseConnections"
+  namespace = "AWS/RDS"
+  period = "60"
+  statistic = "Average"
+  threshold = "80"
+  treat_missing_data = "notBreaching"
   
   alarm_actions = [
     aws_sns_topic.alerts.arn,
@@ -1730,17 +1730,17 @@ resource "aws_cloudwatch_metric_alarm" "db_connections" {
 
 # Lambda Error Rate Alert
 resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
-  alarm_name          = "lambda-high-error-rate"
+  alarm_name = "lambda-high-error-rate"
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "2"
-  threshold           = "5"
-  alarm_description   = "Alert when Lambda error rate exceeds 5%"
-  treat_missing_data  = "notBreaching"
+  evaluation_periods = "2"
+  threshold = "5"
+  alarm_description = "Alert when Lambda error rate exceeds 5%"
+  treat_missing_data = "notBreaching"
   
   metric_query {
-    id          = "error_rate"
-    expression  = "errors / invocations * 100"
-    label       = "Error Rate"
+    id = "error_rate"
+    expression = "errors / invocations * 100"
+    label = "Error Rate"
     return_data = "true"
   }
   
@@ -1748,9 +1748,9 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
     id = "errors"
     metric {
       metric_name = "Errors"
-      namespace   = "AWS/Lambda"
-      period      = "300"
-      stat        = "Sum"
+      namespace = "AWS/Lambda"
+      period = "300"
+      stat = "Sum"
       dimensions = {
         FunctionName = "process-payments"
       }
@@ -1761,9 +1761,9 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
     id = "invocations"
     metric {
       metric_name = "Invocations"
-      namespace   = "AWS/Lambda"
-      period      = "300"
-      stat        = "Sum"
+      namespace = "AWS/Lambda"
+      period = "300"
+      stat = "Sum"
       dimensions = {
         FunctionName = "process-payments"
       }
@@ -1774,34 +1774,34 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
     aws_sns_topic.critical_alerts.arn
   ]
 }
-""", language="hcl")
+""", language ="hcl")
         
         with tab2:
             st.markdown("#### Log-Based Metric Filters and Alerts")
             
             st.code("""# Security Event Alert
 resource "aws_cloudwatch_log_metric_filter" "security_events" {
-  name           = "security-events"
+  name = "security-events"
   log_group_name = aws_cloudwatch_log_group.security.name
-  pattern        = "[time, event_type = SECURITY_VIOLATION, ...]"
+  pattern = "[time, event_type = SECURITY_VIOLATION, ...]"
   
   metric_transformation {
-    name      = "SecurityViolations"
+    name = "SecurityViolations"
     namespace = "Security/Events"
-    value     = "1"
+    value = "1"
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "security_violations" {
-  alarm_name          = "security-violations-detected"
+  alarm_name = "security-violations-detected"
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "SecurityViolations"
-  namespace           = "Security/Events"
-  period              = "60"
-  statistic           = "Sum"
-  threshold           = "0"
-  alarm_description   = "Alert on any security violation"
+  evaluation_periods = "1"
+  metric_name = "SecurityViolations"
+  namespace = "Security/Events"
+  period = "60"
+  statistic = "Sum"
+  threshold = "0"
+  alarm_description = "Alert on any security violation"
   
   alarm_actions = [
     aws_sns_topic.security_alerts.arn
@@ -1810,33 +1810,33 @@ resource "aws_cloudwatch_metric_alarm" "security_violations" {
 
 # Failed Login Attempts
 resource "aws_cloudwatch_log_metric_filter" "failed_logins" {
-  name           = "failed-login-attempts"
+  name = "failed-login-attempts"
   log_group_name = aws_cloudwatch_log_group.application.name
-  pattern        = "[time, event = LOGIN_FAILED, user, ...]"
+  pattern = "[time, event = LOGIN_FAILED, user, ...]"
   
   metric_transformation {
-    name      = "FailedLoginAttempts"
+    name = "FailedLoginAttempts"
     namespace = "Application/Security"
-    value     = "1"
+    value = "1"
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "brute_force_detection" {
-  alarm_name          = "potential-brute-force-attack"
+  alarm_name = "potential-brute-force-attack"
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "FailedLoginAttempts"
-  namespace           = "Application/Security"
-  period              = "300"
-  statistic           = "Sum"
-  threshold           = "10"
-  alarm_description   = "Alert on 10+ failed login attempts in 5 minutes"
+  evaluation_periods = "1"
+  metric_name = "FailedLoginAttempts"
+  namespace = "Application/Security"
+  period = "300"
+  statistic = "Sum"
+  threshold = "10"
+  alarm_description = "Alert on 10+ failed login attempts in 5 minutes"
   
   alarm_actions = [
     aws_sns_topic.security_alerts.arn
   ]
 }
-""", language="hcl")
+""", language ="hcl")
         
         with tab3:
             st.markdown("#### EventBridge Event Patterns")
@@ -1894,7 +1894,7 @@ resource "aws_cloudwatch_metric_alarm" "brute_force_detection" {
       "severity": [7, 8, 8.9]
     }
   }
-}""", language="json")
+}""", language ="json")
         
         # Escalation Policies
         st.subheader("📊 Escalation Policies")
@@ -1911,7 +1911,7 @@ resource "aws_cloudwatch_metric_alarm" "brute_force_detection" {
             'Escalation 2': ['Page Director', 'Call On-Call Manager', 'Email Manager', 'Email Team Lead']
         })
         
-        st.dataframe(escalation_config, use_container_width=True)
+        st.dataframe(escalation_config, use_container_width =True)
         
         # On-Call Schedule Integration
         st.subheader("👥 On-Call Schedule Integration")
@@ -1942,7 +1942,7 @@ resource "aws_cloudwatch_metric_alarm" "brute_force_detection" {
                         '12 hours'
                     ]
                 })
-                st.dataframe(oncall_data, use_container_width=True)
+                st.dataframe(oncall_data, use_container_width =True)
         
         with col2:
             st.markdown("#### Recent Alert Activity")
@@ -1958,7 +1958,7 @@ resource "aws_cloudwatch_metric_alarm" "brute_force_detection" {
                     'Acknowledged': ['✅ John Smith', '✅ Sarah Johnson', '✅ Mike Chen', '✅ Emily Davis'],
                     'Resolved': ['⏳ In Progress', '✅ 15 min', '✅ 22 min', '✅ 8 min']
                 })
-                st.dataframe(activity_data, use_container_width=True)
+                st.dataframe(activity_data, use_container_width =True)
         
         # Alert Testing
         st.subheader("🧪 Test Alert Delivery")
@@ -1970,11 +1970,11 @@ resource "aws_cloudwatch_metric_alarm" "brute_force_detection" {
         
         test_message = st.text_area(
             "Test Message",
-            value="This is a test alert to verify the alerting pipeline is working correctly.",
-            height=100
+            value ="This is a test alert to verify the alerting pipeline is working correctly.",
+            height =100
         )
         
-        if st.button("📤 Send Test Alert", key="send_test_alert"):
+        if st.button("📤 Send Test Alert", key ="send_test_alert"):
             with st.spinner("Sending test alert..."):
                 st.success(f"✅ Test alert sent successfully!")
                 st.info(f"""
