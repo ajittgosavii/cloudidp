@@ -406,6 +406,90 @@ class LiveDataService:
         except Exception:
             return "N/A"
     
+    def get_cost_by_environment_tag(self) -> dict:
+        """Get cost breakdown by Environment tag"""
+        if self._is_demo_mode():
+            return {
+                'Production': 25000,
+                'Staging': 10000,
+                'Development': 7500,
+                'QA': 2500
+            }
+        
+        try:
+            # Get all EC2 instances
+            result = self.compute.list_instances()
+            if not result.get('success'):
+                return {}
+            
+            instances = result.get('instances', [])
+            if not instances:
+                return {}
+            
+            # Count instances by Environment tag
+            env_counts = {}
+            for instance in instances:
+                tags = instance.get('Tags', [])
+                # Find Environment tag
+                env_tag = None
+                for tag in tags:
+                    if tag.get('Key') == 'Environment':
+                        env_tag = tag.get('Value')
+                        break
+                
+                if env_tag:
+                    env_counts[env_tag] = env_counts.get(env_tag, 0) + 1
+            
+            # Estimate cost: ~$73/month per instance (t3.micro average)
+            env_costs = {env: count * 73 for env, count in env_counts.items()}
+            
+            return env_costs
+            
+        except Exception:
+            return {}
+    
+    def get_cost_by_department_tag(self) -> dict:
+        """Get cost breakdown by Department tag"""
+        if self._is_demo_mode():
+            return {
+                'Engineering': 18000,
+                'Sales': 12000,
+                'Marketing': 8000,
+                'Operations': 7000
+            }
+        
+        try:
+            # Get all EC2 instances
+            result = self.compute.list_instances()
+            if not result.get('success'):
+                return {}
+            
+            instances = result.get('instances', [])
+            if not instances:
+                return {}
+            
+            # Count instances by Department tag
+            dept_counts = {}
+            for instance in instances:
+                tags = instance.get('Tags', [])
+                # Find Department tag
+                dept_tag = None
+                for tag in tags:
+                    if tag.get('Key') == 'Department':
+                        dept_tag = tag.get('Value')
+                        break
+                
+                if dept_tag:
+                    dept_counts[dept_tag] = dept_counts.get(dept_tag, 0) + 1
+            
+            # Estimate cost: ~$73/month per instance (t3.micro average)
+            dept_costs = {dept: count * 73 for dept, count in dept_counts.items()}
+            
+            return dept_costs
+            
+        except Exception:
+            return {}
+    
     # ========== COMPLIANCE DATA ==========
     
     def get_compliance_score(self) -> str:
