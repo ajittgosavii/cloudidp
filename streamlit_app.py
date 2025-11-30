@@ -134,6 +134,10 @@ st.session_state.get_cost_data = get_cost_data
 # ===== END PATCH =====
 
 # Initialize Data Provider for Live/Demo mode
+# Declare as module-level variables so they're accessible in all functions
+data_provider = None
+live_service = None
+
 if DATA_PROVIDER_AVAILABLE:
     try:
         data_provider = get_data_provider()
