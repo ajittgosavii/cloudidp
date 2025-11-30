@@ -410,6 +410,7 @@ def render_sidebar():
         # Update session state
         old_demo_mode = st.session_state.get('demo_mode', True)
         st.session_state.demo_mode = (mode == "Demo")
+        st.session_state.mode = mode  # CRITICAL FIX: Also set 'mode' key for FinOps module
         
         if old_demo_mode != st.session_state.demo_mode and BACKEND_AVAILABLE:
             initialize_backend()
@@ -526,8 +527,13 @@ def main():
     with main_tabs[3]:
         render_aws_integrations_tabs()
 
+"""
+DIAGNOSTIC VERSION - Add this to streamlit_app.py temporarily
+Replace the render_home_page function with this version
+"""
+
 def render_home_page():
-    """Render the home/dashboard page"""
+    """Render the home/dashboard page - DIAGNOSTIC VERSION"""
     st.markdown("## 🏠 Welcome to CloudIDP")
     
     st.markdown("""
@@ -536,6 +542,72 @@ def render_home_page():
     CloudIDP is a comprehensive enterprise platform for managing multi-cloud infrastructure, 
     governance, and operations at scale.
     """)
+    
+    # === DIAGNOSTIC SECTION ===
+    st.markdown("---")
+    st.markdown("### 🔍 DIAGNOSTIC INFO")
+    
+    # Check 1: Is DATA_PROVIDER_AVAILABLE?
+    st.write(f"**DATA_PROVIDER_AVAILABLE:** {DATA_PROVIDER_AVAILABLE}")
+    
+    # Check 2: Are data_provider and live_service initialized?
+    st.write(f"**data_provider is None:** {data_provider is None}")
+    st.write(f"**live_service is None:** {live_service is None}")
+    
+    # Check 3: What's the current mode?
+    current_mode = st.session_state.get('mode', 'Not Set')
+    st.write(f"**Current Mode:** {current_mode}")
+    
+    # Check 4: Try to call data_provider
+    if data_provider is not None:
+        st.success("✅ data_provider exists!")
+        
+        # Try to get monthly cost
+        try:
+            test_cost = data_provider.get(
+                key='diagnostic_test',
+                demo_value='DEMO_VALUE',
+                live_fn=lambda: 'LIVE_VALUE'
+            )
+            st.write(f"**Test value returned:** {test_cost}")
+            
+            if current_mode == 'Demo' and test_cost == 'DEMO_VALUE':
+                st.success("✅ Demo mode working correctly!")
+            elif current_mode == 'Live' and test_cost == 'LIVE_VALUE':
+                st.success("✅ Live mode working correctly!")
+            else:
+                st.error(f"❌ Mode mismatch! Mode={current_mode}, Value={test_cost}")
+                
+        except Exception as e:
+            st.error(f"❌ Error calling data_provider.get(): {e}")
+    else:
+        st.error("❌ data_provider is None!")
+    
+    # Check 5: Try to call live_service directly
+    if live_service is not None:
+        st.success("✅ live_service exists!")
+        
+        try:
+            # Check if _is_demo_mode exists
+            if hasattr(live_service, '_is_demo_mode'):
+                is_demo = live_service._is_demo_mode()
+                st.write(f"**live_service._is_demo_mode():** {is_demo}")
+            else:
+                st.error("❌ live_service doesn't have _is_demo_mode method!")
+            
+            # Try to get monthly cost
+            monthly_cost_result = live_service.get_monthly_cost()
+            st.write(f"**live_service.get_monthly_cost():** {monthly_cost_result}")
+            
+        except Exception as e:
+            st.error(f"❌ Error calling live_service: {e}")
+            import traceback
+            st.code(traceback.format_exc())
+    else:
+        st.error("❌ live_service is None!")
+    
+    st.markdown("---")
+    # === END DIAGNOSTIC SECTION ===
     
     # Quick Stats Dashboard - MODE-AWARE
     col1, col2, col3, col4 = st.columns(4)
