@@ -1,6 +1,6 @@
 """
 CloudIDP - AWS Cost Explorer Integration Module
-Real-time cost data and optimization recommendations
+Real-time cost data and optimizatiosn recommendations
 """
 
 import streamlit as st
