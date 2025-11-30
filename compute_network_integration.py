@@ -20,18 +20,29 @@ class ComputeNetworkIntegration:
             try:
                 # Try to read from Streamlit secrets first
                 if hasattr(st, 'secrets') and 'aws' in st.secrets:
-                    self.ec2_client = boto3.client(
-                        'ec2',
-                        aws_access_key_id=st.secrets["aws"]["access_key"],
-                        aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
-                        region_name=st.secrets["aws"].get("region", region)
-                    )
-                    self.ec2_resource = boto3.resource(
-                        'ec2',
-                        aws_access_key_id=st.secrets["aws"]["access_key"],
-                        aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
-                        region_name=st.secrets["aws"].get("region", region)
-                    )
+                    # Check for both possible key names
+                    aws_secrets = st.secrets["aws"]
+                    access_key = aws_secrets.get("access_key") or aws_secrets.get("access_key_id")
+                    secret_key = aws_secrets.get("secret_access_key") or aws_secrets.get("secret_key")
+                    region = aws_secrets.get("region", self.region)
+                    
+                    if access_key and secret_key:
+                        self.ec2_client = boto3.client(
+                            'ec2',
+                            aws_access_key_id=access_key,
+                            aws_secret_access_key=secret_key,
+                            region_name=region
+                        )
+                        self.ec2_resource = boto3.resource(
+                            'ec2',
+                            aws_access_key_id=access_key,
+                            aws_secret_access_key=secret_key,
+                            region_name=region
+                        )
+                    else:
+                        # Fallback to default credentials
+                        self.ec2_client = boto3.client('ec2', region_name=region)
+                        self.ec2_resource = boto3.resource('ec2', region_name=region)
                 else:
                     # Fallback to default credentials (IAM role, env vars, etc.)
                     self.ec2_client = boto3.client('ec2', region_name=region)
