@@ -410,7 +410,6 @@ def render_sidebar():
         # Update session state
         old_demo_mode = st.session_state.get('demo_mode', True)
         st.session_state.demo_mode = (mode == "Demo")
-        st.session_state.mode = mode  # CRITICAL: Sync with data_provider!
         
         if old_demo_mode != st.session_state.demo_mode and BACKEND_AVAILABLE:
             initialize_backend()
@@ -527,13 +526,8 @@ def main():
     with main_tabs[3]:
         render_aws_integrations_tabs()
 
-"""
-DIAGNOSTIC VERSION - Add this to streamlit_app.py temporarily
-Replace the render_home_page function with this version
-"""
-
 def render_home_page():
-    """Render the home/dashboard page - DIAGNOSTIC VERSION"""
+    """Render the home/dashboard page"""
     st.markdown("## 🏠 Welcome to CloudIDP")
     
     st.markdown("""
@@ -570,15 +564,20 @@ def render_home_page():
                 live_fn=lambda: live_service.get_monthly_cost() if live_service else '$45.2K'
             )
             
+            st.info(f"Using data_provider - Monthly Cost: {monthly_cost}")
+            
         except Exception as e:
-            # Fallback to demo values on error
+            st.error(f"Error using data_provider: {e}")
+            import traceback
+            st.code(traceback.format_exc())
+            
             # Fallback
             active_projects = '12'
             cloud_providers = '3'
             compliance_score = '98%'
             monthly_cost = '$45.2K'
     else:
-        # Fallback to demo values if data provider not available
+        st.warning("DATA_PROVIDER_AVAILABLE is False or data_provider is None - using fallback")
         active_projects = '12'
         cloud_providers = '3'
         compliance_score = '98%'
