@@ -1,6 +1,6 @@
 """
 Module 4: FinOps - Financial Operations & Cost Management
-Comprehensive cost management and optimization module
+Comprehensive cost management and optimization modules
 """
 
 import streamlit as st
