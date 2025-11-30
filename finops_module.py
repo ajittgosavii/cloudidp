@@ -311,42 +311,35 @@ class FinOpsModule:
         with col1:
             st.markdown("### Cost by Environment")
             
-            # Get mode-aware data
-            if DATA_PROVIDER_AVAILABLE:
+            # Check if we're in Live mode
+            is_live_mode = st.session_state.get('mode', 'Demo') == 'Live'
+            
+            if is_live_mode and DATA_PROVIDER_AVAILABLE:
                 try:
                     provider = get_data_provider()
                     live_service = get_live_service()
                     
-                    if st.session_state.get('mode', 'Demo') == 'Live':
-                        env_costs = live_service.get_cost_by_environment_tag()
-                        
-                        if env_costs:
-                            # Has real data - show it
-                            env_data = pd.DataFrame({
-                                'Environment': list(env_costs.keys()),
-                                'Cost': list(env_costs.values())
-                            })
-                            st.bar_chart(env_data.set_index('Environment'))
-                            st.caption(f"💰 Based on {len(env_costs)} environment(s) with tagged instances")
-                        else:
-                            # No tagged instances - show empty state
-                            st.info("📊 No instances with Environment tags found.\n\nTag your EC2 instances with `Environment` tag to see cost breakdown.")
-                    else:
-                        # Demo mode - show demo data
+                    # Get environment costs
+                    env_costs = live_service.get_cost_by_environment_tag()
+                    
+                    # Check if we have any data
+                    if env_costs and len(env_costs) > 0:
+                        # Has real data - show chart
                         env_data = pd.DataFrame({
-                            'Environment': ['Production', 'Staging', 'Development', 'QA'],
-                            'Cost': [25000, 10000, 7500, 2500]
+                            'Environment': list(env_costs.keys()),
+                            'Cost': list(env_costs.values())
                         })
                         st.bar_chart(env_data.set_index('Environment'))
-                except Exception:
-                    # Error - show demo data
-                    env_data = pd.DataFrame({
-                        'Environment': ['Production', 'Staging', 'Development', 'QA'],
-                        'Cost': [25000, 10000, 7500, 2500]
-                    })
-                    st.bar_chart(env_data.set_index('Environment'))
+                        st.caption(f"💰 Based on {len(env_costs)} environment(s) with tagged instances")
+                    else:
+                        # No tagged instances - show empty state
+                        st.info("📊 No instances with Environment tags found.\n\nTag your EC2 instances with `Environment` tag to see cost breakdown.")
+                        
+                except Exception as e:
+                    # Error in live mode - show empty state with error
+                    st.info(f"📊 No instances with Environment tags found.\n\nTag your EC2 instances with `Environment` tag to see cost breakdown.")
             else:
-                # No data provider - show demo data
+                # Demo mode - show demo data
                 env_data = pd.DataFrame({
                     'Environment': ['Production', 'Staging', 'Development', 'QA'],
                     'Cost': [25000, 10000, 7500, 2500]
@@ -356,42 +349,35 @@ class FinOpsModule:
         with col2:
             st.markdown("### Cost by Department")
             
-            # Get mode-aware data
-            if DATA_PROVIDER_AVAILABLE:
+            # Check if we're in Live mode
+            is_live_mode = st.session_state.get('mode', 'Demo') == 'Live'
+            
+            if is_live_mode and DATA_PROVIDER_AVAILABLE:
                 try:
                     provider = get_data_provider()
                     live_service = get_live_service()
                     
-                    if st.session_state.get('mode', 'Demo') == 'Live':
-                        dept_costs = live_service.get_cost_by_department_tag()
-                        
-                        if dept_costs:
-                            # Has real data - show it
-                            dept_data = pd.DataFrame({
-                                'Department': list(dept_costs.keys()),
-                                'Cost': list(dept_costs.values())
-                            })
-                            st.bar_chart(dept_data.set_index('Department'))
-                            st.caption(f"💰 Based on {len(dept_costs)} department(s) with tagged instances")
-                        else:
-                            # No tagged instances - show empty state
-                            st.info("📊 No instances with Department tags found.\n\nTag your EC2 instances with `Department` tag to see cost breakdown.")
-                    else:
-                        # Demo mode - show demo data
+                    # Get department costs
+                    dept_costs = live_service.get_cost_by_department_tag()
+                    
+                    # Check if we have any data
+                    if dept_costs and len(dept_costs) > 0:
+                        # Has real data - show chart
                         dept_data = pd.DataFrame({
-                            'Department': ['Engineering', 'Sales', 'Marketing', 'Operations'],
-                            'Cost': [18000, 12000, 8000, 7000]
+                            'Department': list(dept_costs.keys()),
+                            'Cost': list(dept_costs.values())
                         })
                         st.bar_chart(dept_data.set_index('Department'))
-                except Exception:
-                    # Error - show demo data
-                    dept_data = pd.DataFrame({
-                        'Department': ['Engineering', 'Sales', 'Marketing', 'Operations'],
-                        'Cost': [18000, 12000, 8000, 7000]
-                    })
-                    st.bar_chart(dept_data.set_index('Department'))
+                        st.caption(f"💰 Based on {len(dept_costs)} department(s) with tagged instances")
+                    else:
+                        # No tagged instances - show empty state
+                        st.info("📊 No instances with Department tags found.\n\nTag your EC2 instances with `Department` tag to see cost breakdown.")
+                        
+                except Exception as e:
+                    # Error in live mode - show empty state
+                    st.info(f"📊 No instances with Department tags found.\n\nTag your EC2 instances with `Department` tag to see cost breakdown.")
             else:
-                # No data provider - show demo data
+                # Demo mode - show demo data
                 dept_data = pd.DataFrame({
                     'Department': ['Engineering', 'Sales', 'Marketing', 'Operations'],
                     'Cost': [18000, 12000, 8000, 7000]
