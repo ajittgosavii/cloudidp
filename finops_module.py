@@ -113,10 +113,17 @@ class FinOpsModule:
         
         # Quick Stats - MODE-AWARE
         # Get data based on Demo/Live mode
+        
+        # DIAGNOSTIC: Show what mode we're in and what's happening
+        current_mode = st.session_state.get('mode', 'Demo')
+        st.caption(f"🔍 DEBUG: Current mode = {current_mode}, DATA_PROVIDER_AVAILABLE = {DATA_PROVIDER_AVAILABLE}")
+        
         if DATA_PROVIDER_AVAILABLE:
             try:
                 provider = get_data_provider()
                 live_service = get_live_service()
+                
+                st.caption(f"🔍 DEBUG: provider = {provider is not None}, live_service = {live_service is not None}")
                 
                 # Get mode-aware data
                 monthly_cost = provider.get(
@@ -139,14 +146,21 @@ class FinOpsModule:
                     demo_value='1,234',
                     live_fn=lambda: live_service.count_active_resources()
                 )
+                
+                st.caption(f"🔍 DEBUG: Got values - Cost: {monthly_cost}, Savings: {monthly_savings}, Resources: {active_resources}")
+                
             except Exception as e:
                 # Fallback to demo values on error
+                st.error(f"🔍 DEBUG ERROR: {str(e)}")
+                import traceback
+                st.code(traceback.format_exc())
                 monthly_cost = '$45,234'
                 budget_usage = '76%'
                 monthly_savings = '$8,456'
                 active_resources = '1,234'
         else:
             # No data provider, use demo values
+            st.warning("🔍 DEBUG: DATA_PROVIDER_AVAILABLE is False!")
             monthly_cost = '$45,234'
             budget_usage = '76%'
             monthly_savings = '$8,456'
