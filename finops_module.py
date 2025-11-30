@@ -1,6 +1,6 @@
 """
 Module 4: FinOps - Financial Operations & Cost Management
-Comprehensive cost management and optimizatison module
+Comprehensive cost management and optimization module
 """
 
 import streamlit as st
@@ -42,6 +42,10 @@ def get_real_ec2_instances_direct():
             st.error("❌ No 'secret_access_key' or 'secret_key' found in secrets")
             return None
         
+        # Show what we're trying to connect with (DIAGNOSTIC)
+        st.info(f"🔍 Connecting to AWS EC2 in region: {region}")
+        st.info(f"🔍 Using access key: {access_key[:4]}...{access_key[-4:]}")
+        
         # Create EC2 client with secrets DIRECTLY
         ec2_client = boto3.client(
             'ec2',
@@ -50,16 +54,28 @@ def get_real_ec2_instances_direct():
             region_name=region
         )
         
+        st.success("✅ EC2 client created successfully!")
+        
         # Get instances
+        st.info("🔍 Calling ec2_client.describe_instances()...")
         response = ec2_client.describe_instances()
+        st.success(f"✅ AWS API call successful! Response type: {type(response)}")
+        
         instances = []
         for reservation in response['Reservations']:
             instances.extend(reservation['Instances'])
         
+        st.success(f"✅ Found {len(instances)} EC2 instances!")
         return instances
         
     except Exception as e:
-        st.error(f"❌ Direct EC2 Error: {str(e)[:100]}")
+        # Show FULL error with traceback
+        st.error(f"❌ EC2 Error: {str(e)}")  # FULL error, no truncation
+        st.error(f"❌ Error type: {type(e).__name__}")
+        
+        # Show full traceback
+        import traceback
+        st.code(traceback.format_exc())
         return None
 
 
@@ -86,6 +102,9 @@ def get_real_rds_instances_direct():
             st.error("❌ No 'secret_access_key' or 'secret_key' found in secrets")
             return None
         
+        # Show what we're trying to connect with (DIAGNOSTIC)
+        st.info(f"🔍 Connecting to AWS RDS in region: {region}")
+        
         # Create RDS client with secrets DIRECTLY
         rds_client = boto3.client(
             'rds',
@@ -94,12 +113,23 @@ def get_real_rds_instances_direct():
             region_name=region
         )
         
+        st.success("✅ RDS client created successfully!")
+        
         # Get databases
+        st.info("🔍 Calling rds_client.describe_db_instances()...")
         response = rds_client.describe_db_instances()
+        st.success(f"✅ AWS API call successful! Found {len(response['DBInstances'])} databases!")
+        
         return response['DBInstances']
         
     except Exception as e:
-        st.error(f"❌ Direct RDS Error: {str(e)[:100]}")
+        # Show FULL error with traceback
+        st.error(f"❌ RDS Error: {str(e)}")  # FULL error, no truncation
+        st.error(f"❌ Error type: {type(e).__name__}")
+        
+        # Show full traceback
+        import traceback
+        st.code(traceback.format_exc())
         return None
 
 class FinOpsModule:
