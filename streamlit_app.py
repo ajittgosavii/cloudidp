@@ -410,6 +410,7 @@ def render_sidebar():
         # Update session state
         old_demo_mode = st.session_state.get('demo_mode', True)
         st.session_state.demo_mode = (mode == "Demo")
+        st.session_state.mode = mode  # CRITICAL: Sync with data_provider!
         
         if old_demo_mode != st.session_state.demo_mode and BACKEND_AVAILABLE:
             initialize_backend()
