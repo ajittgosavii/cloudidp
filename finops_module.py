@@ -26,7 +26,6 @@ def get_real_ec2_instances_direct():
         
         # Check if we have secrets
         if not (hasattr(st, 'secrets') and 'aws' in st.secrets):
-            st.error("❌ No 'aws' section found in secrets")
             return None
         
         # Get AWS credentials - check for both possible key names
@@ -35,16 +34,8 @@ def get_real_ec2_instances_direct():
         secret_key = aws_secrets.get("secret_access_key") or aws_secrets.get("secret_key")
         region = aws_secrets.get("region", "us-east-1")
         
-        if not access_key:
-            st.error("❌ No 'access_key' or 'access_key_id' found in secrets")
+        if not access_key or not secret_key:
             return None
-        if not secret_key:
-            st.error("❌ No 'secret_access_key' or 'secret_key' found in secrets")
-            return None
-        
-        # Show what we're trying to connect with (DIAGNOSTIC)
-        st.info(f"🔍 Connecting to AWS EC2 in region: {region}")
-        st.info(f"🔍 Using access key: {access_key[:4]}...{access_key[-4:]}")
         
         # Create EC2 client with secrets DIRECTLY
         ec2_client = boto3.client(
@@ -54,28 +45,15 @@ def get_real_ec2_instances_direct():
             region_name=region
         )
         
-        st.success("✅ EC2 client created successfully!")
-        
         # Get instances
-        st.info("🔍 Calling ec2_client.describe_instances()...")
         response = ec2_client.describe_instances()
-        st.success(f"✅ AWS API call successful! Response type: {type(response)}")
-        
         instances = []
         for reservation in response['Reservations']:
             instances.extend(reservation['Instances'])
         
-        st.success(f"✅ Found {len(instances)} EC2 instances!")
         return instances
         
     except Exception as e:
-        # Show FULL error with traceback
-        st.error(f"❌ EC2 Error: {str(e)}")  # FULL error, no truncation
-        st.error(f"❌ Error type: {type(e).__name__}")
-        
-        # Show full traceback
-        import traceback
-        st.code(traceback.format_exc())
         return None
 
 
@@ -86,7 +64,6 @@ def get_real_rds_instances_direct():
         
         # Check if we have secrets
         if not (hasattr(st, 'secrets') and 'aws' in st.secrets):
-            st.error("❌ No 'aws' section found in secrets")
             return None
         
         # Get AWS credentials - check for both possible key names
@@ -95,15 +72,8 @@ def get_real_rds_instances_direct():
         secret_key = aws_secrets.get("secret_access_key") or aws_secrets.get("secret_key")
         region = aws_secrets.get("region", "us-east-1")
         
-        if not access_key:
-            st.error("❌ No 'access_key' or 'access_key_id' found in secrets")
+        if not access_key or not secret_key:
             return None
-        if not secret_key:
-            st.error("❌ No 'secret_access_key' or 'secret_key' found in secrets")
-            return None
-        
-        # Show what we're trying to connect with (DIAGNOSTIC)
-        st.info(f"🔍 Connecting to AWS RDS in region: {region}")
         
         # Create RDS client with secrets DIRECTLY
         rds_client = boto3.client(
@@ -113,23 +83,11 @@ def get_real_rds_instances_direct():
             region_name=region
         )
         
-        st.success("✅ RDS client created successfully!")
-        
         # Get databases
-        st.info("🔍 Calling rds_client.describe_db_instances()...")
         response = rds_client.describe_db_instances()
-        st.success(f"✅ AWS API call successful! Found {len(response['DBInstances'])} databases!")
-        
         return response['DBInstances']
         
     except Exception as e:
-        # Show FULL error with traceback
-        st.error(f"❌ RDS Error: {str(e)}")  # FULL error, no truncation
-        st.error(f"❌ Error type: {type(e).__name__}")
-        
-        # Show full traceback
-        import traceback
-        st.code(traceback.format_exc())
         return None
 
 class FinOpsModule:
@@ -274,19 +232,18 @@ class FinOpsModule:
         
         # Top Cost Resources - MODE-AWARE
         # Top Cost Resources - DIRECT AWS ACCESS (BYPASSES INTEGRATION FILES!)
+        # Top Cost Resources
         st.markdown("### Top 10 Costly Resources")
         
         # Check mode
         if st.session_state.get('mode', 'Demo') == 'Live':
-            st.caption("🔴 Live Mode: DIRECT AWS ACCESS (bypassing integration files)")
+            st.caption("🔴 Live Mode: Showing real AWS resources when available")
             
             resources_data = []
             
             # Get EC2 instances DIRECTLY from AWS
             ec2_instances = get_real_ec2_instances_direct()
             if ec2_instances:
-                st.success(f"✅ SUCCESS! Found {len(ec2_instances)} real EC2 instances via DIRECT access!")
-                
                 for instance in ec2_instances[:5]:
                     instance_id = instance.get('InstanceId', 'unknown')
                     instance_type = instance.get('InstanceType', 'unknown')
@@ -299,14 +256,10 @@ class FinOpsModule:
                         'Monthly Cost': '~Est',
                         'Tags': name_tag
                     })
-            else:
-                st.warning("⚠️ Could not fetch EC2 instances directly - check AWS credentials")
             
             # Get RDS instances DIRECTLY from AWS
             rds_instances = get_real_rds_instances_direct()
             if rds_instances:
-                st.success(f"✅ SUCCESS! Found {len(rds_instances)} real RDS instances via DIRECT access!")
-                
                 for db in rds_instances[:3]:
                     db_id = db.get('DBInstanceIdentifier', 'unknown')
                     engine = db.get('Engine', 'unknown')
@@ -317,16 +270,12 @@ class FinOpsModule:
                         'Monthly Cost': '~Est',
                         'Tags': engine
                     })
-            else:
-                st.warning("⚠️ Could not fetch RDS instances directly - check AWS credentials")
             
             if resources_data:
+                # Show real resources
                 resources = pd.DataFrame(resources_data)
-                st.info(f"📊 Showing {len(resources_data)} REAL resources from AWS!")
             else:
-                # No resources fetched - show demo
-                st.error("❌ No resources fetched from AWS - showing demo data")
-                st.info("💡 Check: Streamlit Cloud → Settings → Secrets → Verify AWS credentials are configured")
+                # No resources found - show demo data
                 resources = pd.DataFrame({
                     'Resource ID': [f'i-{i:08x}' for i in range(10)],
                     'Type': ['EC2'] * 5 + ['RDS'] * 3 + ['ELB'] * 2,
