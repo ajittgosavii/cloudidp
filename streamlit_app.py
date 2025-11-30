@@ -21,6 +21,14 @@ from anthropic_helper import AnthropicHelper
 from datetime import datetime, timedelta
 import json
 
+# Data Provider for Demo/Live Mode
+try:
+    from data_provider import get_data_provider, get_live_service
+    DATA_PROVIDER_AVAILABLE = True
+except ImportError:
+    DATA_PROVIDER_AVAILABLE = False
+    print("⚠️ data_provider.py not found. Live data features will be limited.")
+
 # Quick Patch: Make Demo/Live Mode Actually Work
 # Add this to the TOP of streamlit_app.py (after imports)
 
@@ -124,6 +132,15 @@ st.session_state.get_ec2_instances = get_ec2_instances
 st.session_state.get_cost_data = get_cost_data
 
 # ===== END PATCH =====
+
+# Initialize Data Provider for Live/Demo mode
+if DATA_PROVIDER_AVAILABLE:
+    try:
+        data_provider = get_data_provider()
+        live_service = get_live_service()
+    except Exception as e:
+        print(f"⚠️ Error initializing data provider: {e}")
+        DATA_PROVIDER_AVAILABLE = False
 
 # USAGE IN MODULES:
 # Instead of:
@@ -516,34 +533,63 @@ def render_home_page():
     governance, and operations at scale.
     """)
     
-    # Quick Stats Dashboard
+    # Quick Stats Dashboard - MODE-AWARE
     col1, col2, col3, col4 = st.columns(4)
+    
+    # Get data based on Demo/Live mode
+    if DATA_PROVIDER_AVAILABLE:
+        active_projects = data_provider.get(
+            key='active_projects',
+            demo_value='12',
+            live_fn=lambda: live_service.count_active_projects()
+        )
+        cloud_providers = data_provider.get(
+            key='cloud_providers',
+            demo_value='3',
+            live_fn=None  # Not implemented yet
+        )
+        compliance_score = data_provider.get(
+            key='compliance_score',
+            demo_value='98%',
+            live_fn=lambda: live_service.get_compliance_score()
+        )
+        monthly_cost = data_provider.get(
+            key='monthly_cost',
+            demo_value='$45.2K',
+            live_fn=lambda: live_service.get_monthly_cost()
+        )
+    else:
+        # Fallback to demo values if data provider not available
+        active_projects = '12'
+        cloud_providers = '3'
+        compliance_score = '98%'
+        monthly_cost = '$45.2K'
     
     with col1:
         st.metric(
             label="🏗️ Active Projects",
-            value="12",
+            value=active_projects,
             delta="2 new"
         )
     
     with col2:
         st.metric(
             label="☁️ Cloud Providers",
-            value="3",
+            value=cloud_providers,
             delta="AWS, Azure, GCP"
         )
     
     with col3:
         st.metric(
             label="🔐 Compliance Score",
-            value="98%",
+            value=compliance_score,
             delta="2%"
         )
     
     with col4:
         st.metric(
             label="💰 Monthly Cost",
-            value="$45.2K",
+            value=monthly_cost,
             delta="-$2.3K"
         )
     
