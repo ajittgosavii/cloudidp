@@ -164,17 +164,13 @@ class FinOpsModule:
                 # Live mode - show message about data source
                 st.caption("🔴 Live Mode: Showing real AWS resources with estimated costs. For accurate per-resource costs, enable AWS Cost Allocation Tags.")
                 
-                # Get live data (this is a simplified version - real costs require Cost Allocation Tags)
-                from compute_network_integration import ComputeNetworkIntegration
-                from database_integration import DatabaseIntegration
-                
-                compute = ComputeNetworkIntegration(demo_mode=False)
-                database = DatabaseIntegration(demo_mode=False)
+                # Use the already-initialized live_service (has AWS credentials from secrets)
+                live_service = get_live_service()
                 
                 resources_data = []
                 
-                # Get EC2 instances
-                ec2_result = compute.list_instances()
+                # Get EC2 instances using live_service's compute instance
+                ec2_result = live_service.compute.list_instances()
                 if ec2_result.get('success'):
                     for instance in ec2_result.get('instances', [])[:5]:
                         instance_id = instance.get('InstanceId', 'unknown')
@@ -190,10 +186,10 @@ class FinOpsModule:
                             'Tags': name_tag
                         })
                 
-                # Get RDS instances  
-                rds_result = database.list_db_instances()
+                # Get RDS instances using live_service's database instance
+                rds_result = live_service.database.list_db_instances()
                 if rds_result.get('success'):
-                    for db in rds_result.get('instances', [])[:3]:
+                    for db in rds_result.get('db_instances', [])[:3]:  # Fixed: db_instances not instances
                         db_id = db.get('DBInstanceIdentifier', 'unknown')
                         engine = db.get('Engine', 'unknown')
                         

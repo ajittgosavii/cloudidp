@@ -3,6 +3,7 @@ CloudIDP - AWS Database Services Integration Module
 RDS, DynamoDB, and database management operations
 """
 
+import streamlit as st
 import boto3
 from typing import Dict, List, Optional, Any
 from botocore.exceptions import ClientError
@@ -17,9 +18,31 @@ class DatabaseIntegration:
         
         if not demo_mode:
             try:
-                self.rds_client = boto3.client('rds', region_name=region)
-                self.dynamodb_client = boto3.client('dynamodb', region_name=region)
-                self.dynamodb_resource = boto3.resource('dynamodb', region_name=region)
+                # Try to read from Streamlit secrets first
+                if hasattr(st, 'secrets') and 'aws' in st.secrets:
+                    self.rds_client = boto3.client(
+                        'rds',
+                        aws_access_key_id=st.secrets["aws"]["access_key"],
+                        aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
+                        region_name=st.secrets["aws"].get("region", region)
+                    )
+                    self.dynamodb_client = boto3.client(
+                        'dynamodb',
+                        aws_access_key_id=st.secrets["aws"]["access_key"],
+                        aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
+                        region_name=st.secrets["aws"].get("region", region)
+                    )
+                    self.dynamodb_resource = boto3.resource(
+                        'dynamodb',
+                        aws_access_key_id=st.secrets["aws"]["access_key"],
+                        aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
+                        region_name=st.secrets["aws"].get("region", region)
+                    )
+                else:
+                    # Fallback to default credentials (IAM role, env vars, etc.)
+                    self.rds_client = boto3.client('rds', region_name=region)
+                    self.dynamodb_client = boto3.client('dynamodb', region_name=region)
+                    self.dynamodb_resource = boto3.resource('dynamodb', region_name=region)
             except Exception as e:
                 print(f"Warning: {e}")
                 self.demo_mode = True
