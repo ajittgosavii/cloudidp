@@ -20,24 +20,36 @@ class DatabaseIntegration:
             try:
                 # Try to read from Streamlit secrets first
                 if hasattr(st, 'secrets') and 'aws' in st.secrets:
-                    self.rds_client = boto3.client(
-                        'rds',
-                        aws_access_key_id=st.secrets["aws"]["access_key"],
-                        aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
-                        region_name=st.secrets["aws"].get("region", region)
-                    )
-                    self.dynamodb_client = boto3.client(
-                        'dynamodb',
-                        aws_access_key_id=st.secrets["aws"]["access_key"],
-                        aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
-                        region_name=st.secrets["aws"].get("region", region)
-                    )
-                    self.dynamodb_resource = boto3.resource(
-                        'dynamodb',
-                        aws_access_key_id=st.secrets["aws"]["access_key"],
-                        aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
-                        region_name=st.secrets["aws"].get("region", region)
-                    )
+                    # Check for both possible key names
+                    aws_secrets = st.secrets["aws"]
+                    access_key = aws_secrets.get("access_key") or aws_secrets.get("access_key_id")
+                    secret_key = aws_secrets.get("secret_access_key") or aws_secrets.get("secret_key")
+                    region = aws_secrets.get("region", self.region)
+                    
+                    if access_key and secret_key:
+                        self.rds_client = boto3.client(
+                            'rds',
+                            aws_access_key_id=access_key,
+                            aws_secret_access_key=secret_key,
+                            region_name=region
+                        )
+                        self.dynamodb_client = boto3.client(
+                            'dynamodb',
+                            aws_access_key_id=access_key,
+                            aws_secret_access_key=secret_key,
+                            region_name=region
+                        )
+                        self.dynamodb_resource = boto3.resource(
+                            'dynamodb',
+                            aws_access_key_id=access_key,
+                            aws_secret_access_key=secret_key,
+                            region_name=region
+                        )
+                    else:
+                        # Fallback to default credentials
+                        self.rds_client = boto3.client('rds', region_name=region)
+                        self.dynamodb_client = boto3.client('dynamodb', region_name=region)
+                        self.dynamodb_resource = boto3.resource('dynamodb', region_name=region)
                 else:
                     # Fallback to default credentials (IAM role, env vars, etc.)
                     self.rds_client = boto3.client('rds', region_name=region)
