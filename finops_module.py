@@ -15,6 +15,65 @@ try:
 except ImportError:
     DATA_PROVIDER_AVAILABLE = False
 
+
+# ========== DIRECT AWS ACCESS FUNCTIONS ==========
+# These bypass the integration files and connect directly to AWS
+
+def get_real_ec2_instances_direct():
+    """Get real EC2 instances DIRECTLY from AWS (bypasses integration files)"""
+    try:
+        import boto3
+        
+        # Check if we have secrets
+        if not (hasattr(st, 'secrets') and 'aws' in st.secrets):
+            return None
+        
+        # Create EC2 client with secrets DIRECTLY
+        ec2_client = boto3.client(
+            'ec2',
+            aws_access_key_id=st.secrets["aws"]["access_key"],
+            aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
+            region_name=st.secrets["aws"].get("region", "us-east-1")
+        )
+        
+        # Get instances
+        response = ec2_client.describe_instances()
+        instances = []
+        for reservation in response['Reservations']:
+            instances.extend(reservation['Instances'])
+        
+        return instances
+        
+    except Exception as e:
+        st.error(f"❌ Direct EC2 Error: {str(e)[:100]}")
+        return None
+
+
+def get_real_rds_instances_direct():
+    """Get real RDS instances DIRECTLY from AWS (bypasses integration files)"""
+    try:
+        import boto3
+        
+        # Check if we have secrets
+        if not (hasattr(st, 'secrets') and 'aws' in st.secrets):
+            return None
+        
+        # Create RDS client with secrets DIRECTLY
+        rds_client = boto3.client(
+            'rds',
+            aws_access_key_id=st.secrets["aws"]["access_key"],
+            aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
+            region_name=st.secrets["aws"].get("region", "us-east-1")
+        )
+        
+        # Get databases
+        response = rds_client.describe_db_instances()
+        return response['DBInstances']
+        
+    except Exception as e:
+        st.error(f"❌ Direct RDS Error: {str(e)[:100]}")
+        return None
+
 class FinOpsModule:
     """FinOps Module - Comprehensive Cost Management & Optimization"""
     
@@ -135,192 +194,81 @@ class FinOpsModule:
         """Cost Dashboard Tab"""
         st.subheader("📊 Cost Dashboard")
         
-        # Cost Breakdown - MODE-AWARE
+        # Cost Breakdown
         col1, col2 = st.columns(2)
         
         with col1:
             st.markdown("### Cost by Service")
-            
-            # Check mode
-            if st.session_state.get('mode', 'Demo') == 'Live' and DATA_PROVIDER_AVAILABLE:
-                try:
-                    live_service = get_live_service()
-                    
-                    # Try to get real cost data from AWS Cost Explorer
-                    from datetime import datetime, timedelta
-                    end_date = datetime.now().strftime('%Y-%m-%d')
-                    start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
-                    
-                    cost_result = live_service.cost_explorer.get_cost_and_usage(
-                        start_date=start_date,
-                        end_date=end_date,
-                        granularity='MONTHLY',
-                        metrics=['UnblendedCost']
-                    )
-                    
-                    if cost_result.get('success') and 'breakdown' in cost_result:
-                        # Use real AWS cost data
-                        breakdown = cost_result['breakdown']
-                        cost_data = pd.DataFrame({
-                            'Service': [item['service'] for item in breakdown],
-                            'Cost': [float(item['cost']) for item in breakdown]
-                        })
-                        st.caption("🔴 Live Mode: Real AWS cost data")
-                    else:
-                        # Fallback to demo
-                        cost_data = pd.DataFrame({
-                            'Service': ['EC2', 'S3', 'RDS', 'Lambda', 'ELB'],
-                            'Cost': [15234, 8456, 12345, 3456, 4567]
-                        })
-                        st.caption("⚠️ Using demo data - Could not fetch real costs")
-                except Exception as e:
-                    # Error - fallback to demo
-                    cost_data = pd.DataFrame({
-                        'Service': ['EC2', 'S3', 'RDS', 'Lambda', 'ELB'],
-                        'Cost': [15234, 8456, 12345, 3456, 4567]
-                    })
-                    st.caption(f"⚠️ Using demo data - Error: {str(e)[:40]}")
-            else:
-                # Demo mode
-                cost_data = pd.DataFrame({
-                    'Service': ['EC2', 'S3', 'RDS', 'Lambda', 'ELB'],
-                    'Cost': [15234, 8456, 12345, 3456, 4567]
-                })
-            
+            cost_data = pd.DataFrame({
+                'Service': ['EC2', 'S3', 'RDS', 'Lambda', 'ELB'],
+                'Cost': [15234, 8456, 12345, 3456, 4567]
+            })
             st.bar_chart(cost_data.set_index('Service'))
         
         with col2:
             st.markdown("### Cost Trend (30 Days)")
-            
-            # Check mode
-            if st.session_state.get('mode', 'Demo') == 'Live' and DATA_PROVIDER_AVAILABLE:
-                try:
-                    live_service = get_live_service()
-                    
-                    # Try to get real daily cost data
-                    end_date = datetime.now().strftime('%Y-%m-%d')
-                    start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
-                    
-                    cost_result = live_service.cost_explorer.get_cost_and_usage(
-                        start_date=start_date,
-                        end_date=end_date,
-                        granularity='DAILY',
-                        metrics=['UnblendedCost']
-                    )
-                    
-                    if cost_result.get('success') and 'data' in cost_result:
-                        # Parse real AWS cost trend data
-                        results = cost_result['data']
-                        dates_list = []
-                        costs_list = []
-                        
-                        for result in results:
-                            period_start = result.get('TimePeriod', {}).get('Start')
-                            if period_start:
-                                dates_list.append(pd.to_datetime(period_start))
-                                total = result.get('Total', {}).get('UnblendedCost', {}).get('Amount', '0')
-                                costs_list.append(float(total))
-                        
-                        if dates_list and costs_list:
-                            trend_data = pd.DataFrame({
-                                'Date': dates_list,
-                                'Cost': costs_list
-                            })
-                            st.caption("🔴 Live Mode: Real AWS cost trend")
-                        else:
-                            # Fallback to demo
-                            dates = pd.date_range(end=datetime.now(), periods=30)
-                            trend_data = pd.DataFrame({
-                                'Date': dates,
-                                'Cost': [1200 + i * 50 + (i % 7) * 100 for i in range(30)]
-                            })
-                            st.caption("⚠️ Using demo data - No trend data available")
-                    else:
-                        # Fallback to demo
-                        dates = pd.date_range(end=datetime.now(), periods=30)
-                        trend_data = pd.DataFrame({
-                            'Date': dates,
-                            'Cost': [1200 + i * 50 + (i % 7) * 100 for i in range(30)]
-                        })
-                        st.caption("⚠️ Using demo data - Could not fetch trend")
-                except Exception as e:
-                    # Error - fallback to demo
-                    dates = pd.date_range(end=datetime.now(), periods=30)
-                    trend_data = pd.DataFrame({
-                        'Date': dates,
-                        'Cost': [1200 + i * 50 + (i % 7) * 100 for i in range(30)]
-                    })
-                    st.caption(f"⚠️ Using demo data - Error: {str(e)[:40]}")
-            else:
-                # Demo mode
-                dates = pd.date_range(end=datetime.now(), periods=30)
-                trend_data = pd.DataFrame({
-                    'Date': dates,
-                    'Cost': [1200 + i * 50 + (i % 7) * 100 for i in range(30)]
-                })
-            
+            dates = pd.date_range(end=datetime.now(), periods=30)
+            trend_data = pd.DataFrame({
+                'Date': dates,
+                'Cost': [1200 + i * 50 + (i % 7) * 100 for i in range(30)]
+            })
             st.line_chart(trend_data.set_index('Date'))
         
         # Top Cost Resources - MODE-AWARE
+        # Top Cost Resources - DIRECT AWS ACCESS (BYPASSES INTEGRATION FILES!)
         st.markdown("### Top 10 Costly Resources")
         
-        # Check mode and get appropriate data
-        if st.session_state.get('mode', 'Demo') == 'Live' and DATA_PROVIDER_AVAILABLE:
-            try:
-                # Live mode - show message about data source
-                st.caption("🔴 Live Mode: Showing real AWS resources with estimated costs. For accurate per-resource costs, enable AWS Cost Allocation Tags.")
+        # Check mode
+        if st.session_state.get('mode', 'Demo') == 'Live':
+            st.caption("🔴 Live Mode: DIRECT AWS ACCESS (bypassing integration files)")
+            
+            resources_data = []
+            
+            # Get EC2 instances DIRECTLY from AWS
+            ec2_instances = get_real_ec2_instances_direct()
+            if ec2_instances:
+                st.success(f"✅ SUCCESS! Found {len(ec2_instances)} real EC2 instances via DIRECT access!")
                 
-                # Use the already-initialized live_service (has AWS credentials from secrets)
-                live_service = get_live_service()
-                
-                resources_data = []
-                
-                # Get EC2 instances using live_service's compute instance
-                ec2_result = live_service.compute.list_instances()
-                if ec2_result.get('success'):
-                    for instance in ec2_result.get('instances', [])[:5]:
-                        instance_id = instance.get('InstanceId', 'unknown')
-                        instance_type = instance.get('InstanceType', 'unknown')
-                        tags_list = instance.get('Tags', [])
-                        name_tag = next((t['Value'] for t in tags_list if t['Key'] == 'Name'), 'unnamed')
-                        
-                        # Rough cost estimate (actual costs require Cost Explorer)
-                        resources_data.append({
-                            'Resource ID': instance_id,
-                            'Type': 'EC2',
-                            'Monthly Cost': '~Est',  # Placeholder
-                            'Tags': name_tag
-                        })
-                
-                # Get RDS instances using live_service's database instance
-                rds_result = live_service.database.list_db_instances()
-                if rds_result.get('success'):
-                    for db in rds_result.get('db_instances', [])[:3]:  # FIXED: db_instances not instances
-                        db_id = db.get('DBInstanceIdentifier', 'unknown')
-                        engine = db.get('Engine', 'unknown')
-                        
-                        resources_data.append({
-                            'Resource ID': db_id,
-                            'Type': 'RDS',
-                            'Monthly Cost': '~Est',
-                            'Tags': engine
-                        })
-                
-                if resources_data:
-                    resources = pd.DataFrame(resources_data)
-                else:
-                    # No resources found, show demo
-                    resources = pd.DataFrame({
-                        'Resource ID': [f'i-{i:08x}' for i in range(10)],
-                        'Type': ['EC2'] * 5 + ['RDS'] * 3 + ['ELB'] * 2,
-                        'Monthly Cost': [3456, 2345, 2123, 1987, 1765, 1654, 1543, 1432, 1321, 1210],
-                        'Tags': ['prod-web', 'prod-api', 'dev-web', 'staging-db', 'prod-worker'] * 2
-                    })
-                    st.caption("⚠️ No AWS resources found - showing demo data")
+                for instance in ec2_instances[:5]:
+                    instance_id = instance.get('InstanceId', 'unknown')
+                    instance_type = instance.get('InstanceType', 'unknown')
+                    tags_list = instance.get('Tags', [])
+                    name_tag = next((t['Value'] for t in tags_list if t['Key'] == 'Name'), 'unnamed')
                     
-            except Exception as e:
-                # Error fetching live data, fall back to demo
-                st.caption(f"⚠️ Could not fetch live AWS resources ({str(e)[:50]}) - showing demo data")
+                    resources_data.append({
+                        'Resource ID': instance_id,
+                        'Type': 'EC2',
+                        'Monthly Cost': '~Est',
+                        'Tags': name_tag
+                    })
+            else:
+                st.warning("⚠️ Could not fetch EC2 instances directly - check AWS credentials")
+            
+            # Get RDS instances DIRECTLY from AWS
+            rds_instances = get_real_rds_instances_direct()
+            if rds_instances:
+                st.success(f"✅ SUCCESS! Found {len(rds_instances)} real RDS instances via DIRECT access!")
+                
+                for db in rds_instances[:3]:
+                    db_id = db.get('DBInstanceIdentifier', 'unknown')
+                    engine = db.get('Engine', 'unknown')
+                    
+                    resources_data.append({
+                        'Resource ID': db_id,
+                        'Type': 'RDS',
+                        'Monthly Cost': '~Est',
+                        'Tags': engine
+                    })
+            else:
+                st.warning("⚠️ Could not fetch RDS instances directly - check AWS credentials")
+            
+            if resources_data:
+                resources = pd.DataFrame(resources_data)
+                st.info(f"📊 Showing {len(resources_data)} REAL resources from AWS!")
+            else:
+                # No resources fetched - show demo
+                st.error("❌ No resources fetched from AWS - showing demo data")
+                st.info("💡 Check: Streamlit Cloud → Settings → Secrets → Verify AWS credentials are configured")
                 resources = pd.DataFrame({
                     'Resource ID': [f'i-{i:08x}' for i in range(10)],
                     'Type': ['EC2'] * 5 + ['RDS'] * 3 + ['ELB'] * 2,
@@ -344,187 +292,34 @@ class FinOpsModule:
         
         st.info("Track and allocate costs based on resource tags")
         
-        # Tag-based allocation - MODE-AWARE
+        # Tag-based allocation
         col1, col2 = st.columns(2)
         
         with col1:
             st.markdown("### Cost by Environment")
-            
-            # Check mode
-            if st.session_state.get('mode', 'Demo') == 'Live' and DATA_PROVIDER_AVAILABLE:
-                try:
-                    live_service = get_live_service()
-                    
-                    # Get tag-based costs (placeholder - requires AWS Cost Allocation Tags)
-                    # For now, estimate based on resource counts
-                    ec2_result = live_service.compute.list_instances()
-                    
-                    if ec2_result.get('success'):
-                        instances = ec2_result.get('instances', [])
-                        
-                        # Count instances by environment tag
-                        env_counts = {'Production': 0, 'Staging': 0, 'Development': 0, 'QA': 0}
-                        for instance in instances:
-                            tags = instance.get('Tags', [])
-                            env_tag = next((t['Value'] for t in tags if t['Key'] == 'Environment'), None)
-                            if env_tag in env_counts:
-                                env_counts[env_tag] += 1
-                            elif env_tag:
-                                env_counts[env_tag] = env_counts.get(env_tag, 0) + 1
-                        
-                        # Estimate costs (rough estimate: $100/instance/month)
-                        env_data = pd.DataFrame({
-                            'Environment': list(env_counts.keys()),
-                            'Cost': [count * 100 for count in env_counts.values()]
-                        })
-                        st.caption("🔴 Live Mode: Estimated costs based on resource counts")
-                    else:
-                        # Fallback to demo
-                        env_data = pd.DataFrame({
-                            'Environment': ['Production', 'Staging', 'Development', 'QA'],
-                            'Cost': [25000, 10000, 7500, 2500]
-                        })
-                        st.caption("⚠️ Using demo data")
-                except Exception as e:
-                    # Error - fallback to demo
-                    env_data = pd.DataFrame({
-                        'Environment': ['Production', 'Staging', 'Development', 'QA'],
-                        'Cost': [25000, 10000, 7500, 2500]
-                    })
-                    st.caption(f"⚠️ Using demo data - Error: {str(e)[:40]}")
-            else:
-                # Demo mode
-                env_data = pd.DataFrame({
-                    'Environment': ['Production', 'Staging', 'Development', 'QA'],
-                    'Cost': [25000, 10000, 7500, 2500]
-                })
-            
+            env_data = pd.DataFrame({
+                'Environment': ['Production', 'Staging', 'Development', 'QA'],
+                'Cost': [25000, 10000, 7500, 2500]
+            })
             st.bar_chart(env_data.set_index('Environment'))
         
         with col2:
             st.markdown("### Cost by Department")
-            
-            # Check mode
-            if st.session_state.get('mode', 'Demo') == 'Live' and DATA_PROVIDER_AVAILABLE:
-                try:
-                    live_service = get_live_service()
-                    
-                    # Get tag-based costs by department
-                    ec2_result = live_service.compute.list_instances()
-                    
-                    if ec2_result.get('success'):
-                        instances = ec2_result.get('instances', [])
-                        
-                        # Count instances by department tag
-                        dept_counts = {}
-                        for instance in instances:
-                            tags = instance.get('Tags', [])
-                            dept_tag = next((t['Value'] for t in tags if t['Key'] == 'Department'), None)
-                            if dept_tag:
-                                dept_counts[dept_tag] = dept_counts.get(dept_tag, 0) + 1
-                        
-                        if dept_counts:
-                            # Estimate costs
-                            dept_data = pd.DataFrame({
-                                'Department': list(dept_counts.keys()),
-                                'Cost': [count * 100 for count in dept_counts.values()]
-                            })
-                            st.caption("🔴 Live Mode: Estimated costs")
-                        else:
-                            # No department tags found
-                            dept_data = pd.DataFrame({
-                                'Department': ['Engineering', 'Sales', 'Marketing', 'Operations'],
-                                'Cost': [18000, 12000, 8000, 7000]
-                            })
-                            st.caption("⚠️ No Department tags found - showing demo")
-                    else:
-                        # Fallback to demo
-                        dept_data = pd.DataFrame({
-                            'Department': ['Engineering', 'Sales', 'Marketing', 'Operations'],
-                            'Cost': [18000, 12000, 8000, 7000]
-                        })
-                        st.caption("⚠️ Using demo data")
-                except Exception as e:
-                    # Error - fallback to demo
-                    dept_data = pd.DataFrame({
-                        'Department': ['Engineering', 'Sales', 'Marketing', 'Operations'],
-                        'Cost': [18000, 12000, 8000, 7000]
-                    })
-                    st.caption(f"⚠️ Using demo data - Error: {str(e)[:40]}")
-            else:
-                # Demo mode
-                dept_data = pd.DataFrame({
-                    'Department': ['Engineering', 'Sales', 'Marketing', 'Operations'],
-                    'Cost': [18000, 12000, 8000, 7000]
-                })
-            
+            dept_data = pd.DataFrame({
+                'Department': ['Engineering', 'Sales', 'Marketing', 'Operations'],
+                'Cost': [18000, 12000, 8000, 7000]
+            })
             st.bar_chart(dept_data.set_index('Department'))
         
-        # Tag compliance - MODE-AWARE
+        # Tag compliance
         st.markdown("### Tag Compliance")
         col1, col2, col3 = st.columns(3)
-        
-        # Check mode
-        if st.session_state.get('mode', 'Demo') == 'Live' and DATA_PROVIDER_AVAILABLE:
-            try:
-                live_service = get_live_service()
-                
-                # Calculate tag compliance from real resources
-                ec2_result = live_service.compute.list_instances()
-                
-                if ec2_result.get('success'):
-                    instances = ec2_result.get('instances', [])
-                    total_resources = len(instances)
-                    
-                    if total_resources > 0:
-                        # Count tagged resources (resources with at least one tag)
-                        tagged = sum(1 for inst in instances if inst.get('Tags', []))
-                        untagged = total_resources - tagged
-                        compliance = int((tagged / total_resources) * 100)
-                        
-                        with col1:
-                            st.metric("Tagged Resources", f"{tagged:,}", f"{compliance}%")
-                        with col2:
-                            st.metric("Untagged Resources", f"{untagged:,}", f"{100-compliance}%")
-                        with col3:
-                            st.metric("Compliance Score", f"{compliance}%", "+0%")
-                        
-                        st.caption("🔴 Live Mode: Real tag compliance data")
-                    else:
-                        # No resources found
-                        with col1:
-                            st.metric("Tagged Resources", "0", "0%")
-                        with col2:
-                            st.metric("Untagged Resources", "0", "0%")
-                        with col3:
-                            st.metric("Compliance Score", "0%", "+0%")
-                        st.caption("⚠️ No resources found")
-                else:
-                    # Fallback to demo
-                    with col1:
-                        st.metric("Tagged Resources", "1,123", "91%")
-                    with col2:
-                        st.metric("Untagged Resources", "111", "9%")
-                    with col3:
-                        st.metric("Compliance Score", "91%", "+3%")
-                    st.caption("⚠️ Using demo data")
-            except Exception as e:
-                # Error - fallback to demo
-                with col1:
-                    st.metric("Tagged Resources", "1,123", "91%")
-                with col2:
-                    st.metric("Untagged Resources", "111", "9%")
-                with col3:
-                    st.metric("Compliance Score", "91%", "+3%")
-                st.caption(f"⚠️ Using demo data - Error: {str(e)[:40]}")
-        else:
-            # Demo mode
-            with col1:
-                st.metric("Tagged Resources", "1,123", "91%")
-            with col2:
-                st.metric("Untagged Resources", "111", "9%")
-            with col3:
-                st.metric("Compliance Score", "91%", "+3%")
+        with col1:
+            st.metric("Tagged Resources", "1,123", "91%")
+        with col2:
+            st.metric("Untagged Resources", "111", "9%")
+        with col3:
+            st.metric("Compliance Score", "91%", "+3%")
     
     def render_budget_management(self):
         """Budget Policy Enforcement"""
