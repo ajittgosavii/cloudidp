@@ -3,6 +3,7 @@ CloudIDP - AWS Cost Explorer Integration Module
 Real-time cost data and optimization recommendations
 """
 
+import streamlit as st
 import boto3
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
@@ -18,7 +19,17 @@ class CostExplorerIntegration:
         
         if not demo_mode:
             try:
-                self.ce_client = boto3.client('ce', region_name=region)
+                # Try to read from Streamlit secrets first
+                if hasattr(st, 'secrets') and 'aws' in st.secrets:
+                    self.ce_client = boto3.client(
+                        'ce',
+                        aws_access_key_id=st.secrets["aws"]["access_key"],
+                        aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
+                        region_name=st.secrets["aws"].get("region", region)
+                    )
+                else:
+                    # Fallback to default credentials (IAM role, env vars, etc.)
+                    self.ce_client = boto3.client('ce', region_name=region)
             except Exception as e:
                 print(f"Warning: {e}")
                 self.demo_mode = True
