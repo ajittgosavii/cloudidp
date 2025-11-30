@@ -328,8 +328,11 @@ class FinOpsModule:
         st.markdown("### Tag Compliance")
         
         # Get mode-aware tag compliance data
-        if DATA_PROVIDER_AVAILABLE and data_provider is not None and live_service is not None:
+        if DATA_PROVIDER_AVAILABLE:
             try:
+                provider = get_data_provider()
+                live_service = get_live_service()
+                
                 tagged_count = provider.get(
                     key='finops_tagged_resources',
                     demo_value='1,123',
@@ -345,7 +348,7 @@ class FinOpsModule:
                     demo_value='91%',
                     live_fn=lambda: live_service.get_tag_compliance_score()
                 )
-            except Exception:
+            except Exception as e:
                 # Fallback to demo values on error
                 tagged_count = '1,123'
                 untagged_count = '111'
