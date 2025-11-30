@@ -132,12 +132,12 @@ class FinOpsModule:
                 monthly_savings = provider.get(
                     key='finops_monthly_savings',
                     demo_value='$8,456',
-                    live_fn=None  # Not implemented yet
+                    live_fn=lambda: live_service.get_monthly_savings()
                 )
                 active_resources = provider.get(
                     key='finops_active_resources',
                     demo_value='1,234',
-                    live_fn=None  # Not implemented yet
+                    live_fn=lambda: live_service.count_active_resources()
                 )
             except Exception as e:
                 # Fallback to demo values on error
