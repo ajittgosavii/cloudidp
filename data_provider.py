@@ -103,52 +103,17 @@ class LiveDataService:
         """Initialize live data service"""
         # Initialize AWS services (will only be used in Live mode)
         # Don't cache demo_mode - check it dynamically!
-        
-        # DIAGNOSTIC OUTPUT
-        st.write("🔍 **DIAGNOSTIC: LiveDataService Initialization**")
-        
         try:
-            st.write("Attempting to import integration modules...")
             from cost_explorer_integration import CostExplorerIntegration
             from database_integration import DatabaseIntegration
             from compute_network_integration import ComputeNetworkIntegration
-            st.write("✅ Imports successful")
             
-            st.write("Creating CostExplorerIntegration(demo_mode=False)...")
             self.cost_explorer = CostExplorerIntegration(demo_mode=False)
-            st.write(f"✅ cost_explorer.demo_mode = {self.cost_explorer.demo_mode}")
-            
-            st.write("Creating DatabaseIntegration(demo_mode=False)...")
             self.database = DatabaseIntegration(demo_mode=False)
-            st.write(f"✅ database.demo_mode = {self.database.demo_mode}")
-            
-            st.write("Creating ComputeNetworkIntegration(demo_mode=False)...")
             self.compute = ComputeNetworkIntegration(demo_mode=False)
-            st.write(f"✅ compute.demo_mode = {self.compute.demo_mode}")
-            
-            # Test list_instances
-            st.write("Testing compute.list_instances()...")
-            test_result = self.compute.list_instances()
-            st.write(f"✅ Result success: {test_result.get('success')}")
-            st.write(f"✅ Has demo_mode key: {'demo_mode' in test_result}")
-            if 'demo_mode' in test_result:
-                st.write(f"⚠️ Result demo_mode: {test_result.get('demo_mode')}")
-            
-            instances = test_result.get('instances', [])
-            if instances:
-                first_id = instances[0].get('InstanceId', 'unknown')
-                st.write(f"✅ First instance ID: {first_id}")
-                st.write(f"✅ ID length: {len(first_id)}")
-                st.write(f"✅ Is real AWS format: {first_id.startswith('i-') and len(first_id) > 15}")
-            
             self.aws_initialized = True
-            st.write("✅ AWS initialized successfully")
-            
         except Exception as e:
             # AWS services not available - will fall back to demo data
-            st.error(f"❌ Error initializing AWS services: {e}")
-            import traceback
-            st.code(traceback.format_exc())
             self.aws_initialized = False
     
     def _is_demo_mode(self) -> bool:
@@ -178,7 +143,28 @@ class LiveDataService:
             result = self.cost_explorer.get_cost_and_usage(start, end)
             
             if result['success']:
-                cost = result['total_cost']
+                # Check if this is demo mode response or live mode response
+                if 'total_cost' in result:
+                    # Demo mode - has total_cost already
+                    cost = result['total_cost']
+                elif 'data' in result:
+                    # Live mode - need to parse AWS response
+                    results_by_time = result['data']
+                    if results_by_time and len(results_by_time) > 0:
+                        # Sum up all costs from all time periods
+                        total = 0.0
+                        for period in results_by_time:
+                            if 'Total' in period and 'UnblendedCost' in period['Total']:
+                                amount_str = period['Total']['UnblendedCost']['Amount']
+                                total += float(amount_str)
+                        cost = total
+                    else:
+                        # No data returned
+                        return "$0"
+                else:
+                    # Unknown response format
+                    return "$45,234"
+                
                 # Format as currency
                 if cost >= 1000:
                     return f"${cost/1000:.1f}K"
@@ -206,7 +192,17 @@ class LiveDataService:
             result = self.cost_explorer.get_cost_forecast(start, end)
             
             if result['success']:
-                forecast = float(result['forecasted_cost'])
+                # Check if this is demo mode or live mode response
+                if 'forecasted_cost' in result:
+                    # Demo mode
+                    forecast = float(result['forecasted_cost'])
+                elif 'forecast' in result:
+                    # Live mode
+                    forecast = float(result['forecast'])
+                else:
+                    # Unknown format
+                    return "$47,890"
+                
                 return f"${forecast/1000:.1f}K"
             else:
                 return "$47,890"
