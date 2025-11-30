@@ -46,7 +46,7 @@ class DataProvider:
             )
         """
         # Always return demo value in demo mode
-        if self.demo_mode:
+        if self._is_demo_mode():
             return demo_value
         
         # If no live function provided, return demo value
@@ -101,27 +101,35 @@ class LiveDataService:
     
     def __init__(self):
         """Initialize live data service"""
-        self.demo_mode = st.session_state.get('mode', 'Demo') == 'Demo'
-        
-        # Only import and initialize AWS services if NOT in demo mode
-        if not self.demo_mode:
-            try:
-                from cost_explorer_integration import CostExplorerIntegration
-                from database_integration import DatabaseIntegration
-                from compute_network_integration import ComputeNetworkIntegration
-                
-                self.cost_explorer = CostExplorerIntegration(demo_mode=False)
-                self.database = DatabaseIntegration(demo_mode=False)
-                self.compute = ComputeNetworkIntegration(demo_mode=False)
-            except Exception as e:
-                st.error(f"Failed to initialize AWS services: {e}")
-                self.demo_mode = True
+        # Initialize AWS services (will only be used in Live mode)
+        # Don't cache demo_mode - check it dynamically!
+        try:
+            from cost_explorer_integration import CostExplorerIntegration
+            from database_integration import DatabaseIntegration
+            from compute_network_integration import ComputeNetworkIntegration
+            
+            self.cost_explorer = CostExplorerIntegration(demo_mode=False)
+            self.database = DatabaseIntegration(demo_mode=False)
+            self.compute = ComputeNetworkIntegration(demo_mode=False)
+            self.aws_initialized = True
+        except Exception as e:
+            # AWS services not available - will fall back to demo data
+            self.aws_initialized = False
+    
+    def _is_demo_mode(self) -> bool:
+        """Check current mode dynamically (don't cache!)"""
+        return st.session_state.get('mode', 'Demo') == 'Demo'
     
     # ========== COST DATA ==========
     
     def get_monthly_cost(self) -> str:
         """Get current month's cost from AWS Cost Explorer"""
-        if self.demo_mode:
+        # Check mode dynamically!
+        if self._is_demo_mode():
+            return "$45,234"
+        
+        # Check if AWS is initialized
+        if not self.aws_initialized:
             return "$45,234"
         
         try:
@@ -150,7 +158,7 @@ class LiveDataService:
     
     def get_cost_forecast(self) -> str:
         """Get next month's cost forecast"""
-        if self.demo_mode:
+        if self._is_demo_mode():
             return "$47,890"
         
         try:
@@ -175,7 +183,7 @@ class LiveDataService:
     
     def count_ec2_instances(self) -> str:
         """Count running EC2 instances"""
-        if self.demo_mode:
+        if self._is_demo_mode():
             return "156"
         
         try:
@@ -192,7 +200,7 @@ class LiveDataService:
     
     def count_rds_instances(self) -> str:
         """Count RDS database instances"""
-        if self.demo_mode:
+        if self._is_demo_mode():
             return "12"
         
         try:
@@ -206,7 +214,7 @@ class LiveDataService:
     
     def count_dynamodb_tables(self) -> str:
         """Count DynamoDB tables"""
-        if self.demo_mode:
+        if self._is_demo_mode():
             return "8"
         
         try:
@@ -222,7 +230,7 @@ class LiveDataService:
     
     def get_compliance_score(self) -> str:
         """Get compliance score (placeholder - implement with AWS Config)"""
-        if self.demo_mode:
+        if self._is_demo_mode():
             return "98%"
         
         # TODO: Implement with AWS Config integration
@@ -233,7 +241,7 @@ class LiveDataService:
     
     def count_active_projects(self) -> str:
         """Count active projects (placeholder - implement with database)"""
-        if self.demo_mode:
+        if self._is_demo_mode():
             return "12"
         
         # TODO: Implement with database_service
