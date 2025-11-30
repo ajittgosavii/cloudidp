@@ -103,17 +103,52 @@ class LiveDataService:
         """Initialize live data service"""
         # Initialize AWS services (will only be used in Live mode)
         # Don't cache demo_mode - check it dynamically!
+        
+        # DIAGNOSTIC OUTPUT
+        st.write("🔍 **DIAGNOSTIC: LiveDataService Initialization**")
+        
         try:
+            st.write("Attempting to import integration modules...")
             from cost_explorer_integration import CostExplorerIntegration
             from database_integration import DatabaseIntegration
             from compute_network_integration import ComputeNetworkIntegration
+            st.write("✅ Imports successful")
             
+            st.write("Creating CostExplorerIntegration(demo_mode=False)...")
             self.cost_explorer = CostExplorerIntegration(demo_mode=False)
+            st.write(f"✅ cost_explorer.demo_mode = {self.cost_explorer.demo_mode}")
+            
+            st.write("Creating DatabaseIntegration(demo_mode=False)...")
             self.database = DatabaseIntegration(demo_mode=False)
+            st.write(f"✅ database.demo_mode = {self.database.demo_mode}")
+            
+            st.write("Creating ComputeNetworkIntegration(demo_mode=False)...")
             self.compute = ComputeNetworkIntegration(demo_mode=False)
+            st.write(f"✅ compute.demo_mode = {self.compute.demo_mode}")
+            
+            # Test list_instances
+            st.write("Testing compute.list_instances()...")
+            test_result = self.compute.list_instances()
+            st.write(f"✅ Result success: {test_result.get('success')}")
+            st.write(f"✅ Has demo_mode key: {'demo_mode' in test_result}")
+            if 'demo_mode' in test_result:
+                st.write(f"⚠️ Result demo_mode: {test_result.get('demo_mode')}")
+            
+            instances = test_result.get('instances', [])
+            if instances:
+                first_id = instances[0].get('InstanceId', 'unknown')
+                st.write(f"✅ First instance ID: {first_id}")
+                st.write(f"✅ ID length: {len(first_id)}")
+                st.write(f"✅ Is real AWS format: {first_id.startswith('i-') and len(first_id) > 15}")
+            
             self.aws_initialized = True
+            st.write("✅ AWS initialized successfully")
+            
         except Exception as e:
             # AWS services not available - will fall back to demo data
+            st.error(f"❌ Error initializing AWS services: {e}")
+            import traceback
+            st.code(traceback.format_exc())
             self.aws_initialized = False
     
     def _is_demo_mode(self) -> bool:
