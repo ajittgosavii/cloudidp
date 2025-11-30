@@ -1,3 +1,29 @@
+# CloudIDP - Complete Requirements
+# Streamlit Cloud Deployment Dependencies
+
+# Core Framework
 streamlit>=1.28.0
+
+# AWS SDK
+boto3>=1.28.0
+botocore>=1.31.0
+
+# Data Processing
 pandas>=2.0.0
+numpy>=1.24.0
+
+# YAML Processing (REQUIRED!)
+pyyaml>=6.0
+
+# Date/Time
 python-dateutil>=2.8.0
+
+# HTTP Requests
+requests>=2.31.0
+
+# Anthropic AI (if using Claude API features)
+anthropic>=0.3.0
+
+# Optional but recommended
+plotly>=5.14.0
+altair>=5.0.0
