@@ -1,6 +1,6 @@
 """
 Module 4: FinOps - Financial Operations & Cost Management
-Comprehensive cost management and optimization module
+Comprehensive cost management and optimizatison module
 """
 
 import streamlit as st
@@ -26,14 +26,28 @@ def get_real_ec2_instances_direct():
         
         # Check if we have secrets
         if not (hasattr(st, 'secrets') and 'aws' in st.secrets):
+            st.error("❌ No 'aws' section found in secrets")
+            return None
+        
+        # Get AWS credentials - check for both possible key names
+        aws_secrets = st.secrets["aws"]
+        access_key = aws_secrets.get("access_key") or aws_secrets.get("access_key_id")
+        secret_key = aws_secrets.get("secret_access_key") or aws_secrets.get("secret_key")
+        region = aws_secrets.get("region", "us-east-1")
+        
+        if not access_key:
+            st.error("❌ No 'access_key' or 'access_key_id' found in secrets")
+            return None
+        if not secret_key:
+            st.error("❌ No 'secret_access_key' or 'secret_key' found in secrets")
             return None
         
         # Create EC2 client with secrets DIRECTLY
         ec2_client = boto3.client(
             'ec2',
-            aws_access_key_id=st.secrets["aws"]["access_key"],
-            aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
-            region_name=st.secrets["aws"].get("region", "us-east-1")
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+            region_name=region
         )
         
         # Get instances
@@ -56,14 +70,28 @@ def get_real_rds_instances_direct():
         
         # Check if we have secrets
         if not (hasattr(st, 'secrets') and 'aws' in st.secrets):
+            st.error("❌ No 'aws' section found in secrets")
+            return None
+        
+        # Get AWS credentials - check for both possible key names
+        aws_secrets = st.secrets["aws"]
+        access_key = aws_secrets.get("access_key") or aws_secrets.get("access_key_id")
+        secret_key = aws_secrets.get("secret_access_key") or aws_secrets.get("secret_key")
+        region = aws_secrets.get("region", "us-east-1")
+        
+        if not access_key:
+            st.error("❌ No 'access_key' or 'access_key_id' found in secrets")
+            return None
+        if not secret_key:
+            st.error("❌ No 'secret_access_key' or 'secret_key' found in secrets")
             return None
         
         # Create RDS client with secrets DIRECTLY
         rds_client = boto3.client(
             'rds',
-            aws_access_key_id=st.secrets["aws"]["access_key"],
-            aws_secret_access_key=st.secrets["aws"]["secret_access_key"],
-            region_name=st.secrets["aws"].get("region", "us-east-1")
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+            region_name=region
         )
         
         # Get databases
