@@ -10,6 +10,8 @@ import json
 from backend_config import BackendConfig, DatabaseType, DYNAMODB_TABLES
 from backend_models import *
 import logging
+from config import get_aws_account_config
+
 
 logger = logging.getLogger(__name__)
 
@@ -127,7 +129,7 @@ class DatabaseService:
         # Add demo accounts
         demo_accounts = [
             {
-                "account_id": "123456789012",
+                "account_id": get_aws_account_config()['account_id'],
                 "account_name": "Production Account",
                 "account_email": "prod@company.com",
                 "org_id": "o-123456",

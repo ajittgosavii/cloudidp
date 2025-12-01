@@ -11,6 +11,8 @@ from datetime import datetime, timedelta
 from enum import Enum
 import uuid
 import os
+from config import get_aws_account_config
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -580,7 +582,7 @@ class MockProvisioningJobManager:
                 "job_type": "compliance_check",
                 "status": "running",
                 "progress": 45,
-                "account_id": "123456789012",
+                "account_id": get_aws_account_config()['account_id'],
                 "created_at": datetime.utcnow().isoformat()
             }
         ]

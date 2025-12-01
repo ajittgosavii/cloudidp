@@ -149,7 +149,7 @@ class ProvisioningDeploymentModule:
                 
                 cloud_provider = st.selectbox(
                     "Cloud Provider*",
-                    ["AWS", "Azure", "GCP", "Multi-Cloud"]
+                    ["AWS"]
                 )
                 
                 blueprint = st.selectbox(
@@ -304,8 +304,8 @@ class ProvisioningDeploymentModule:
         with col2:
             cloud_filter = st.multiselect(
                 "Filter by Cloud",
-                ["AWS", "Azure", "GCP"],
-                default=["AWS", "Azure", "GCP"]
+                ["AWS"],
+                default=["AWS"]
             )
         with col3:
             env_filter = st.multiselect(

@@ -65,10 +65,7 @@ COMPLIANCE_FRAMEWORKS = [
 
 # Cloud Providers
 CLOUD_PROVIDERS = [
-    "AWS",
-    "Azure",
-    "GCP",
-    "Multi-Cloud"
+    "AWS"
 ]
 
 # Environments

@@ -1,243 +1,400 @@
-# AWS Design & Planning Platform
+# CloudIDP - AWS Infrastructure Development Platform
 
-🏗️ **Enterprise Cloud Architecture & Governance Framework**
+**Enterprise-Grade AWS Cloud Governance & Automation Framework**
 
-A comprehensive Streamlit application for AWS architecture design, planning, and governance powered by Anthropic Claude AI.
-
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.29.0-FF4B4B.svg)](https://streamlit.io)
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
-[![AWS](https://img.shields.io/badge/AWS-Ready-orange.svg)](https://aws.amazon.com)
-
-## 🌟 Features
-
-### Design & Planning Modules
-
-✅ **Blueprint Definition** - Define reusable architecture blueprints  
-✅ **Tagging Standards** - Enforce consistent tagging policies  
-✅ **Naming Conventions** - Standardize resource naming  
-✅ **Artifact Versioning** - Manage container images and versions  
-✅ **IaC Module Registry** - Centralized Infrastructure as Code repository  
-✅ **Design-Time Validation** - Pre-deployment compliance checking  
-
-### AI-Powered Features
-
-🤖 **Claude AI Assistant** - AWS architecture guidance  
-📄 **Documentation Generation** - Automated technical docs  
-🔍 **Code Review** - IaC template analysis  
-💰 **Cost Estimation** - Architecture cost analysis  
-
-### Operation Modes
-
-📋 **Demo Mode** (Default) - Explore with sample data, no credentials needed  
-🟢 **Live Mode** - Connect to real AWS services  
-
-## 🚀 Quick Start
-
-### Deploy to Streamlit Cloud (Recommended)
-
-1. **Fork this repository** to your GitHub account
-
-2. **Go to** [Streamlit Cloud](https://share.streamlit.io/)
-
-3. **Click "New app"**
-
-4. **Select:**
-   - Repository: `your-username/aws-design-platform`
-   - Branch: `main`
-   - Main file: `streamlit_app.py`
-
-5. **Click "Deploy"** ✨
-
-Your app will be live in 2-3 minutes!
-
-### Local Development
-
-```bash
-# Clone repository
-git clone <your-repo-url>
-cd aws-design-platform
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run application
-streamlit run streamlit_app.py
-```
-
-Access at: http://localhost:8501
-
-## 📁 File Structure
-
-```
-aws-design-platform/
-├── streamlit_app.py          # Main application (entry point)
-├── design_planning.py         # All 6 Design & Planning modules
-├── config.py                  # Configuration management
-├── anthropic_helper.py        # Claude AI integration
-├── demo_data.py              # Demo data provider
-├── requirements.txt          # Python dependencies
-└── README.md                 # This file
-```
-
-**Flat structure optimized for Streamlit Cloud and GitHub!**
-
-## 🎯 Usage
-
-### Demo Mode (No Setup Required)
-
-1. App starts in Demo Mode by default
-2. Explore all features with sample data
-3. No AWS credentials needed
-4. No API keys required
-
-### Live Mode
-
-1. **Toggle to Live Mode** in sidebar
-2. **Configure AWS credentials** (optional)
-3. **Add Anthropic API key** for AI features (optional)
-
-### Get Anthropic API Key
-
-1. Visit: https://console.anthropic.com/
-2. Sign up or log in
-3. Go to "API Keys"
-4. Create new key
-5. Paste in sidebar under "Claude AI Configuration"
-
-## 📊 Demo Data Included
-
-- ✅ 4 Architecture Blueprints
-- ✅ Tag Policies & Validation Results
-- ✅ Naming Convention Rules
-- ✅ Container Images & Versions  
-- ✅ 87+ IaC Modules (Terraform, CloudFormation, CDK)
-- ✅ Security Scan Results
-- ✅ Validation Rules & Issues
-
-## 🔧 Configuration
-
-### Streamlit Cloud Secrets
-
-For AI features, add to Streamlit Cloud secrets:
-
-```toml
-ANTHROPIC_API_KEY = "sk-ant-your-key-here"
-```
-
-Go to: App settings → Secrets → Add above
-
-### Environment Variables (Local)
-
-Create `.env` file:
-
-```bash
-ANTHROPIC_API_KEY=sk-ant-your-key-here
-AWS_DEFAULT_REGION=us-east-1
-```
-
-## 🎨 Customization
-
-### Modify Demo Data
-
-Edit `demo_data.py` to customize sample data for your organization.
-
-### Add Custom Modules
-
-Add new functions to `design_planning.py` following existing patterns.
-
-### Extend AI Features
-
-Modify `anthropic_helper.py` to add new AI-powered capabilities.
-
-## 🔒 Security
-
-- API keys stored in session state only
-- Never commit credentials to git
-- Use Streamlit Cloud secrets for production
-- Follow AWS IAM best practices
-
-## 📖 Module Guide
-
-### 1. Blueprint Definition
-
-Create and manage reusable architecture templates:
-- Infrastructure patterns
-- Security baselines
-- Compliance mappings
-- IaC templates
-
-### 2. Tagging Standards
-
-Enforce consistent tagging:
-- Define mandatory tags
-- Validation rules
-- Compliance reporting
-- Auto-remediation
-
-### 3. Naming Conventions
-
-Standardize resource naming:
-- Pattern definitions
-- Validation engine
-- Component specifications
-- Examples library
-
-### 4. Image/Artifact Versioning
-
-Manage container images:
-- Registry management
-- Version tracking
-- Lifecycle policies
-- Security scanning
-
-### 5. IaC Module Registry
-
-Centralized IaC repository:
-- 87+ sample modules
-- Multi-framework support
-- Usage analytics
-- Documentation
-
-### 6. Design-Time Validation
-
-Pre-deployment validation:
-- Security checks
-- Compliance validation
-- Cost estimation
-- Auto-remediation
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-## 📝 License
-
-MIT License - see LICENSE file for details
-
-## 🆘 Support
-
-- **Issues**: Create an issue in GitHub
-- **Questions**: Use GitHub Discussions
-- **Demo Mode**: Try features without setup
-
-## 🎓 Resources
-
-- [Streamlit Documentation](https://docs.streamlit.io/)
-- [Anthropic Claude API](https://docs.anthropic.com/)
-- [AWS Well-Architected](https://aws.amazon.com/architecture/well-architected/)
-
-## ⭐ Star History
-
-If you find this useful, please star the repository!
+Version 2.0.0 - AWS-Only Edition
 
 ---
 
-**Built with ❤️ for AWS Enterprise Architecture**
+## 📋 Overview
 
-**Version**: 1.0.0  
-**Status**: Production Ready  
-**Deploy**: Streamlit Cloud Compatible  
+CloudIDP is a comprehensive AWS infrastructure development and governance platform designed for enterprise-scale cloud operations. It provides end-to-end capabilities for designing, provisioning, operating, and optimizing AWS infrastructure with built-in compliance, security, and cost management.
+
+### Key Features
+
+- **Design & Planning**: Blueprint library, architecture templates, AWS service selection
+- **Provisioning & Deployment**: Automated infrastructure provisioning with CloudFormation/Terraform
+- **On-Demand Operations**: 14 comprehensive operational capabilities including rightsizing, autoscaling, patch automation, drift detection, and more
+- **FinOps**: Cost optimization, budget management, savings recommendations
+- **Security & Compliance**: Multi-framework compliance, security scanning, vulnerability management
+- **Policy & Guardrails**: Pre-deployment validation, tag policies, naming conventions
+- **Abstraction & Reusability**: Infrastructure templates, modules, and patterns
+- **Developer Experience**: Self-service portals, API access, automation tools
+- **Observability**: Monitoring, logging, alerting integration
+
+---
+
+## 🚀 What's New in Version 2.0.0
+
+### ✅ Enterprise-Grade Refactoring
+
+1. **AWS-Only Focus**: Removed all Azure and GCP references for production clarity
+2. **No Hardcoded Data**: All AWS account IDs and sensitive data moved to configuration
+3. **Consolidated Features**: Merged duplicate modules into comprehensive units
+4. **Clean Codebase**: Removed 30+ development utility files
+5. **Enhanced Security**: Configuration-based approach for all AWS resources
+
+### 🔧 Technical Improvements
+
+- **Merged On-Demand Operations**: Combined 14 operational features into single module
+- **Configuration Management**: Centralized AWS account configuration with validation
+- **Removed Modules**: 
+  - module_08_multicloud_hybrid (multi-cloud support - AWS only now)
+  - ondemand_operations_part2 (merged into ondemand_operations)
+  - All development/utility scripts (20+ files)
+  
+### 📊 Metrics
+
+- **Files Processed**: 41 core modules
+- **Files Removed**: 17 development/utility files  
+- **Hardcoded IDs Replaced**: 28 instances
+- **Multi-cloud References Removed**: 40 instances
+
+---
+
+## 🛠️ Installation & Setup
+
+### Prerequisites
+
+- Python 3.8 or higher
+- AWS Account with appropriate permissions
+- (Optional) Anthropic API key for AI-powered features
+
+### Step 1: Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Step 2: Configure AWS Credentials
+
+CloudIDP requires AWS configuration. You have two options:
+
+#### Option A: Environment Variables (Recommended for Production)
+
+```bash
+export AWS_ACCOUNT_ID="your-12-digit-account-id"
+export AWS_ORG_ID="your-organization-id"
+export AWS_REGION="us-east-1"
+export AWS_ACCESS_KEY_ID="your-access-key"
+export AWS_SECRET_ACCESS_KEY="your-secret-key"
+```
+
+#### Option B: AWS CLI Configuration
+
+```bash
+aws configure
+```
+
+Ensure your AWS credentials have the following permissions:
+- EC2 (Read/Write)
+- RDS (Read)
+- S3 (Read/Write)
+- CloudFormation (Read/Write)
+- Cost Explorer (Read)
+- Organizations (Read - if using AWS Organizations)
+- Systems Manager (Read/Write)
+
+### Step 3: Update Configuration
+
+Edit `config.py` and update the AWS_CONFIG section:
+
+```python
+AWS_CONFIG = {
+    "default_region": "us-east-1",
+    "account_id_placeholder": "YOUR_AWS_ACCOUNT_ID",  # Replace with your account ID
+    "organization_id_placeholder": "YOUR_ORG_ID"      # Replace with your org ID
+}
+```
+
+### Step 4: Run the Application
+
+```bash
+streamlit run streamlit_app.py
+```
+
+The application will be available at `http://localhost:8501`
+
+---
+
+## 📖 Usage Guide
+
+### Demo Mode vs Live Mode
+
+CloudIDP supports two operational modes:
+
+#### Demo Mode (Default)
+- Uses sample data for demonstration
+- No AWS credentials required
+- Perfect for testing and learning
+- Toggle using the sidebar
+
+#### Live Mode
+- Connects to your real AWS account
+- Requires proper AWS configuration
+- Real-time data from your infrastructure
+- Full operational capabilities
+
+**To switch modes**: Use the toggle in the application sidebar
+
+### Module Overview
+
+#### 1. Design & Planning
+Create and manage infrastructure blueprints, select AWS services, and plan deployments.
+
+**Key Features**:
+- Blueprint library with pre-built templates
+- AWS service selector
+- Cost estimation
+- Architecture diagramming
+
+#### 2. Provisioning & Deployment
+Automate infrastructure provisioning using Infrastructure as Code.
+
+**Key Features**:
+- CloudFormation/Terraform template deployment
+- Environment management (Dev/Staging/Prod)
+- Deployment tracking
+- Rollback capabilities
+
+#### 3. On-Demand Operations
+Comprehensive operational capabilities in one module with 14 tabs:
+
+1. **Overview**: Dashboard with key metrics
+2. **Provisioning API**: On-demand resource provisioning
+3. **Guardrail Validation**: Pre-deployment policy checks
+4. **Deployment Templates**: Pre-built architecture templates
+5. **Rightsizing**: Resource optimization recommendations
+6. **Storage Tiering**: Intelligent S3 storage class management
+7. **Autoscaling**: Auto Scaling group management
+8. **Patch Automation**: Automated patch management via Systems Manager
+9. **Drift Detection**: Configuration drift monitoring
+10. **Backup & Recovery**: AWS Backup management
+11. **Lifecycle Hooks**: Resource lifecycle automation
+12. **Idle Detection**: Identify and remediate idle resources
+13. **Continuous Availability**: Multi-AZ monitoring and SLA tracking
+14. **Continuous Deployment**: CI/CD pipeline integration
+
+#### 4. FinOps
+Cost optimization and financial management.
+
+**Key Features**:
+- Cost analysis and trending
+- Budget tracking and alerts
+- Savings recommendations
+- Resource cost allocation
+
+#### 5. Security & Compliance
+Security posture and compliance management.
+
+**Key Features**:
+- Compliance framework mapping (PCI DSS, HIPAA, SOC 2, etc.)
+- Security scanning
+- Vulnerability assessment
+- Remediation workflows
+
+#### 6. Policy & Guardrails
+Pre-deployment policy validation and governance.
+
+**Key Features**:
+- Tag policy enforcement
+- Naming convention validation
+- Resource limit checks
+- Cost threshold validation
+
+#### 7. Abstraction & Reusability
+Infrastructure patterns and reusable modules.
+
+**Key Features**:
+- Module library
+- Pattern catalog
+- Template versioning
+- Sharing capabilities
+
+#### 8. Developer Experience
+Self-service infrastructure provisioning for developers.
+
+**Key Features**:
+- Developer portal
+- API access
+- Documentation
+- Request tracking
+
+#### 9. Observability
+Monitoring, logging, and alerting integration.
+
+**Key Features**:
+- CloudWatch integration
+- Log aggregation
+- Alert management
+- Dashboard creation
+
+---
+
+## 🔐 Security Best Practices
+
+1. **Never commit AWS credentials** to version control
+2. **Use IAM roles** instead of access keys when possible
+3. **Enable MFA** for AWS accounts
+4. **Rotate credentials** regularly
+5. **Use least privilege** IAM policies
+6. **Enable CloudTrail** for audit logging
+7. **Review CloudIDP logs** regularly
+
+---
+
+## 🏗️ Architecture
+
+CloudIDP follows a modular architecture:
+
+```
+cloudidp/
+├── streamlit_app.py           # Main application entry point
+├── config.py                  # Configuration management
+├── demo_data.py               # Sample data for demo mode
+├── data_provider.py           # Data abstraction layer
+│
+├── Core Modules:
+│   ├── design_planning.py
+│   ├── provisioning_deployment.py
+│   ├── ondemand_operations.py     # Merged comprehensive module
+│   ├── finops_module.py
+│   ├── security_compliance.py
+│   ├── policy_guardrails.py
+│   ├── module_07_abstraction.py
+│   ├── module_09_developer_experience.py
+│   └── module_10_observability.py
+│
+├── AWS Integration:
+│   ├── aws_backend_services.py
+│   ├── aws_integrations_manager.py
+│   ├── aws_organizations_integration.py
+│   ├── cloudformation_integration.py
+│   ├── compute_network_integration.py
+│   ├── control_tower_integration.py
+│   ├── cost_explorer_integration.py
+│   ├── database_integration.py
+│   ├── iam_identity_center_integration.py
+│   ├── service_catalog_integration.py
+│   └── systems_manager_integration.py
+│
+└── Support Services:
+    ├── auth_service.py
+    ├── api_gateway.py
+    ├── backend_integration.py
+    ├── database_service.py
+    ├── lambda_orchestrator.py
+    ├── message_queue.py
+    ├── queue_service.py
+    └── worker_services.py
+```
+
+---
+
+## 🔧 Configuration Reference
+
+### config.py
+
+Key configuration parameters:
+
+```python
+# Application
+APP_VERSION = "2.0.0"
+APP_NAME = "CloudIDP - AWS Infrastructure Development Platform"
+
+# AWS Configuration
+AWS_CONFIG = {
+    "default_region": "us-east-1",
+    "account_id_placeholder": "YOUR_AWS_ACCOUNT_ID",
+    "organization_id_placeholder": "YOUR_ORG_ID"
+}
+
+# Available AWS Regions
+AWS_REGIONS = [...]  # 22 regions supported
+
+# Compliance Frameworks
+COMPLIANCE_FRAMEWORKS = [...]  # 10 frameworks supported
+
+# Cost Thresholds (USD)
+COST_THRESHOLDS = {
+    "warning": 5000,
+    "critical": 10000,
+    "alert_enabled": True
+}
+```
+
+---
+
+## 📊 Troubleshooting
+
+### Common Issues
+
+#### 1. "Module not found" errors
+
+**Solution**: Ensure all dependencies are installed:
+```bash
+pip install -r requirements.txt
+```
+
+#### 2. AWS authentication errors
+
+**Solution**: Verify AWS credentials are configured:
+```bash
+aws sts get-caller-identity
+```
+
+#### 3. "Invalid AWS Account ID" error
+
+**Solution**: Update `config.py` with your actual 12-digit AWS account ID
+
+#### 4. Slow performance in Live Mode
+
+**Solution**: 
+- Check AWS API rate limits
+- Verify network connectivity
+- Consider using Demo Mode for testing
+
+#### 5. Missing data in Live Mode
+
+**Solution**: Ensure AWS credentials have appropriate read permissions for the services you're querying
+
+---
+
+## 🤝 Support
+
+For issues, questions, or contributions:
+1. Review this README thoroughly
+2. Check the troubleshooting section
+3. Review CloudIDP code comments and docstrings
+
+---
+
+## 📝 License
+
+Enterprise-Grade Internal Tool
+Copyright © 2024 - All Rights Reserved
+
+---
+
+## 🎯 Roadmap
+
+### Planned Features
+- Enhanced AI-powered cost optimization
+- Advanced compliance automation
+- Cross-account management improvements
+- Enhanced disaster recovery automation
+- Advanced analytics and reporting
+
+---
+
+## 📚 Additional Resources
+
+- [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
+- [AWS Cost Optimization](https://aws.amazon.com/pricing/cost-optimization/)
+- [AWS Security Best Practices](https://aws.amazon.com/security/best-practices/)
+- [Streamlit Documentation](https://docs.streamlit.io/)
+
+---
+
+**Built for Enterprise AWS Operations**
+*Version 2.0.0 - AWS-Only Edition*

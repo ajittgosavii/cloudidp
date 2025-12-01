@@ -16,6 +16,8 @@ import json
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from botocore.exceptions import ClientError
+from config import get_aws_account_config
+
 
 
 class ServiceCatalogIntegration:
@@ -231,7 +233,7 @@ class ServiceCatalogIntegration:
             'portfolio_id': f'port-{str(hash(name))[-8:]}',
             'display_name': name,
             'provider_name': provider,
-            'arn': f'arn:aws:catalog:us-east-1:123456789012:portfolio/port-{str(hash(name))[-8:]}',
+            'arn': f'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:portfolio/port-{str(hash(name))[-8:]}',
             'demo_mode': True
         }
     
@@ -263,7 +265,7 @@ class ServiceCatalogIntegration:
         return {
             'success': True,
             'product_id': f'prod-{str(hash(name))[-8:]}',
-            'product_arn': f'arn:aws:catalog:us-east-1:123456789012:product/prod-{str(hash(name))[-8:]}',
+            'product_arn': f'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:product/prod-{str(hash(name))[-8:]}',
             'artifact_id': f'pa-{str(hash(name))[-8:]}',
             'demo_mode': True
         }

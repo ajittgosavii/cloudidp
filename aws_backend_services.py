@@ -9,6 +9,8 @@ from typing import Dict, List, Optional, Any
 import logging
 from datetime import datetime
 import json
+from config import get_aws_account_config
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -678,7 +680,7 @@ class MockAWSBackendOrchestrator:
                         "request_id": "req-demo-12345",
                         "state": "SUCCEEDED",
                         "account_name": account_config['account_name'],
-                        "account_id": "123456789012"
+                        "account_id": get_aws_account_config()['account_id']
                     }
                 },
                 {

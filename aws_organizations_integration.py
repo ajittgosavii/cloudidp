@@ -16,6 +16,8 @@ import json
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from botocore.exceptions import ClientError
+from config import get_aws_account_config
+
 
 
 class AWSOrganizationsIntegration:
@@ -636,7 +638,7 @@ class AWSOrganizationsIntegration:
             'ou_id': f'ou-{str(hash(name))[-8:]}',
             'name': name,
             'parent_id': parent_id,
-            'arn': f'arn:aws:organizations::123456789012:ou/o-exampleorgid/ou-{str(hash(name))[-8:]}',
+            'arn': f'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:ou/o-exampleorgid/ou-{str(hash(name))[-8:]}',
             'demo_mode': True
         }
     
@@ -648,27 +650,27 @@ class AWSOrganizationsIntegration:
             'organizational_units': [
                 {
                     'Id': 'ou-prod-001',
-                    'Arn': 'arn:aws:organizations::123456789012:ou/o-exampleorgid/ou-prod-001',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:ou/o-exampleorgid/ou-prod-001',
                     'Name': 'Production'
                 },
                 {
                     'Id': 'ou-dev-001',
-                    'Arn': 'arn:aws:organizations::123456789012:ou/o-exampleorgid/ou-dev-001',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:ou/o-exampleorgid/ou-dev-001',
                     'Name': 'Development'
                 },
                 {
                     'Id': 'ou-staging-001',
-                    'Arn': 'arn:aws:organizations::123456789012:ou/o-exampleorgid/ou-staging-001',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:ou/o-exampleorgid/ou-staging-001',
                     'Name': 'Staging'
                 },
                 {
                     'Id': 'ou-sandbox-001',
-                    'Arn': 'arn:aws:organizations::123456789012:ou/o-exampleorgid/ou-sandbox-001',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:ou/o-exampleorgid/ou-sandbox-001',
                     'Name': 'Sandbox'
                 },
                 {
                     'Id': 'ou-shared-001',
-                    'Arn': 'arn:aws:organizations::123456789012:ou/o-exampleorgid/ou-shared-001',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:ou/o-exampleorgid/ou-shared-001',
                     'Name': 'Shared Services'
                 }
             ],
@@ -712,7 +714,7 @@ class AWSOrganizationsIntegration:
         return {
             'success': True,
             'policy_id': f'p-{str(hash(name))[-8:]}',
-            'policy_arn': f'arn:aws:organizations::123456789012:policy/o-exampleorgid/service_control_policy/p-{str(hash(name))[-8:]}',
+            'policy_arn': f'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:policy/o-exampleorgid/service_control_policy/p-{str(hash(name))[-8:]}',
             'name': name,
             'description': description,
             'demo_mode': True
@@ -734,7 +736,7 @@ class AWSOrganizationsIntegration:
                 },
                 {
                     'Id': 'p-deny-s3-public',
-                    'Arn': 'arn:aws:organizations::123456789012:policy/o-exampleorgid/service_control_policy/p-deny-s3-public',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:policy/o-exampleorgid/service_control_policy/p-deny-s3-public',
                     'Name': 'DenyS3PublicAccess',
                     'Description': 'Prevents public S3 buckets',
                     'Type': 'SERVICE_CONTROL_POLICY',
@@ -742,7 +744,7 @@ class AWSOrganizationsIntegration:
                 },
                 {
                     'Id': 'p-require-mfa',
-                    'Arn': 'arn:aws:organizations::123456789012:policy/o-exampleorgid/service_control_policy/p-require-mfa',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:policy/o-exampleorgid/service_control_policy/p-require-mfa',
                     'Name': 'RequireMFA',
                     'Description': 'Requires MFA for console access',
                     'Type': 'SERVICE_CONTROL_POLICY',
@@ -760,7 +762,7 @@ class AWSOrganizationsIntegration:
             'accounts': [
                 {
                     'Id': '123456789012',
-                    'Arn': 'arn:aws:organizations::123456789012:account/o-exampleorgid/123456789012',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:account/o-exampleorgid/123456789012',
                     'Email': 'management@example.com',
                     'Name': 'Management',
                     'Status': 'ACTIVE',
@@ -768,7 +770,7 @@ class AWSOrganizationsIntegration:
                 },
                 {
                     'Id': '111111111111',
-                    'Arn': 'arn:aws:organizations::123456789012:account/o-exampleorgid/111111111111',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:account/o-exampleorgid/111111111111',
                     'Email': 'prod-app-1@example.com',
                     'Name': 'Production-App-1',
                     'Status': 'ACTIVE',
@@ -776,7 +778,7 @@ class AWSOrganizationsIntegration:
                 },
                 {
                     'Id': '222222222222',
-                    'Arn': 'arn:aws:organizations::123456789012:account/o-exampleorgid/222222222222',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:account/o-exampleorgid/222222222222',
                     'Email': 'dev-app-1@example.com',
                     'Name': 'Development-App-1',
                     'Status': 'ACTIVE',
@@ -784,7 +786,7 @@ class AWSOrganizationsIntegration:
                 },
                 {
                     'Id': '333333333333',
-                    'Arn': 'arn:aws:organizations::123456789012:account/o-exampleorgid/333333333333',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:account/o-exampleorgid/333333333333',
                     'Email': 'staging@example.com',
                     'Name': 'Staging',
                     'Status': 'ACTIVE',
@@ -792,7 +794,7 @@ class AWSOrganizationsIntegration:
                 },
                 {
                     'Id': '444444444444',
-                    'Arn': 'arn:aws:organizations::123456789012:account/o-exampleorgid/444444444444',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:account/o-exampleorgid/444444444444',
                     'Email': 'sandbox@example.com',
                     'Name': 'Sandbox',
                     'Status': 'ACTIVE',
@@ -800,7 +802,7 @@ class AWSOrganizationsIntegration:
                 },
                 {
                     'Id': '555555555555',
-                    'Arn': 'arn:aws:organizations::123456789012:account/o-exampleorgid/555555555555',
+                    'Arn': 'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:account/o-exampleorgid/555555555555',
                     'Email': 'shared-services@example.com',
                     'Name': 'Shared-Services',
                     'Status': 'ACTIVE',
@@ -816,7 +818,7 @@ class AWSOrganizationsIntegration:
             'success': True,
             'account': {
                 'Id': account_id,
-                'Arn': f'arn:aws:organizations::123456789012:account/o-exampleorgid/{account_id}',
+                'Arn': f'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:account/o-exampleorgid/{account_id}',
                 'Email': f'account-{account_id}@example.com',
                 'Name': f'Account-{account_id}',
                 'Status': 'ACTIVE',

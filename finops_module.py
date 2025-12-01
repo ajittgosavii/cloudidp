@@ -113,17 +113,10 @@ class FinOpsModule:
         
         # Quick Stats - MODE-AWARE
         # Get data based on Demo/Live mode
-        
-        # DIAGNOSTIC: Show what mode we're in and what's happening
-        current_mode = st.session_state.get('mode', 'Demo')
-        st.caption(f"🔍 DEBUG: Current mode = {current_mode}, DATA_PROVIDER_AVAILABLE = {DATA_PROVIDER_AVAILABLE}")
-        
         if DATA_PROVIDER_AVAILABLE:
             try:
                 provider = get_data_provider()
                 live_service = get_live_service()
-                
-                st.caption(f"🔍 DEBUG: provider = {provider is not None}, live_service = {live_service is not None}")
                 
                 # Get mode-aware data
                 monthly_cost = provider.get(
@@ -139,28 +132,21 @@ class FinOpsModule:
                 monthly_savings = provider.get(
                     key='finops_monthly_savings',
                     demo_value='$8,456',
-                    live_fn=lambda: live_service.get_monthly_savings()
+                    live_fn=None  # Not implemented yet
                 )
                 active_resources = provider.get(
                     key='finops_active_resources',
                     demo_value='1,234',
-                    live_fn=lambda: live_service.count_active_resources()
+                    live_fn=None  # Not implemented yet
                 )
-                
-                st.caption(f"🔍 DEBUG: Got values - Cost: {monthly_cost}, Savings: {monthly_savings}, Resources: {active_resources}")
-                
             except Exception as e:
                 # Fallback to demo values on error
-                st.error(f"🔍 DEBUG ERROR: {str(e)}")
-                import traceback
-                st.code(traceback.format_exc())
                 monthly_cost = '$45,234'
                 budget_usage = '76%'
                 monthly_savings = '$8,456'
                 active_resources = '1,234'
         else:
             # No data provider, use demo values
-            st.warning("🔍 DEBUG: DATA_PROVIDER_AVAILABLE is False!")
             monthly_cost = '$45,234'
             budget_usage = '76%'
             monthly_savings = '$8,456'
@@ -311,135 +297,36 @@ class FinOpsModule:
         """Tag-Based Cost Tracking"""
         st.subheader("🏷️ Tag-Based Cost Tracking")
         
-        # Show mode indicator
-        if st.session_state.get('mode', 'Demo') == 'Live':
-            st.caption("🔴 Live Mode: Showing real tag data from AWS resources")
-        else:
-            st.caption("⚪ Demo Mode: Showing sample data")
-        
         st.info("Track and allocate costs based on resource tags")
         
-        # Tag-based allocation - MODE-AWARE
+        # Tag-based allocation
         col1, col2 = st.columns(2)
         
         with col1:
             st.markdown("### Cost by Environment")
-            
-            # Check if we're in Live mode
-            is_live_mode = st.session_state.get('mode', 'Demo') == 'Live'
-            
-            if is_live_mode and DATA_PROVIDER_AVAILABLE:
-                try:
-                    provider = get_data_provider()
-                    live_service = get_live_service()
-                    
-                    # Get environment costs
-                    env_costs = live_service.get_cost_by_environment_tag()
-                    
-                    # Check if we have any data
-                    if env_costs and len(env_costs) > 0:
-                        # Has real data - show chart
-                        env_data = pd.DataFrame({
-                            'Environment': list(env_costs.keys()),
-                            'Cost': list(env_costs.values())
-                        })
-                        st.bar_chart(env_data.set_index('Environment'))
-                        st.caption(f"💰 Based on {len(env_costs)} environment(s) with tagged instances")
-                    else:
-                        # No tagged instances - show empty state
-                        st.info("📊 No instances with Environment tags found.\n\nTag your EC2 instances with `Environment` tag to see cost breakdown.")
-                        
-                except Exception as e:
-                    # Error in live mode - show empty state with error
-                    st.info(f"📊 No instances with Environment tags found.\n\nTag your EC2 instances with `Environment` tag to see cost breakdown.")
-            else:
-                # Demo mode - show demo data
-                env_data = pd.DataFrame({
-                    'Environment': ['Production', 'Staging', 'Development', 'QA'],
-                    'Cost': [25000, 10000, 7500, 2500]
-                })
-                st.bar_chart(env_data.set_index('Environment'))
+            env_data = pd.DataFrame({
+                'Environment': ['Production', 'Staging', 'Development', 'QA'],
+                'Cost': [25000, 10000, 7500, 2500]
+            })
+            st.bar_chart(env_data.set_index('Environment'))
         
         with col2:
             st.markdown("### Cost by Department")
-            
-            # Check if we're in Live mode
-            is_live_mode = st.session_state.get('mode', 'Demo') == 'Live'
-            
-            if is_live_mode and DATA_PROVIDER_AVAILABLE:
-                try:
-                    provider = get_data_provider()
-                    live_service = get_live_service()
-                    
-                    # Get department costs
-                    dept_costs = live_service.get_cost_by_department_tag()
-                    
-                    # Check if we have any data
-                    if dept_costs and len(dept_costs) > 0:
-                        # Has real data - show chart
-                        dept_data = pd.DataFrame({
-                            'Department': list(dept_costs.keys()),
-                            'Cost': list(dept_costs.values())
-                        })
-                        st.bar_chart(dept_data.set_index('Department'))
-                        st.caption(f"💰 Based on {len(dept_costs)} department(s) with tagged instances")
-                    else:
-                        # No tagged instances - show empty state
-                        st.info("📊 No instances with Department tags found.\n\nTag your EC2 instances with `Department` tag to see cost breakdown.")
-                        
-                except Exception as e:
-                    # Error in live mode - show empty state
-                    st.info(f"📊 No instances with Department tags found.\n\nTag your EC2 instances with `Department` tag to see cost breakdown.")
-            else:
-                # Demo mode - show demo data
-                dept_data = pd.DataFrame({
-                    'Department': ['Engineering', 'Sales', 'Marketing', 'Operations'],
-                    'Cost': [18000, 12000, 8000, 7000]
-                })
-                st.bar_chart(dept_data.set_index('Department'))
+            dept_data = pd.DataFrame({
+                'Department': ['Engineering', 'Sales', 'Marketing', 'Operations'],
+                'Cost': [18000, 12000, 8000, 7000]
+            })
+            st.bar_chart(dept_data.set_index('Department'))
         
         # Tag compliance
         st.markdown("### Tag Compliance")
-        
-        # Get mode-aware tag compliance data
-        if DATA_PROVIDER_AVAILABLE:
-            try:
-                provider = get_data_provider()
-                live_service = get_live_service()
-                
-                tagged_count = provider.get(
-                    key='finops_tagged_resources',
-                    demo_value='1,123',
-                    live_fn=lambda: live_service.get_tagged_resources_count()
-                )
-                untagged_count = provider.get(
-                    key='finops_untagged_resources',
-                    demo_value='111',
-                    live_fn=lambda: live_service.get_untagged_resources_count()
-                )
-                compliance_score = provider.get(
-                    key='finops_compliance_score',
-                    demo_value='91%',
-                    live_fn=lambda: live_service.get_tag_compliance_score()
-                )
-            except Exception as e:
-                # Fallback to demo values on error
-                tagged_count = '1,123'
-                untagged_count = '111'
-                compliance_score = '91%'
-        else:
-            # No data provider, use demo values
-            tagged_count = '1,123'
-            untagged_count = '111'
-            compliance_score = '91%'
-        
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("Tagged Resources", tagged_count, compliance_score if compliance_score != 'N/A' else None)
+            st.metric("Tagged Resources", "1,123", "91%")
         with col2:
-            st.metric("Untagged Resources", untagged_count)
+            st.metric("Untagged Resources", "111", "9%")
         with col3:
-            st.metric("Compliance Score", compliance_score)
+            st.metric("Compliance Score", "91%", "+3%")
     
     def render_budget_management(self):
         """Budget Policy Enforcement"""

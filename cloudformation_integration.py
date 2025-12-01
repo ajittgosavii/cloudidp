@@ -7,6 +7,8 @@ import boto3
 import time
 from typing import Dict, List, Optional, Any
 from botocore.exceptions import ClientError
+from config import get_aws_account_config
+
 
 
 class CloudFormationIntegration:
@@ -30,7 +32,7 @@ class CloudFormationIntegration:
         if self.demo_mode:
             return {
                 'success': True,
-                'stack_id': f'arn:aws:cloudformation:us-east-1:123456789012:stack/{stack_name}/demo-{hash(stack_name)}',
+                'stack_id': f'arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:stack/{stack_name}/demo-{hash(stack_name)}',
                 'stack_name': stack_name,
                 'demo_mode': True
             }

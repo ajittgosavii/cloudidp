@@ -299,6 +299,8 @@ from provisioning_deployment import ProvisioningDeploymentModule
 
 # NEW: Add backend import
 from backend_integration import CloudIDPBackend
+from config import get_aws_account_config
+
 
 # Page configuration
 st.set_page_config(...)

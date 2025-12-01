@@ -1,22 +1,20 @@
 """
-CloudIDP - Cloud Infrastructure Development Platform
-Multi-Cloud Architecture & Governance Framework
-COMPLETE VERSION - Tab-Based Navigation with ALL Features
+CloudIDP - AWS Infrastructure Development Platform
+Enterprise-Grade AWS Cloud Governance & Automation Framework
+Version 2.0.0 - AWS-Only Edition
 """
 
 import streamlit as st
 from design_planning import DesignPlanningModule
 from provisioning_deployment import ProvisioningDeploymentModule
 from ondemand_operations import OnDemandOperationsModule
-from ondemand_operations_part2 import OnDemandOperationsModule2
 from finops_module import FinOpsModule
 from security_compliance import SecurityComplianceModule
 from policy_guardrails import PolicyGuardrailsModule
 from module_07_abstraction import AbstractionReusabilityModule
-from module_08_multicloud_hybrid import MultiCloudHybridModule
 from module_09_developer_experience import DeveloperExperienceModule
 from module_10_observability import ObservabilityIntegrationModule
-from config import initialize_session_state
+from config import initialize_session_state, get_aws_account_config, validate_aws_config
 from anthropic_helper import AnthropicHelper
 from datetime import datetime, timedelta
 import json
@@ -410,7 +408,7 @@ def render_sidebar():
         # Update session state
         old_demo_mode = st.session_state.get('demo_mode', True)
         st.session_state.demo_mode = (mode == "Demo")
-        st.session_state.mode = mode  # CRITICAL FIX: Also set 'mode' key for FinOps module
+        st.session_state.mode = mode  # CRITICAL: Sync with data_provider!
         
         if old_demo_mode != st.session_state.demo_mode and BACKEND_AVAILABLE:
             initialize_backend()
@@ -543,72 +541,6 @@ def render_home_page():
     governance, and operations at scale.
     """)
     
-    # === DIAGNOSTIC SECTION ===
-    st.markdown("---")
-    st.markdown("### 🔍 DIAGNOSTIC INFO")
-    
-    # Check 1: Is DATA_PROVIDER_AVAILABLE?
-    st.write(f"**DATA_PROVIDER_AVAILABLE:** {DATA_PROVIDER_AVAILABLE}")
-    
-    # Check 2: Are data_provider and live_service initialized?
-    st.write(f"**data_provider is None:** {data_provider is None}")
-    st.write(f"**live_service is None:** {live_service is None}")
-    
-    # Check 3: What's the current mode?
-    current_mode = st.session_state.get('mode', 'Not Set')
-    st.write(f"**Current Mode:** {current_mode}")
-    
-    # Check 4: Try to call data_provider
-    if data_provider is not None:
-        st.success("✅ data_provider exists!")
-        
-        # Try to get monthly cost
-        try:
-            test_cost = data_provider.get(
-                key='diagnostic_test',
-                demo_value='DEMO_VALUE',
-                live_fn=lambda: 'LIVE_VALUE'
-            )
-            st.write(f"**Test value returned:** {test_cost}")
-            
-            if current_mode == 'Demo' and test_cost == 'DEMO_VALUE':
-                st.success("✅ Demo mode working correctly!")
-            elif current_mode == 'Live' and test_cost == 'LIVE_VALUE':
-                st.success("✅ Live mode working correctly!")
-            else:
-                st.error(f"❌ Mode mismatch! Mode={current_mode}, Value={test_cost}")
-                
-        except Exception as e:
-            st.error(f"❌ Error calling data_provider.get(): {e}")
-    else:
-        st.error("❌ data_provider is None!")
-    
-    # Check 5: Try to call live_service directly
-    if live_service is not None:
-        st.success("✅ live_service exists!")
-        
-        try:
-            # Check if _is_demo_mode exists
-            if hasattr(live_service, '_is_demo_mode'):
-                is_demo = live_service._is_demo_mode()
-                st.write(f"**live_service._is_demo_mode():** {is_demo}")
-            else:
-                st.error("❌ live_service doesn't have _is_demo_mode method!")
-            
-            # Try to get monthly cost
-            monthly_cost_result = live_service.get_monthly_cost()
-            st.write(f"**live_service.get_monthly_cost():** {monthly_cost_result}")
-            
-        except Exception as e:
-            st.error(f"❌ Error calling live_service: {e}")
-            import traceback
-            st.code(traceback.format_exc())
-    else:
-        st.error("❌ live_service is None!")
-    
-    st.markdown("---")
-    # === END DIAGNOSTIC SECTION ===
-    
     # Quick Stats Dashboard - MODE-AWARE
     col1, col2, col3, col4 = st.columns(4)
     
@@ -636,20 +568,15 @@ def render_home_page():
                 live_fn=lambda: live_service.get_monthly_cost() if live_service else '$45.2K'
             )
             
-            st.info(f"Using data_provider - Monthly Cost: {monthly_cost}")
-            
         except Exception as e:
-            st.error(f"Error using data_provider: {e}")
-            import traceback
-            st.code(traceback.format_exc())
-            
+            # Fallback to demo values on error
             # Fallback
             active_projects = '12'
             cloud_providers = '3'
             compliance_score = '98%'
             monthly_cost = '$45.2K'
     else:
-        st.warning("DATA_PROVIDER_AVAILABLE is False or data_provider is None - using fallback")
+        # Fallback to demo values if data provider not available
         active_projects = '12'
         cloud_providers = '3'
         compliance_score = '98%'
@@ -712,7 +639,7 @@ def render_module(module_instance, module_name):
     return False
 
 def render_core_infrastructure_tabs():
-    """Render Core Infrastructure modules in nested tabs"""
+    """Render Core Infrastructure modules in nested tabs - AWS-Only"""
     st.markdown("## 🏗️ Core Infrastructure Modules")
     
     infra_tabs = st.tabs([
@@ -723,7 +650,6 @@ def render_core_infrastructure_tabs():
         "🔒 Security",
         "📜 Policy",
         "🔄 Abstraction",
-        "☁️ Multi-Cloud",
         "💻 DevEx",
         "📊 Observability"
     ])
@@ -747,9 +673,6 @@ def render_core_infrastructure_tabs():
         try:
             operations = OnDemandOperationsModule()
             render_module(operations, "On-Demand Operations")
-            
-            operations2 = OnDemandOperationsModule2()
-            render_module(operations2, "On-Demand Operations Part 2")
         except Exception as e:
             st.error(f"❌ Error loading Operations module: {str(e)}")
     
@@ -783,19 +706,12 @@ def render_core_infrastructure_tabs():
     
     with infra_tabs[7]:
         try:
-            multicloud = MultiCloudHybridModule()
-            render_module(multicloud, "Multi-Cloud & Hybrid")
-        except Exception as e:
-            st.error(f"❌ Error loading Multi-Cloud module: {str(e)}")
-    
-    with infra_tabs[8]:
-        try:
             devex = DeveloperExperienceModule()
             render_module(devex, "Developer Experience")
         except Exception as e:
             st.error(f"❌ Error loading Developer Experience module: {str(e)}")
     
-    with infra_tabs[9]:
+    with infra_tabs[8]:
         try:
             observability = ObservabilityIntegrationModule()
             render_module(observability, "Observability & Integration")

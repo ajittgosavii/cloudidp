@@ -103,17 +103,52 @@ class LiveDataService:
         """Initialize live data service"""
         # Initialize AWS services (will only be used in Live mode)
         # Don't cache demo_mode - check it dynamically!
+        
+        # DIAGNOSTIC OUTPUT
+        st.write("🔍 **DIAGNOSTIC: LiveDataService Initialization**")
+        
         try:
+            st.write("Attempting to import integration modules...")
             from cost_explorer_integration import CostExplorerIntegration
             from database_integration import DatabaseIntegration
             from compute_network_integration import ComputeNetworkIntegration
+            st.write("✅ Imports successful")
             
+            st.write("Creating CostExplorerIntegration(demo_mode=False)...")
             self.cost_explorer = CostExplorerIntegration(demo_mode=False)
+            st.write(f"✅ cost_explorer.demo_mode = {self.cost_explorer.demo_mode}")
+            
+            st.write("Creating DatabaseIntegration(demo_mode=False)...")
             self.database = DatabaseIntegration(demo_mode=False)
+            st.write(f"✅ database.demo_mode = {self.database.demo_mode}")
+            
+            st.write("Creating ComputeNetworkIntegration(demo_mode=False)...")
             self.compute = ComputeNetworkIntegration(demo_mode=False)
+            st.write(f"✅ compute.demo_mode = {self.compute.demo_mode}")
+            
+            # Test list_instances
+            st.write("Testing compute.list_instances()...")
+            test_result = self.compute.list_instances()
+            st.write(f"✅ Result success: {test_result.get('success')}")
+            st.write(f"✅ Has demo_mode key: {'demo_mode' in test_result}")
+            if 'demo_mode' in test_result:
+                st.write(f"⚠️ Result demo_mode: {test_result.get('demo_mode')}")
+            
+            instances = test_result.get('instances', [])
+            if instances:
+                first_id = instances[0].get('InstanceId', 'unknown')
+                st.write(f"✅ First instance ID: {first_id}")
+                st.write(f"✅ ID length: {len(first_id)}")
+                st.write(f"✅ Is real AWS format: {first_id.startswith('i-') and len(first_id) > 15}")
+            
             self.aws_initialized = True
+            st.write("✅ AWS initialized successfully")
+            
         except Exception as e:
             # AWS services not available - will fall back to demo data
+            st.error(f"❌ Error initializing AWS services: {e}")
+            import traceback
+            st.code(traceback.format_exc())
             self.aws_initialized = False
     
     def _is_demo_mode(self) -> bool:
@@ -143,28 +178,7 @@ class LiveDataService:
             result = self.cost_explorer.get_cost_and_usage(start, end)
             
             if result['success']:
-                # Check if this is demo mode response or live mode response
-                if 'total_cost' in result:
-                    # Demo mode - has total_cost already
-                    cost = result['total_cost']
-                elif 'data' in result:
-                    # Live mode - need to parse AWS response
-                    results_by_time = result['data']
-                    if results_by_time and len(results_by_time) > 0:
-                        # Sum up all costs from all time periods
-                        total = 0.0
-                        for period in results_by_time:
-                            if 'Total' in period and 'UnblendedCost' in period['Total']:
-                                amount_str = period['Total']['UnblendedCost']['Amount']
-                                total += float(amount_str)
-                        cost = total
-                    else:
-                        # No data returned
-                        return "$0"
-                else:
-                    # Unknown response format
-                    return "$45,234"
-                
+                cost = result['total_cost']
                 # Format as currency
                 if cost >= 1000:
                     return f"${cost/1000:.1f}K"
@@ -192,17 +206,7 @@ class LiveDataService:
             result = self.cost_explorer.get_cost_forecast(start, end)
             
             if result['success']:
-                # Check if this is demo mode or live mode response
-                if 'forecasted_cost' in result:
-                    # Demo mode
-                    forecast = float(result['forecasted_cost'])
-                elif 'forecast' in result:
-                    # Live mode
-                    forecast = float(result['forecast'])
-                else:
-                    # Unknown format
-                    return "$47,890"
-                
+                forecast = float(result['forecasted_cost'])
                 return f"${forecast/1000:.1f}K"
             else:
                 return "$47,890"
@@ -256,239 +260,6 @@ class LiveDataService:
                 return "8"
         except Exception:
             return "8"
-    
-    def count_active_resources(self) -> str:
-        """Count all active AWS resources"""
-        if self._is_demo_mode():
-            return "1,234"
-        
-        try:
-            total = 0
-            
-            # Count EC2 instances (all states)
-            ec2_result = self.compute.list_instances()
-            if ec2_result.get('success'):
-                total += ec2_result.get('count', 0)
-            
-            # Count RDS instances
-            rds_result = self.database.list_db_instances()
-            if rds_result.get('success'):
-                total += rds_result.get('count', 0)
-            
-            # Count DynamoDB tables
-            dynamo_result = self.database.list_dynamodb_tables()
-            if dynamo_result.get('success'):
-                total += dynamo_result.get('count', 0)
-            
-            # Format with comma separator
-            return f"{total:,}"
-            
-        except Exception:
-            return "1,234"
-    
-    def get_monthly_savings(self) -> str:
-        """Calculate monthly savings from RI recommendations and optimizations"""
-        if self._is_demo_mode():
-            return "$8,456"
-        
-        try:
-            # For now, calculate potential savings based on running instances
-            # In production, this would use AWS Cost Explorer RI recommendations API
-            
-            ec2_result = self.compute.list_instances()
-            if not ec2_result.get('success'):
-                return "$0"
-            
-            # Count running instances
-            running = sum(1 for i in ec2_result.get('instances', []) 
-                         if i.get('State', {}).get('Name') == 'running')
-            
-            if running == 0:
-                return "$0"
-            
-            # Rough estimate: ~30% savings with RIs for typical workloads
-            # This is a placeholder - real implementation would use Cost Explorer API
-            # Average EC2 cost: ~$100/month, 30% savings = $30/instance
-            estimated_savings = running * 30
-            
-            if estimated_savings >= 1000:
-                return f"${estimated_savings/1000:.1f}K"
-            else:
-                return f"${estimated_savings:,.0f}"
-                
-        except Exception:
-            return "$0"
-    
-    # ========== TAG COMPLIANCE DATA ==========
-    
-    def get_tag_compliance_data(self) -> dict:
-        """Get tag compliance statistics from EC2 instances"""
-        if self._is_demo_mode():
-            return {
-                'tagged': 1123,
-                'untagged': 111,
-                'total': 1234,
-                'compliance_pct': 91
-            }
-        
-        try:
-            # Get all EC2 instances
-            result = self.compute.list_instances()
-            if not result.get('success'):
-                return {'tagged': 0, 'untagged': 0, 'total': 0, 'compliance_pct': 0}
-            
-            instances = result.get('instances', [])
-            total = len(instances)
-            
-            if total == 0:
-                return {'tagged': 0, 'untagged': 0, 'total': 0, 'compliance_pct': 0}
-            
-            # Count tagged vs untagged
-            # Consider an instance "tagged" if it has at least one tag
-            tagged_count = 0
-            untagged_count = 0
-            
-            for instance in instances:
-                tags = instance.get('Tags', [])
-                # Filter out AWS system tags (aws:*)
-                user_tags = [t for t in tags if not t.get('Key', '').startswith('aws:')]
-                
-                if user_tags:
-                    tagged_count += 1
-                else:
-                    untagged_count += 1
-            
-            # Calculate compliance percentage
-            compliance_pct = round((tagged_count / total) * 100) if total > 0 else 0
-            
-            return {
-                'tagged': tagged_count,
-                'untagged': untagged_count,
-                'total': total,
-                'compliance_pct': compliance_pct
-            }
-            
-        except Exception:
-            return {'tagged': 0, 'untagged': 0, 'total': 0, 'compliance_pct': 0}
-    
-    def get_tagged_resources_count(self) -> str:
-        """Get count of tagged resources"""
-        if self._is_demo_mode():
-            return "1,123"
-        
-        try:
-            data = self.get_tag_compliance_data()
-            return f"{data['tagged']:,}"
-        except Exception:
-            return "0"
-    
-    def get_untagged_resources_count(self) -> str:
-        """Get count of untagged resources"""
-        if self._is_demo_mode():
-            return "111"
-        
-        try:
-            data = self.get_tag_compliance_data()
-            return f"{data['untagged']:,}"
-        except Exception:
-            return "0"
-    
-    def get_tag_compliance_score(self) -> str:
-        """Get tag compliance percentage"""
-        if self._is_demo_mode():
-            return "91%"
-        
-        try:
-            data = self.get_tag_compliance_data()
-            if data['total'] == 0:
-                return "N/A"
-            return f"{data['compliance_pct']}%"
-        except Exception:
-            return "N/A"
-    
-    def get_cost_by_environment_tag(self) -> dict:
-        """Get cost breakdown by Environment tag"""
-        if self._is_demo_mode():
-            return {
-                'Production': 25000,
-                'Staging': 10000,
-                'Development': 7500,
-                'QA': 2500
-            }
-        
-        try:
-            # Get all EC2 instances
-            result = self.compute.list_instances()
-            if not result.get('success'):
-                return {}
-            
-            instances = result.get('instances', [])
-            if not instances:
-                return {}
-            
-            # Count instances by Environment tag
-            env_counts = {}
-            for instance in instances:
-                tags = instance.get('Tags', [])
-                # Find Environment tag
-                env_tag = None
-                for tag in tags:
-                    if tag.get('Key') == 'Environment':
-                        env_tag = tag.get('Value')
-                        break
-                
-                if env_tag:
-                    env_counts[env_tag] = env_counts.get(env_tag, 0) + 1
-            
-            # Estimate cost: ~$73/month per instance (t3.micro average)
-            env_costs = {env: count * 73 for env, count in env_counts.items()}
-            
-            return env_costs
-            
-        except Exception:
-            return {}
-    
-    def get_cost_by_department_tag(self) -> dict:
-        """Get cost breakdown by Department tag"""
-        if self._is_demo_mode():
-            return {
-                'Engineering': 18000,
-                'Sales': 12000,
-                'Marketing': 8000,
-                'Operations': 7000
-            }
-        
-        try:
-            # Get all EC2 instances
-            result = self.compute.list_instances()
-            if not result.get('success'):
-                return {}
-            
-            instances = result.get('instances', [])
-            if not instances:
-                return {}
-            
-            # Count instances by Department tag
-            dept_counts = {}
-            for instance in instances:
-                tags = instance.get('Tags', [])
-                # Find Department tag
-                dept_tag = None
-                for tag in tags:
-                    if tag.get('Key') == 'Department':
-                        dept_tag = tag.get('Value')
-                        break
-                
-                if dept_tag:
-                    dept_counts[dept_tag] = dept_counts.get(dept_tag, 0) + 1
-            
-            # Estimate cost: ~$73/month per instance (t3.micro average)
-            dept_costs = {dept: count * 73 for dept, count in dept_counts.items()}
-            
-            return dept_costs
-            
-        except Exception:
-            return {}
     
     # ========== COMPLIANCE DATA ==========
     

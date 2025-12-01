@@ -16,6 +16,8 @@ import json
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from botocore.exceptions import ClientError
+from config import get_aws_account_config
+
 
 
 class IAMIdentityCenterIntegration:
@@ -908,7 +910,7 @@ if __name__ == "__main__":
         permission_set_arn=ps_result['permission_set_arn'],
         principal_id=user_result['user_id'],
         principal_type='USER',
-        target_account_id='123456789012'
+        target_account_id = get_aws_account_config()['account_id']
     )
     print(f"   Assignment Status: {assignment['status']}")
     

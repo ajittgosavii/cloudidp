@@ -13,6 +13,8 @@ from pathlib import Path
 from jinja2 import Template, Environment, FileSystemLoader
 from datetime import datetime
 from typing import Dict, Any, List
+from config import get_aws_account_config
+
 
 
 class EnvironmentGenerator:
@@ -99,7 +101,7 @@ terraform {{
     dynamodb_table = "terraform-state-lock"
     
     # Assume role for state access
-    role_arn = "arn:aws:iam::111111111111:role/TerraformStateAccess"
+    role_arn = "arn:aws:REGION:ACCOUNT_ID_PLACEHOLDER:role/TerraformStateAccess"
   }}
 }}
 '''

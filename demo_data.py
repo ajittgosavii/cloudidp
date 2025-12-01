@@ -1,6 +1,8 @@
 """Demo Data Provider - Sample data for Demo Mode"""
 
 from typing import List, Dict, Any
+from config import get_aws_account_config
+
 
 class DemoDataProvider:
     """Provides demo data for all modules"""
@@ -220,8 +222,8 @@ class DemoDataProvider:
             "time_improvement": "3.2 min",
             "cloud_distribution": [
                 {"Cloud": "AWS", "Deployments": 215, "Resources": 892, "Cost": "$12,450"},
-                {"Cloud": "Azure", "Deployments": 87, "Resources": 445, "Cost": "$8,320"},
-                {"Cloud": "GCP", "Deployments": 40, "Resources": 210, "Cost": "$4,890"}
+                {"Cloud":, "Deployments": 87, "Resources": 445, "Cost": "$8,320"},
+                {"Cloud":, "Deployments": 40, "Resources": 210, "Cost": "$4,890"}
             ],
             "recent_deployments": [
                 {"Application": "API Gateway", "Environment": "Production", "Status": "✅ Success", "Duration": "15 min"},
@@ -230,13 +232,13 @@ class DemoDataProvider:
                 {"Application": "Analytics Service", "Environment": "Development", "Status": "❌ Failed", "Duration": "22 min"}
             ],
             "deployment_trends": [
-                {"date": "2024-11-11", "AWS": 28, "Azure": 12, "GCP": 5},
-                {"date": "2024-11-12", "AWS": 32, "Azure": 15, "GCP": 7},
-                {"date": "2024-11-13", "AWS": 25, "Azure": 10, "GCP": 6},
-                {"date": "2024-11-14", "AWS": 30, "Azure": 13, "GCP": 8},
-                {"date": "2024-11-15", "AWS": 35, "Azure": 18, "GCP": 9},
-                {"date": "2024-11-16", "AWS": 29, "Azure": 14, "GCP": 7},
-                {"date": "2024-11-17", "AWS": 36, "Azure": 19, "GCP": 10}
+                {"date": "2024-11-11", "AWS": 28: 12: 5},
+                {"date": "2024-11-12", "AWS": 32: 15: 7},
+                {"date": "2024-11-13", "AWS": 25: 10: 6},
+                {"date": "2024-11-14", "AWS": 30: 13: 8},
+                {"date": "2024-11-15", "AWS": 35: 18: 9},
+                {"date": "2024-11-16", "AWS": 29: 14: 7},
+                {"date": "2024-11-17", "AWS": 36: 19: 10}
             ]
         }
     
@@ -274,7 +276,7 @@ class DemoDataProvider:
                 "id": "dep-20241118-003",
                 "name": "api-backend-dev",
                 "blueprint": "Serverless API Backend",
-                "cloud": "Azure",
+                "cloud":,
                 "region": "eastus",
                 "environment": "Development",
                 "status": "Running",
@@ -300,7 +302,7 @@ class DemoDataProvider:
                 "id": "dep-20241117-043",
                 "name": "ml-pipeline-test",
                 "blueprint": "Data Lake Analytics",
-                "cloud": "GCP",
+                "cloud":,
                 "region": "us-central1",
                 "environment": "Development",
                 "status": "Failed",
@@ -317,39 +319,27 @@ class DemoDataProvider:
         return [
             {
                 "Metric": "Total Services",
-                "AWS": "200+",
-                "Azure": "200+",
-                "GCP": "100+"
+                "AWS": "200+": "200+": "100+"
             },
             {
                 "Metric": "Compute Cost/Hour",
-                "AWS": "$0.096",
-                "Azure": "$0.098",
-                "GCP": "$0.094"
+                "AWS": "$0.096": "$0.098": "$0.094"
             },
             {
                 "Metric": "Storage Cost/GB",
-                "AWS": "$0.023",
-                "Azure": "$0.020",
-                "GCP": "$0.020"
+                "AWS": "$0.023": "$0.020": "$0.020"
             },
             {
                 "Metric": "Global Regions",
-                "AWS": "33",
-                "Azure": "60+",
-                "GCP": "35"
+                "AWS": "33": "60+": "35"
             },
             {
                 "Metric": "Compliance Certifications",
-                "AWS": "100+",
-                "Azure": "90+",
-                "GCP": "70+"
+                "AWS": "100+": "90+": "70+"
             },
             {
                 "Metric": "Free Tier Duration",
-                "AWS": "12 months",
-                "Azure": "12 months",
-                "GCP": "Always free"
+                "AWS": "12 months": "12 months": "Always free"
             }
         ]
     

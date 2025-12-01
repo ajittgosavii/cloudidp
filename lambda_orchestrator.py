@@ -13,6 +13,8 @@ import io
 from backend_config import BackendConfig, LAMBDA_FUNCTIONS
 from backend_models import *
 import logging
+from config import get_aws_account_config
+
 
 logger = logging.getLogger(__name__)
 
@@ -235,7 +237,7 @@ class LambdaOrchestrator:
         
         return {
             "success": True,
-            "account_id": "123456789012",
+            "account_id": get_aws_account_config()['account_id'],
             "status": "active",
             "message": "Account provisioned successfully (demo)",
             "provisioning_time_seconds": 120
