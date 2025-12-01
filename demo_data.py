@@ -221,9 +221,7 @@ class DemoDataProvider:
             "avg_deploy_time": "18.5 min",
             "time_improvement": "3.2 min",
             "cloud_distribution": [
-                {"Cloud": "AWS", "Deployments": 215, "Resources": 892, "Cost": "$12,450"},
-                {"Cloud":, "Deployments": 87, "Resources": 445, "Cost": "$8,320"},
-                {"Cloud":, "Deployments": 40, "Resources": 210, "Cost": "$4,890"}
+                {"Cloud": "AWS", "Deployments": 215, "Resources": 892, "Cost": "$12,450"}
             ],
             "recent_deployments": [
                 {"Application": "API Gateway", "Environment": "Production", "Status": "✅ Success", "Duration": "15 min"},
@@ -232,13 +230,13 @@ class DemoDataProvider:
                 {"Application": "Analytics Service", "Environment": "Development", "Status": "❌ Failed", "Duration": "22 min"}
             ],
             "deployment_trends": [
-                {"date": "2024-11-11", "AWS": 28: 12: 5},
-                {"date": "2024-11-12", "AWS": 32: 15: 7},
-                {"date": "2024-11-13", "AWS": 25: 10: 6},
-                {"date": "2024-11-14", "AWS": 30: 13: 8},
-                {"date": "2024-11-15", "AWS": 35: 18: 9},
-                {"date": "2024-11-16", "AWS": 29: 14: 7},
-                {"date": "2024-11-17", "AWS": 36: 19: 10}
+                {"date": "2024-11-11", "AWS": 28},
+                {"date": "2024-11-12", "AWS": 32},
+                {"date": "2024-11-13", "AWS": 25},
+                {"date": "2024-11-14", "AWS": 30},
+                {"date": "2024-11-15", "AWS": 35},
+                {"date": "2024-11-16", "AWS": 29},
+                {"date": "2024-11-17", "AWS": 36}
             ]
         }
     
@@ -276,8 +274,8 @@ class DemoDataProvider:
                 "id": "dep-20241118-003",
                 "name": "api-backend-dev",
                 "blueprint": "Serverless API Backend",
-                "cloud":,
-                "region": "eastus",
+                "cloud": "AWS",
+                "region": "us-east-1",
                 "environment": "Development",
                 "status": "Running",
                 "started_at": "2024-11-18 07:45:00",
@@ -302,8 +300,8 @@ class DemoDataProvider:
                 "id": "dep-20241117-043",
                 "name": "ml-pipeline-test",
                 "blueprint": "Data Lake Analytics",
-                "cloud":,
-                "region": "us-central1",
+                "cloud": "AWS",
+                "region": "us-west-2",
                 "environment": "Development",
                 "status": "Failed",
                 "started_at": "2024-11-17 20:15:00",
@@ -315,31 +313,31 @@ class DemoDataProvider:
     
     @staticmethod
     def get_cloud_comparison() -> List[Dict[str, Any]]:
-        """Return cloud provider comparison"""
+        """Return AWS service information"""
         return [
             {
                 "Metric": "Total Services",
-                "AWS": "200+": "200+": "100+"
+                "AWS": "200+"
             },
             {
                 "Metric": "Compute Cost/Hour",
-                "AWS": "$0.096": "$0.098": "$0.094"
+                "AWS": "$0.096"
             },
             {
                 "Metric": "Storage Cost/GB",
-                "AWS": "$0.023": "$0.020": "$0.020"
+                "AWS": "$0.023"
             },
             {
                 "Metric": "Global Regions",
-                "AWS": "33": "60+": "35"
+                "AWS": "33"
             },
             {
                 "Metric": "Compliance Certifications",
-                "AWS": "100+": "90+": "70+"
+                "AWS": "100+"
             },
             {
                 "Metric": "Free Tier Duration",
-                "AWS": "12 months": "12 months": "Always free"
+                "AWS": "12 months"
             }
         ]
     
