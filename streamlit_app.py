@@ -525,13 +525,8 @@ def main():
     with main_tabs[3]:
         render_aws_integrations_tabs()
 
-"""
-DIAGNOSTIC VERSION - Add this to streamlit_app.py temporarily
-Replace the render_home_page function with this version
-"""
-
 def render_home_page():
-    """Render the home/dashboard page - DIAGNOSTIC VERSION"""
+    """Render the home/dashboard page"""
     st.markdown("## 🏠 Welcome to CloudIDP")
     
     st.markdown("""
