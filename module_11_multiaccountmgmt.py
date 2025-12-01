@@ -21,6 +21,14 @@ except ImportError:
     AWS_ORG_HELPER_AVAILABLE = False
     print("⚠️ AWS Organizations helper not available")
 
+# Import AWS Cost Explorer helper
+try:
+    from aws_cost_helper import show_cost_analysis_modal
+    AWS_COST_HELPER_AVAILABLE = True
+except ImportError:
+    AWS_COST_HELPER_AVAILABLE = False
+    print("⚠️ AWS Cost Explorer helper not available")
+
 class MultiAccountManagementModule:
     """Multi-Account & AWS Organizations Management"""
     
@@ -203,8 +211,18 @@ class MultiAccountManagementModule:
             if st.button("🔐 Configure SSO Access", use_container_width=True):
                 st.info("Opening SSO configuration...")
         with col3:
-            if st.button("💰 Cost Breakdown", use_container_width=True):
-                st.info("Opening cost analysis...")
+            if st.button("💰 Cost Breakdown", use_container_width=True, key="cost_breakdown_btn"):
+                # Show cost analysis for the account
+                if self.is_live_mode and AWS_COST_HELPER_AVAILABLE:
+                    # Get account info from first row (or selected account)
+                    if len(accounts_data) > 0:
+                        account_name = accounts_data.iloc[0]['Account Name']
+                        account_id = accounts_data.iloc[0]['Account ID']
+                        show_cost_analysis_modal(account_name, account_id)
+                    else:
+                        st.warning("No account data available")
+                else:
+                    st.info("💡 Cost analysis requires Live mode with AWS Cost Explorer enabled")
         with col4:
             if st.button("🏷️ Manage Tags", use_container_width=True):
                 st.info("Opening tag editor...")
