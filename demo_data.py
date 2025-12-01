@@ -1,8 +1,6 @@
 """Demo Data Provider - Sample data for Demo Mode"""
 
 from typing import List, Dict, Any
-from config import get_aws_account_config
-
 
 class DemoDataProvider:
     """Provides demo data for all modules"""
