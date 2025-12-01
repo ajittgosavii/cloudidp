@@ -14,6 +14,7 @@ from policy_guardrails import PolicyGuardrailsModule
 from module_07_abstraction import AbstractionReusabilityModule
 from module_09_developer_experience import DeveloperExperienceModule
 from module_10_observability import ObservabilityIntegrationModule
+from module_11_multiaccountmgmt import MultiAccountManagementModule
 from config import initialize_session_state
 from anthropic_helper import AnthropicHelper
 from datetime import datetime, timedelta
@@ -505,6 +506,7 @@ def main():
     main_tabs = st.tabs([
         "🏠 Home",
         "🏗️ Core Infrastructure", 
+        "🏢 Multi-Account Mgmt",
         "🔑 API Management",
         "☁️ AWS Integrations"
     ])
@@ -517,12 +519,16 @@ def main():
     with main_tabs[1]:
         render_core_infrastructure_tabs()
     
-    # API Management Tab
+    # Multi-Account Management Tab
     with main_tabs[2]:
+        render_multiaccountmgmt_tab()
+    
+    # API Management Tab
+    with main_tabs[3]:
         render_api_management_tabs()
     
     # AWS Integrations Tab
-    with main_tabs[3]:
+    with main_tabs[4]:
         render_aws_integrations_tabs()
 
 def render_home_page():
@@ -712,6 +718,15 @@ def render_core_infrastructure_tabs():
             render_module(observability, "Observability & Integration")
         except Exception as e:
             st.error(f"❌ Error loading Observability module: {str(e)}")
+
+def render_multiaccountmgmt_tab():
+    """Render Multi-Account Management module"""
+    try:
+        multiaccountmgmt = MultiAccountManagementModule()
+        multiaccountmgmt.render()
+    except Exception as e:
+        st.error(f"❌ Error loading Multi-Account Management module: {str(e)}")
+        st.info("💡 Multi-Account Management provides AWS Organizations integration, SSO, CMDB, and account lifecycle management.")
 
 def render_api_management_tabs():
     """Render API Management modules in nested tabs"""
