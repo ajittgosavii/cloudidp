@@ -14,7 +14,7 @@ from policy_guardrails import PolicyGuardrailsModule
 from module_07_abstraction import AbstractionReusabilityModule
 from module_09_developer_experience import DeveloperExperienceModule
 from module_10_observability import ObservabilityIntegrationModule
-from config import initialize_session_state, get_aws_account_config, validate_aws_config
+from config import initialize_session_state
 from anthropic_helper import AnthropicHelper
 from datetime import datetime, timedelta
 import json
