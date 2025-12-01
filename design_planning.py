@@ -7,6 +7,15 @@ import streamlit as st
 import pandas as pd
 from demo_data import DemoDataProvider
 
+# Import AWS Policy Deployer
+try:
+    from aws_policy_deployer import deploy_tag_policy_to_aws, get_policy_deployer
+    from aws_org_helper import get_aws_org_helper
+    AWS_DEPLOYER_AVAILABLE = True
+except ImportError:
+    AWS_DEPLOYER_AVAILABLE = False
+    print("⚠️ AWS Policy Deployer not available")
+
 class DesignPlanningModule:
     """Design & Planning functionality"""
     def render(self):
@@ -256,6 +265,11 @@ class DesignPlanningModule:
                     st.markdown("**Required Tags:**")
                     for tag in policy['required_tags']:
                         st.markdown(f"- **{tag['key']}**: {tag['description']}")
+                
+                # Apply to AWS button for Live mode
+                if not st.session_state.get('demo_mode', True):
+                    st.markdown("---")
+                    self._render_apply_to_aws_interface(policy)
         
         st.markdown("---")
         
@@ -553,3 +567,135 @@ class DesignPlanningModule:
                     
                     Ready for deployment!
                     """)
+
+    @staticmethod
+    def _render_apply_to_aws_interface(policy: dict):
+        """
+        Render the interface for applying a tag policy to AWS
+        
+        Args:
+            policy: Tag policy dictionary from demo data
+        """
+        if not AWS_DEPLOYER_AVAILABLE:
+            st.info("💡 AWS Policy Deployer not available in this deployment")
+            return
+        
+        st.markdown("### 🚀 Deploy to AWS")
+        
+        # Deployment configuration
+        with st.form(f"deploy_{policy['name'].replace(' ', '_')}"):
+            st.markdown("**Deployment Options**")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                # Get list of OUs
+                deployer = get_policy_deployer()
+                ous = deployer.list_organizational_units()
+                
+                if ous:
+                    ou_options = [f"{ou['name']} ({ou['id']})" for ou in ous]
+                    selected_ous = st.multiselect(
+                        "Deploy to Organizational Units",
+                        ou_options,
+                        help="Select which OUs should have this tag policy applied"
+                    )
+                else:
+                    st.warning("⚠️ No Organizational Units found. Using root.")
+                    selected_ous = []
+            
+            with col2:
+                create_config_rule = st.checkbox(
+                    "Create AWS Config Rule",
+                    value=True,
+                    help="Monitor tag compliance with AWS Config"
+                )
+                
+                create_scp = st.checkbox(
+                    "Create Service Control Policy",
+                    value=False,
+                    help="Prevent resource creation without required tags (Strong enforcement)"
+                )
+            
+            st.markdown("---")
+            st.markdown("**Preview**")
+            
+            # Show what will be created
+            st.info(f"""
+            **This will create:**
+            
+            ✅ AWS Organizations Tag Policy: `{policy['name']}`
+            - Required Tags: {', '.join([tag['key'] for tag in policy['required_tags']])}
+            - Scope: {policy['scope']}
+            
+            {f"✅ AWS Config Rule for tag compliance monitoring" if create_config_rule else ""}
+            {f"✅ Service Control Policy for tag enforcement" if create_scp else ""}
+            {f"✅ Policy will be attached to {len(selected_ous)} OU(s)" if selected_ous else ""}
+            """)
+            
+            st.warning("⚠️ **Important**: Ensure you have the necessary IAM permissions and that Tag Policies are enabled in your AWS Organization")
+            
+            # Deploy button
+            col1, col2, col3 = st.columns([2, 1, 1])
+            with col2:
+                deploy_clicked = st.form_submit_button(
+                    "🚀 Deploy to AWS",
+                    type="primary",
+                    use_container_width=True
+                )
+            with col3:
+                cancel_clicked = st.form_submit_button(
+                    "❌ Cancel",
+                    use_container_width=True
+                )
+            
+            if deploy_clicked:
+                # Extract OU IDs from selections
+                deployment_targets = []
+                if ous and selected_ous:
+                    for selection in selected_ous:
+                        # Extract OU ID from "Name (ou-xxxx)" format
+                        ou_id = selection.split('(')[1].strip(')')
+                        deployment_targets.append(ou_id)
+                
+                # Prepare tag data for deployment
+                required_tags = [
+                    {
+                        'key': tag['key'],
+                        'values': [],  # Can be enhanced to allow specific values
+                        'resources': ['ec2:instance', 's3:bucket', 'rds:db', 'lambda:function', 'dynamodb:table']
+                    }
+                    for tag in policy['required_tags']
+                ]
+                
+                # Deploy!
+                results = deploy_tag_policy_to_aws(
+                    policy_name=policy['name'],
+                    required_tags=required_tags,
+                    scope=policy['scope'],
+                    deployment_targets=deployment_targets,
+                    create_config_rule=create_config_rule,
+                    create_scp=create_scp
+                )
+                
+                if results['status'] == 'success':
+                    st.success(f"""
+                    ✅ **Successfully Deployed to AWS!**
+                    
+                    **Created Resources:**
+                    - Tag Policy ID: `{results['tag_policy_id']}`
+                    - Attached to {len(results['attachments'])} OU(s)
+                    {f"- Config Rule Created: ✅" if results['config_rule_created'] else ""}
+                    {f"- SCP Created: `{results['scp_id']}`" if results.get('scp_id') else ""}
+                    
+                    **Next Steps:**
+                    1. Verify in AWS Console → Organizations → Policies
+                    2. Check compliance in AWS Config (if enabled)
+                    3. Monitor in CloudIDP CMDB tab
+                    """)
+                    st.balloons()
+                else:
+                    st.error("❌ Deployment failed. Check the logs above for details.")
+            
+            if cancel_clicked:
+                st.info("Deployment cancelled")
