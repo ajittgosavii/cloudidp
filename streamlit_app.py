@@ -890,13 +890,30 @@ def show_api_key_management():
                     
                     with col2:
                         st.markdown("**Created**")
-                        created = key_data['created_at']
-                        st.write(created.strftime("%Y-%m-%d %H:%M"))
+                        created = key_data.get('created_at')
+                        if created:
+                            # Handle both datetime objects and strings
+                            if isinstance(created, str):
+                                st.write(created)
+                            else:
+                                try:
+                                    st.write(created.strftime("%Y-%m-%d %H:%M"))
+                                except AttributeError:
+                                    st.write(str(created))
+                        else:
+                            st.write("Unknown")
                         
                         st.markdown("**Last Used**")
-                        if key_data.get('last_used'):
-                            last_used = key_data['last_used']
-                            st.write(last_used.strftime("%Y-%m-%d %H:%M"))
+                        last_used = key_data.get('last_used')
+                        if last_used:
+                            # Handle both datetime objects and strings
+                            if isinstance(last_used, str):
+                                st.write(last_used)
+                            else:
+                                try:
+                                    st.write(last_used.strftime("%Y-%m-%d %H:%M"))
+                                except AttributeError:
+                                    st.write(str(last_used))
                         else:
                             st.write("Never")
                     
