@@ -8,20 +8,53 @@ import pandas as pd
 from datetime import datetime, timedelta
 import json
 
+# Import AWS Organizations helper
+try:
+    from aws_org_helper import (
+        get_aws_org_helper, 
+        get_real_accounts_dataframe,
+        get_current_account_summary,
+        get_demo_accounts_dataframe
+    )
+    AWS_ORG_HELPER_AVAILABLE = True
+except ImportError:
+    AWS_ORG_HELPER_AVAILABLE = False
+    print("⚠️ AWS Organizations helper not available")
+
 class MultiAccountManagementModule:
     """Multi-Account & AWS Organizations Management"""
     
     def __init__(self):
         self.module_name = "Multi-Account Management"
         self.version = "2.0.0"
+        self.is_live_mode = st.session_state.get('mode', 'Demo') == 'Live'
         
     def render(self):
         """Main render method"""
         st.header("🏢 Multi-Account Management & AWS Organizations")
         
+        # Get account summary (real or demo)
+        if self.is_live_mode and AWS_ORG_HELPER_AVAILABLE:
+            summary = get_current_account_summary()
+            mode_text = f"🟢 Live Mode - Account: {summary.get('current_account_id', 'N/A')}"
+            mode_color = "#28a745"
+            
+            # Show organization status
+            if summary.get('is_organization'):
+                st.success(f"✅ Connected to AWS Organization: {summary.get('organization_id')}")
+            else:
+                st.info("ℹ️ Connected to single AWS account (not part of an organization)")
+        else:
+            summary = {
+                'account_count': 47,
+                'region_count': 12,
+                'resource_count': 3456,
+                'is_organization': False
+            }
+            mode_text = "📊 Demo Mode"
+            mode_color = "#ffc107"
+        
         # Mode indicator
-        mode_color = "#28a745" if st.session_state.get('mode', 'Demo') == 'Live' else "#ffc107"
-        mode_text = "🟢 Live Mode" if st.session_state.get('mode', 'Demo') == 'Live' else "📊 Demo Mode"
         st.markdown(f'<div style="background-color: {mode_color}; color: white; padding: 10px; border-radius: 5px; text-align: center; margin-bottom: 20px;"><b>{mode_text}</b></div>', unsafe_allow_html=True)
         
         st.markdown("**🌐 Multi-Account Governance | AWS Organizations | SSO Integration | CMDB**")
@@ -29,15 +62,19 @@ class MultiAccountManagementModule:
         # Organization overview metrics
         col1, col2, col3, col4, col5 = st.columns(5)
         with col1:
-            st.metric("AWS Accounts", "47", "+2", help="Total AWS accounts in organization")
+            account_count = summary.get('account_count', 1)
+            st.metric("AWS Accounts", str(account_count), "+2" if not self.is_live_mode else None, help="Total AWS accounts in organization")
         with col2:
-            st.metric("Active Regions", "12", help="Regions with active resources")
+            region_count = summary.get('region_count', 12)
+            st.metric("Active Regions", str(region_count), help="Regions with active resources")
         with col3:
-            st.metric("Total Resources", "3,456", "+89", help="Resources across all accounts")
+            resource_count = summary.get('resource_count', 3456)
+            display_count = str(resource_count) if resource_count > 0 else "N/A"
+            st.metric("Total Resources", display_count, "+89" if not self.is_live_mode else None, help="Resources across all accounts")
         with col4:
-            st.metric("Pending Requests", "3", help="Account requests awaiting approval")
+            st.metric("Pending Requests", "3" if not self.is_live_mode else "0", help="Account requests awaiting approval")
         with col5:
-            st.metric("Monthly Cost", "$125K", "+$8K", help="Organization-wide cost")
+            st.metric("Monthly Cost", "$125K" if not self.is_live_mode else "N/A", "+$8K" if not self.is_live_mode else None, help="Organization-wide cost")
         
         st.markdown("---")
         
@@ -66,42 +103,62 @@ class MultiAccountManagementModule:
         st.subheader("🏢 AWS Account Directory")
         st.markdown("**View and manage all AWS accounts in your organization**")
         
+        # Get real or demo account data
+        if self.is_live_mode and AWS_ORG_HELPER_AVAILABLE:
+            accounts_data = get_real_accounts_dataframe()
+            helper = get_aws_org_helper()
+            regions = helper.get_available_regions()
+        else:
+            accounts_data = get_demo_accounts_dataframe()
+            regions = [
+                "us-east-1",
+                "us-west-2",
+                "eu-west-1",
+                "eu-central-1",
+                "ap-southeast-1",
+                "ap-northeast-1"
+            ]
+        
         # Account selector for operations
         st.markdown("### 🎯 Quick Account & Region Selector")
         
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            # Multi-account selector
-            accounts = [
-                "Production (123456789012)",
-                "Staging (234567890123)",
-                "Development (345678901234)",
-                "Data Analytics (456789012345)",
-                "Security (567890123456)",
-                "Shared Services (678901234567)"
+            # Multi-account selector - use real account names
+            account_options = [
+                f"{row['Account Name']} ({row['Account ID']})" 
+                for _, row in accounts_data.iterrows()
             ]
+            
             selected_accounts = st.multiselect(
                 "Select AWS Account(s)",
-                accounts,
-                default=[accounts[0]],
+                account_options,
+                default=[account_options[0]] if len(account_options) > 0 else [],
                 help="Select one or more AWS accounts to operate on"
             )
         
         with col2:
-            # Multi-region selector
-            regions = [
-                "us-east-1 (N. Virginia)",
-                "us-west-2 (Oregon)",
-                "eu-west-1 (Ireland)",
-                "eu-central-1 (Frankfurt)",
-                "ap-southeast-1 (Singapore)",
-                "ap-northeast-1 (Tokyo)"
-            ]
+            # Multi-region selector with nicer names
+            region_names = {
+                "us-east-1": "us-east-1 (N. Virginia)",
+                "us-east-2": "us-east-2 (Ohio)",
+                "us-west-1": "us-west-1 (N. California)",
+                "us-west-2": "us-west-2 (Oregon)",
+                "eu-west-1": "eu-west-1 (Ireland)",
+                "eu-west-2": "eu-west-2 (London)",
+                "eu-central-1": "eu-central-1 (Frankfurt)",
+                "ap-southeast-1": "ap-southeast-1 (Singapore)",
+                "ap-southeast-2": "ap-southeast-2 (Sydney)",
+                "ap-northeast-1": "ap-northeast-1 (Tokyo)",
+            }
+            
+            region_options = [region_names.get(r, r) for r in regions[:10]]  # Show first 10 regions
+            
             selected_regions = st.multiselect(
                 "Select AWS Region(s)",
-                regions,
-                default=[regions[0]],
+                region_options,
+                default=[region_options[0]] if len(region_options) > 0 else [],
                 help="Select one or more AWS regions"
             )
         
@@ -109,7 +166,11 @@ class MultiAccountManagementModule:
             st.markdown("**Current Selection**")
             st.info(f"✅ {len(selected_accounts)} account(s)\n✅ {len(selected_regions)} region(s)")
             if st.button("🔄 Switch Context", type="primary", use_container_width=True):
-                st.success(f"Context switched to {len(selected_accounts)} account(s) in {len(selected_regions)} region(s)")
+                if selected_accounts and selected_regions:
+                    st.success(f"✅ Context switched to {len(selected_accounts)} account(s) in {len(selected_regions)} region(s)")
+                    st.balloons()
+                else:
+                    st.warning("⚠️ Please select at least one account and one region")
         
         st.markdown("---")
         
@@ -123,99 +184,14 @@ class MultiAccountManagementModule:
         with col2:
             ou_filter = st.selectbox("Filter by OU", ["All", "Production", "Non-Production", "Workloads", "Security", "Infrastructure"])
         
-        # Accounts table with status
-        accounts_data = pd.DataFrame([
-            {
-                "Account ID": "123456789012",
-                "Account Name": "Production",
-                "OU": "Production",
-                "Status": "🟢 Active",
-                "Email": "aws-prod@company.com",
-                "Created": "2023-01-15",
-                "Resources": "1,234",
-                "Monthly Cost": "$45,000",
-                "SSO Access": "✅ Enabled"
-            },
-            {
-                "Account ID": "234567890123",
-                "Account Name": "Staging",
-                "OU": "Non-Production",
-                "Status": "🟢 Active",
-                "Email": "aws-staging@company.com",
-                "Created": "2023-02-10",
-                "Resources": "567",
-                "Monthly Cost": "$18,500",
-                "SSO Access": "✅ Enabled"
-            },
-            {
-                "Account ID": "345678901234",
-                "Account Name": "Development",
-                "OU": "Non-Production",
-                "Status": "🟢 Active",
-                "Email": "aws-dev@company.com",
-                "Created": "2023-03-05",
-                "Resources": "892",
-                "Monthly Cost": "$12,300",
-                "SSO Access": "✅ Enabled"
-            },
-            {
-                "Account ID": "456789012345",
-                "Account Name": "Data Analytics",
-                "OU": "Workloads",
-                "Status": "🟢 Active",
-                "Email": "aws-data@company.com",
-                "Created": "2023-06-20",
-                "Resources": "445",
-                "Monthly Cost": "$32,100",
-                "SSO Access": "✅ Enabled"
-            },
-            {
-                "Account ID": "567890123456",
-                "Account Name": "Security",
-                "OU": "Security",
-                "Status": "🟢 Active",
-                "Email": "aws-security@company.com",
-                "Created": "2023-01-10",
-                "Resources": "156",
-                "Monthly Cost": "$8,900",
-                "SSO Access": "✅ Enabled"
-            },
-            {
-                "Account ID": "678901234567",
-                "Account Name": "Shared Services",
-                "OU": "Infrastructure",
-                "Status": "🟢 Active",
-                "Email": "aws-shared@company.com",
-                "Created": "2023-01-10",
-                "Resources": "234",
-                "Monthly Cost": "$15,200",
-                "SSO Access": "✅ Enabled"
-            },
-            {
-                "Account ID": "789012345678",
-                "Account Name": "Legacy Application",
-                "OU": "Workloads",
-                "Status": "🟡 Suspended",
-                "Email": "aws-legacy@company.com",
-                "Created": "2022-08-15",
-                "Resources": "89",
-                "Monthly Cost": "$2,400",
-                "SSO Access": "❌ Disabled"
-            },
-            {
-                "Account ID": "890123456789",
-                "Account Name": "Sandbox-Team-A",
-                "OU": "Non-Production",
-                "Status": "🟢 Active",
-                "Email": "aws-sandbox-a@company.com",
-                "Created": "2024-11-15",
-                "Resources": "45",
-                "Monthly Cost": "$890",
-                "SSO Access": "✅ Enabled"
-            },
-        ])
-        
+        # Show accounts table (real or demo data)
         st.dataframe(accounts_data, use_container_width=True, hide_index=True)
+        
+        # Show data source info
+        if self.is_live_mode and AWS_ORG_HELPER_AVAILABLE:
+            st.caption(f"📊 Showing {len(accounts_data)} real AWS account(s) from your organization")
+        else:
+            st.caption("📊 Showing demo data - switch to Live mode and configure AWS credentials to see your real accounts")
         
         # Quick actions
         st.markdown("### ⚡ Quick Actions")
