@@ -1,7 +1,7 @@
 """
 Module 0: Main Dashboard
-Enterprise overview of multi-account AWS environment with AWS theming
-JAVASCRIPT INJECTION VERSION - Forces white text after page load
+Enterprise overview of multi-account AWS environment
+SELF-CONTAINED VERSION - No AWSTheme dependency
 """
 
 import streamlit as st
@@ -12,10 +12,48 @@ from config_settings import AppConfig
 from core_account_manager import get_account_manager
 from core_session_manager import SessionManager
 from utils_helpers import Helpers
-from aws_theme import AWSTheme
+
+def render_light_metric(label: str, value: str, icon: str = ""):
+    """
+    Render a metric card with GUARANTEED VISIBLE TEXT
+    Uses light card with dark text - works with any theme
+    """
+    st.markdown(f"""
+    <div style="
+        background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+        border: 1px solid #E0E0E0;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    ">
+        <div style="
+            color: #6B7280;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        ">
+            <span style="font-size: 20px; margin-right: 8px;">{icon}</span>
+            {label}
+        </div>
+        <div style="
+            color: #1F2937;
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1;
+        ">
+            {value}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 class DashboardModule:
-    """Main dashboard with enterprise overview and AWS styling"""
+    """Main dashboard with enterprise overview"""
     
     @staticmethod
     def render():
@@ -39,66 +77,8 @@ class DashboardModule:
             st.info("Go to **Account Lifecycle** → **Onboard Account** to add your first account.")
             return
         
-        # Top metrics with AWS styling
-        DashboardModule._render_top_metrics_aws(account_mgr, active_accounts)
-        
-        # ===== NUCLEAR JAVASCRIPT INJECTION - FORCES WHITE TEXT =====
-        st.markdown("""
-        <script>
-        // Wait for page to load
-        setTimeout(function() {
-            // Target ALL metric elements and force white text
-            const selectors = [
-                '[data-testid="stMetric"]',
-                '[data-testid="stMetric"] *',
-                '[data-testid="stMetricLabel"]',
-                '[data-testid="stMetricValue"]',
-                '[data-testid="stMetricDelta"]',
-                '[class*="metric"]',
-                '[class*="Metric"]'
-            ];
-            
-            selectors.forEach(function(selector) {
-                try {
-                    const elements = document.querySelectorAll(selector);
-                    elements.forEach(function(el) {
-                        el.style.color = 'white';
-                        el.style.fill = 'white';
-                        el.style.setProperty('color', 'white', 'important');
-                        el.style.setProperty('fill', 'white', 'important');
-                    });
-                } catch(e) {
-                    console.log('Selector failed:', selector);
-                }
-            });
-            
-            // Also target by position (first 4 columns in first row)
-            const columns = document.querySelectorAll('[data-testid="column"]');
-            if (columns.length >= 4) {
-                for (let i = 0; i < 4; i++) {
-                    const allElements = columns[i].querySelectorAll('*');
-                    allElements.forEach(function(el) {
-                        el.style.setProperty('color', 'white', 'important');
-                        el.style.setProperty('fill', 'white', 'important');
-                    });
-                }
-            }
-            
-            console.log('✅ White text injection complete!');
-        }, 500);  // Wait 500ms for Streamlit to render
-        
-        // Run again after 2 seconds to catch late-loading elements
-        setTimeout(function() {
-            const allMetrics = document.querySelectorAll('[data-testid="stMetric"], [data-testid="stMetric"] *');
-            allMetrics.forEach(function(el) {
-                el.style.setProperty('color', 'white', 'important');
-                el.style.setProperty('fill', 'white', 'important');
-            });
-            console.log('✅ Second white text injection complete!');
-        }, 2000);
-        </script>
-        """, unsafe_allow_html=True)
-        # ===== END JAVASCRIPT INJECTION =====
+        # Top metrics - SELF-CONTAINED with guaranteed visibility
+        DashboardModule._render_top_metrics(account_mgr, active_accounts)
         
         st.markdown("---")
         
@@ -122,13 +102,13 @@ class DashboardModule:
         DashboardModule._render_recent_resources(account_mgr, active_accounts)
     
     @staticmethod
-    def _render_top_metrics_aws(account_mgr, active_accounts):
-        """Render top-level metrics with AWS theming"""
+    def _render_top_metrics(account_mgr, active_accounts):
+        """Render top-level metrics with GUARANTEED VISIBLE TEXT"""
         
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            AWSTheme.aws_metric_card(
+            render_light_metric(
                 label="Connected Accounts",
                 value=str(len(active_accounts)),
                 icon="🔗"
@@ -152,7 +132,7 @@ class DashboardModule:
                 except:
                     pass
             
-            AWSTheme.aws_metric_card(
+            render_light_metric(
                 label="Total Resources",
                 value=Helpers.format_number(total_resources) if total_resources > 0 else "N/A",
                 icon="📦"
@@ -161,7 +141,7 @@ class DashboardModule:
         with col3:
             # Estimated monthly cost
             estimated_cost = total_resources * 73  # $73/month per t3.micro
-            AWSTheme.aws_metric_card(
+            render_light_metric(
                 label="Est. Monthly Cost",
                 value=Helpers.format_currency(estimated_cost),
                 icon="💰"
@@ -169,7 +149,7 @@ class DashboardModule:
         
         with col4:
             # Compliance score (placeholder)
-            AWSTheme.aws_metric_card(
+            render_light_metric(
                 label="Compliance Score",
                 value="N/A",
                 icon="🛡️"
