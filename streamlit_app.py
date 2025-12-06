@@ -43,8 +43,16 @@ st.markdown("""
     background-color: white !important;
 }
 
-/* All text - BLACK */
-body, p, span, div, label, h1, h2, h3, h4, h5, h6 {
+/* All text - BLACK (except metrics which will be handled separately) */
+body {
+    color: black !important;
+}
+
+/* Most text elements - BLACK */
+p:not([data-testid*="stMetric"] *),
+span:not([data-testid*="stMetric"] *),
+div:not([data-testid*="stMetric"] *):not([style*="background"]),
+label:not([data-testid*="stMetric"] *) {
     color: black !important;
 }
 
@@ -132,34 +140,80 @@ input, textarea {
     border-bottom: 2px solid #2E86DE !important;
 }
 
-/* ===== METRICS ===== */
-[data-testid="stMetricLabel"] {
-    color: white !important;  /* Changed from black to white */
+/* ===== METRICS - FORCE WHITE TEXT IN DARK BOXES ===== */
+
+/* Metric labels - MAXIMUM SPECIFICITY */
+[data-testid="stMetricLabel"],
+[data-testid="stMetric"] [data-testid="stMetricLabel"],
+div[data-testid="stMetric"] label,
+div[data-testid="stMetric"] [data-testid="stMetricLabel"],
+[data-testid="metric-container"] label {
+    color: white !important;
+    font-weight: 500 !important;
 }
 
-[data-testid="stMetricValue"] {
-    color: white !important;  /* Changed from blue to white for visibility */
+/* Metric values - MAXIMUM SPECIFICITY */
+[data-testid="stMetricValue"],
+[data-testid="stMetric"] [data-testid="stMetricValue"],
+div[data-testid="stMetric"] > div > div,
+div[data-testid="stMetric"] [data-testid="stMetricValue"],
+[data-testid="metric-container"] [data-testid="stMetricValue"] {
+    color: white !important;
     font-weight: 600 !important;
 }
 
-[data-testid="stMetricDelta"] {
-    color: #E0E0E0 !important;  /* Light gray for delta */
+/* Metric deltas */
+[data-testid="stMetricDelta"],
+[data-testid="stMetric"] [data-testid="stMetricDelta"] {
+    color: #B0B0B0 !important;
 }
 
-/* Metric containers with dark backgrounds */
-.stMetric {
-    background-color: transparent !important;
-}
-
-/* Fix for dark metric containers */
-div[data-testid="stMetric"] > div {
+/* ALL elements inside metrics - WHITE */
+[data-testid="stMetric"] *,
+[data-testid="stMetric"] p,
+[data-testid="stMetric"] span,
+[data-testid="stMetric"] div,
+[data-testid="stMetric"] label,
+div[data-testid="stMetric"] > div > div > *,
+div[data-testid="metric-container"] *,
+div[data-testid="metric-container"] p,
+div[data-testid="metric-container"] span,
+div[data-testid="metric-container"] div,
+div[data-testid="metric-container"] label {
     color: white !important;
 }
 
-/* Specific fix for metric labels in dark boxes */
-div[data-testid="metric-container"] label,
-div[data-testid="metric-container"] p,
-div[data-testid="metric-container"] span {
+/* Columns containing metrics */
+div[data-testid="column"] [data-testid="stMetric"] *,
+div[data-testid="column"] [data-testid="stMetric"] p,
+div[data-testid="column"] [data-testid="stMetric"] span,
+div[data-testid="column"] [data-testid="stMetric"] div,
+div[data-testid="column"] [data-testid="stMetric"] label {
+    color: white !important;
+}
+
+/* Metric containers */
+.stMetric,
+div[data-testid="stMetric"] {
+    background-color: transparent !important;
+}
+
+/* For any container with a dark background - force white text */
+div[style*="background-color: rgb(33"],
+div[style*="background-color: rgb(44"],
+div[style*="background-color: rgb(55"],
+div[style*="background-color: #1"],
+div[style*="background-color: #2"],
+div[style*="background-color: #3"] {
+    color: white !important;
+}
+
+div[style*="background-color: rgb(33"] *,
+div[style*="background-color: rgb(44"] *,
+div[style*="background-color: rgb(55"] *,
+div[style*="background-color: #1"] *,
+div[style*="background-color: #2"] *,
+div[style*="background-color: #3"] * {
     color: white !important;
 }
 
@@ -205,25 +259,6 @@ td {
 .stTextInput > div,
 .stNumberInput > div {
     border-radius: 4px !important;
-}
-
-/* ===== DARK CONTAINERS FIX ===== */
-/* Fix text in dark background containers */
-div[style*="background"] label,
-div[style*="background"] p,
-div[style*="background"] span,
-div[style*="background"] div {
-    color: white !important;
-}
-
-/* Fix for any container with dark background */
-.element-container div[style*="background-color: rgb"] {
-    color: white !important;
-}
-
-/* Ensure all text in dark boxes is visible */
-div[data-testid="stVerticalBlock"] > div[style*="background"] * {
-    color: white !important;
 }
 </style>
 """, unsafe_allow_html=True)
