@@ -1,6 +1,6 @@
 """
 Cloud Infrastructure Development Platform - Enterprise Multi-Account Cloud Management
-Simple Blue Theme - Clean & Professional
+Clean Light Theme - Dark Text Visible Everywhere
 """
 
 import streamlit as st
@@ -25,385 +25,352 @@ st.set_page_config(
 )
 
 # ==================================================================================
-# SIMPLE BLUE THEME - CLEAN & PROFESSIONAL
+# CLEAN LIGHT THEME - DARK TEXT VISIBLE EVERYWHERE
 # ==================================================================================
 st.markdown("""
 <style>
-/* ===== GLOBAL THEME ===== */
+/* ===== CLEAN LIGHT THEME ===== */
 :root {
     --primary-color: #2E86DE;
     --secondary-color: #0652DD;
-    --background-color: #FFFFFF;
-    --text-color: #000000;
+    --background-color: #F5F7FA;
+    --text-color: #2C3E50;
     --border-color: #E0E0E0;
 }
 
-/* Main app background - WHITE */
+/* ===== MAIN BACKGROUND - LIGHT GRAY ===== */
 .main {
-    background-color: white !important;
-}
-
-/* ===== CRITICAL: NO GLOBAL BLACK RULE ===== */
-/* We do NOT set a global black color rule because it conflicts with metrics */
-/* Instead, we set black on specific elements only */
-
-/* Set black on non-metric elements */
-.main > div:not([data-testid="stMetric"]),
-.main > div:not([data-testid="stMetric"]) > div:not([data-testid="stMetric"]),
-.main > div:not([data-testid="stMetric"]) > div:not([data-testid="stMetric"]) > p:not([data-testid*="stMetric"]),
-.main > div:not([data-testid="stMetric"]) > div:not([data-testid="stMetric"]) > span:not([data-testid*="stMetric"]) {
-    color: black;
-}
-
-/* ===== SIDEBAR ===== */
-[data-testid="stSidebar"] {
     background-color: #F5F7FA !important;
 }
 
+/* ===== ALL TEXT IS DARK (VISIBLE!) ===== */
+body, p, span, div, label, h1, h2, h3, h4, h5, h6 {
+    color: #2C3E50 !important;
+}
+
+/* ===== METRICS - DARK TEXT ON WHITE CARDS ===== */
+[data-testid="stMetric"],
+[data-testid="stMetricLabel"],
+[data-testid="stMetricValue"],
+[data-testid="stMetricDelta"] {
+    background-color: white !important;
+    color: #2C3E50 !important;
+}
+
+[data-testid="stMetric"] {
+    background-color: white !important;
+    border: 1px solid #E0E0E0 !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+}
+
+[data-testid="stMetric"] * {
+    color: #2C3E50 !important;
+}
+
+/* ===== SIDEBAR - LIGHT ===== */
+[data-testid="stSidebar"] {
+    background-color: white !important;
+    border-right: 1px solid #E0E0E0 !important;
+}
+
 [data-testid="stSidebar"] * {
-    color: black !important;
+    color: #2C3E50 !important;
 }
 
-/* ===== HEADERS ===== */
-h1, h2, h3 {
+/* ===== HEADERS - BLUE ===== */
+h1 {
     color: #2E86DE !important;
+    font-weight: 600 !important;
 }
 
-/* ===== BUTTONS ===== */
-button {
+h2 {
+    color: #2E86DE !important;
+    font-weight: 600 !important;
+}
+
+h3 {
+    color: #2C3E50 !important;
+    font-weight: 600 !important;
+}
+
+/* ===== BUTTONS - BLUE ===== */
+button[kind="primary"],
+button[kind="secondary"],
+.stButton button {
     background-color: #2E86DE !important;
     color: white !important;
     border: none !important;
-    border-radius: 4px !important;
-    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    padding: 10px 24px !important;
     font-weight: 500 !important;
+    transition: all 0.2s !important;
 }
 
-button:hover {
+button[kind="primary"]:hover,
+button[kind="secondary"]:hover,
+.stButton button:hover {
     background-color: #0652DD !important;
-    color: white !important;
+    box-shadow: 0 4px 8px rgba(46, 134, 222, 0.3) !important;
 }
 
-/* ===== DROPDOWNS & SELECTS ===== */
-/* Dropdown labels */
+/* ===== INPUTS & DROPDOWNS - WHITE WITH DARK TEXT ===== */
+input, textarea, select {
+    background-color: white !important;
+    color: #2C3E50 !important;
+    border: 1px solid #E0E0E0 !important;
+    border-radius: 6px !important;
+}
+
+/* Dropdown container */
+div[data-baseweb="select"],
+div[data-baseweb="popover"] {
+    background-color: white !important;
+    color: #2C3E50 !important;
+}
+
+/* Dropdown options - DARK TEXT */
+div[data-baseweb="select"] [role="option"],
+div[data-baseweb="select"] li,
+[role="option"],
+[role="listbox"] li {
+    background-color: white !important;
+    color: #2C3E50 !important;
+}
+
+div[data-baseweb="select"] [role="option"]:hover,
+[role="option"]:hover {
+    background-color: #F5F7FA !important;
+    color: #2E86DE !important;
+}
+
+/* Dropdown selected value - DARK TEXT */
+div[data-baseweb="select"] > div,
+div[data-baseweb="select"] span {
+    color: #2C3E50 !important;
+    background-color: white !important;
+}
+
+/* Input labels */
 .stSelectbox label,
 .stMultiSelect label,
 .stTextInput label,
 .stNumberInput label,
-.stTextArea label {
-    color: black !important;
+.stTextArea label,
+.stDateInput label,
+.stTimeInput label {
+    color: #2C3E50 !important;
     font-weight: 500 !important;
-}
-
-/* Dropdown options text - BLACK */
-div[data-baseweb="select"] [role="option"],
-div[data-baseweb="select"] li,
-[role="option"] {
-    color: black !important;
-    background-color: white !important;
-}
-
-/* Dropdown selected value - BLACK */
-div[data-baseweb="select"] > div {
-    color: black !important;
-    background-color: white !important;
 }
 
 /* Multiselect tags */
 div[data-baseweb="tag"] {
     background-color: #2E86DE !important;
+    border-radius: 4px !important;
 }
 
 div[data-baseweb="tag"] span {
     color: white !important;
 }
 
-/* ===== INPUT FIELDS ===== */
-input, textarea {
-    background-color: white !important;
-    color: black !important;
-    border: 1px solid #E0E0E0 !important;
-}
-
-/* ===== TABS ===== */
+/* ===== TABS - CLEAN ===== */
 .stTabs [data-baseweb="tab-list"] {
     background-color: white !important;
+    border-bottom: 1px solid #E0E0E0 !important;
 }
 
 .stTabs [data-baseweb="tab"] {
-    color: black !important;
+    color: #2C3E50 !important;
+    padding: 12px 24px !important;
+    font-weight: 500 !important;
 }
 
 .stTabs [aria-selected="true"] {
     color: #2E86DE !important;
-    border-bottom: 2px solid #2E86DE !important;
+    border-bottom: 3px solid #2E86DE !important;
+    background-color: #F5F7FA !important;
 }
 
-/* ================================
-   NUCLEAR OPTION - ULTRA AGGRESSIVE METRICS CSS
-   Uses EVERY possible selector with maximum !important
-   ================================ */
-
-/* Global override - metrics get white text NO MATTER WHAT */
-[data-testid="stMetric"],
-[data-testid="stMetric"] *,
-[data-testid="stMetric"] > *,
-[data-testid="stMetric"] > * > *,
-[data-testid="stMetric"] > * > * > *,
-[data-testid="stMetric"] > * > * > * > *,
-[data-testid="stMetric"] div,
-[data-testid="stMetric"] p,
-[data-testid="stMetric"] span,
-[data-testid="stMetric"] label,
-[data-testid="stMetric"] h1,
-[data-testid="stMetric"] h2,
-[data-testid="stMetric"] h3,
-[data-testid="stMetric"] h4,
-[data-testid="stMetric"] h5,
-[data-testid="stMetric"] h6,
-div[data-testid="stMetric"],
-div[data-testid="stMetric"] *,
-div[data-testid="stMetric"] > *,
-div[data-testid="stMetric"] > * > *,
-div[data-testid="stMetric"] > * > * > *,
-div[data-testid="stMetric"] div,
-div[data-testid="stMetric"] p,
-div[data-testid="stMetric"] span,
-div[data-testid="stMetric"] label {
-    color: white !important;
-    fill: white !important;
+.stTabs [data-baseweb="tab"]:hover {
+    background-color: #F5F7FA !important;
 }
 
-/* Metric labels - EVERY possible selector */
-[data-testid="stMetricLabel"],
-div[data-testid="stMetricLabel"],
-[data-testid="stMetric"] [data-testid="stMetricLabel"],
-div[data-testid="stMetric"] [data-testid="stMetricLabel"],
-div[data-testid="stMetric"] div[data-testid="stMetricLabel"],
-[data-testid="metric-container"] [data-testid="stMetricLabel"],
-.stMetric [data-testid="stMetricLabel"],
-[class*="stMetric"] [data-testid="stMetricLabel"] {
-    color: white !important;
-    fill: white !important;
-}
-
-/* Metric values - EVERY possible selector */
-[data-testid="stMetricValue"],
-div[data-testid="stMetricValue"],
-[data-testid="stMetric"] [data-testid="stMetricValue"],
-div[data-testid="stMetric"] [data-testid="stMetricValue"],
-div[data-testid="stMetric"] div[data-testid="stMetricValue"],
-[data-testid="metric-container"] [data-testid="stMetricValue"],
-.stMetric [data-testid="stMetricValue"],
-[class*="stMetric"] [data-testid="stMetricValue"] {
-    color: white !important;
-    fill: white !important;
-    font-weight: 600 !important;
-}
-
-/* Metric deltas */
-[data-testid="stMetricDelta"],
-div[data-testid="stMetricDelta"],
-[data-testid="stMetric"] [data-testid="stMetricDelta"],
-div[data-testid="stMetric"] [data-testid="stMetricDelta"] {
-    color: #B0B0B0 !important;
-    fill: #B0B0B0 !important;
-}
-
-/* Column containers with metrics */
-div[data-testid="column"] [data-testid="stMetric"],
-div[data-testid="column"] [data-testid="stMetric"] *,
-div[data-testid="column"] div[data-testid="stMetric"],
-div[data-testid="column"] div[data-testid="stMetric"] * {
-    color: white !important;
-    fill: white !important;
-}
-
-/* Vertical blocks with metrics */
-div[data-testid="stVerticalBlock"] [data-testid="stMetric"],
-div[data-testid="stVerticalBlock"] [data-testid="stMetric"] *,
-div[data-testid="stVerticalBlock"] div[data-testid="stMetric"],
-div[data-testid="stVerticalBlock"] div[data-testid="stMetric"] * {
-    color: white !important;
-    fill: white !important;
-}
-
-/* Horizontal blocks with metrics */
-div[data-testid="stHorizontalBlock"] [data-testid="stMetric"],
-div[data-testid="stHorizontalBlock"] [data-testid="stMetric"] *,
-div[data-testid="stHorizontalBlock"] div[data-testid="stMetric"],
-div[data-testid="stHorizontalBlock"] div[data-testid="stMetric"] * {
-    color: white !important;
-    fill: white !important;
-}
-
-/* Element containers with metrics */
-div[class*="element-container"] [data-testid="stMetric"],
-div[class*="element-container"] [data-testid="stMetric"] *,
-div[class*="element-container"] div[data-testid="stMetric"],
-div[class*="element-container"] div[data-testid="stMetric"] * {
-    color: white !important;
-    fill: white !important;
-}
-
-/* Any div with style attribute containing background */
-div[style*="background"] [data-testid="stMetric"],
-div[style*="background"] [data-testid="stMetric"] *,
-div[style*="background"] div[data-testid="stMetric"],
-div[style*="background"] div[data-testid="stMetric"] * {
-    color: white !important;
-    fill: white !important;
-}
-
-/* Dark background colors - comprehensive list */
-div[style*="background-color: rgb(0"],
-div[style*="background-color: rgb(1"],
-div[style*="background-color: rgb(2"],
-div[style*="background-color: rgb(3"],
-div[style*="background-color: rgb(4"],
-div[style*="background-color: rgb(5"],
-div[style*="background-color: #0"],
-div[style*="background-color: #1"],
-div[style*="background-color: #2"],
-div[style*="background-color: #3"],
-div[style*="background: rgb(0"],
-div[style*="background: rgb(1"],
-div[style*="background: rgb(2"],
-div[style*="background: rgb(3"],
-div[style*="background: rgb(4"],
-div[style*="background: rgb(5"],
-div[style*="background: #0"],
-div[style*="background: #1"],
-div[style*="background: #2"],
-div[style*="background: #3"] {
-    color: white !important;
-}
-
-div[style*="background-color: rgb(0"] *,
-div[style*="background-color: rgb(1"] *,
-div[style*="background-color: rgb(2"] *,
-div[style*="background-color: rgb(3"] *,
-div[style*="background-color: rgb(4"] *,
-div[style*="background-color: rgb(5"] *,
-div[style*="background-color: #0"] *,
-div[style*="background-color: #1"] *,
-div[style*="background-color: #2"] *,
-div[style*="background-color: #3"] *,
-div[style*="background: rgb(0"] *,
-div[style*="background: rgb(1"] *,
-div[style*="background: rgb(2"] *,
-div[style*="background: rgb(3"] *,
-div[style*="background: rgb(4"] *,
-div[style*="background: rgb(5"] *,
-div[style*="background: #0"] *,
-div[style*="background: #1"] *,
-div[style*="background: #2"] *,
-div[style*="background: #3"] * {
-    color: white !important;
-    fill: white !important;
-}
-
-/* Override ANY computed black color */
-[style*="color: rgb(0, 0, 0)"][data-testid*="stMetric"],
-[style*="color: rgb(0,0,0)"][data-testid*="stMetric"],
-[style*="color: black"][data-testid*="stMetric"],
-[style*="color: #000"][data-testid*="stMetric"],
-[style*="color:#000"][data-testid*="stMetric"] {
-    color: white !important;
-}
-
-/* Force white on common class patterns */
-.stMetric,
-.stMetric *,
-div.stMetric,
-div.stMetric *,
-[class*="Metric"],
-[class*="Metric"] *,
-[class*="metric"],
-[class*="metric"] * {
-    color: white !important;
-    fill: white !important;
-}
-
-/* Streamlit's CSS modules - target them directly */
-div[class^="st-"] [data-testid="stMetric"],
-div[class^="st-"] [data-testid="stMetric"] *,
-div[class*="st-"] [data-testid="stMetric"],
-div[class*="st-"] [data-testid="stMetric"] * {
-    color: white !important;
-    fill: white !important;
-}
-
-/* Last resort - target by position in DOM */
-div > div > div > [data-testid="stMetric"],
-div > div > div > [data-testid="stMetric"] *,
-div > div > div > div > [data-testid="stMetric"],
-div > div > div > div > [data-testid="stMetric"] * {
-    color: white !important;
-    fill: white !important;
-}
-
-/* ULTIMATE NUCLEAR OPTION - if nothing else works */
-* [data-testid="stMetric"],
-* [data-testid="stMetric"] *,
-* div[data-testid="stMetric"],
-* div[data-testid="stMetric"] * {
-    color: white !important;
-    fill: white !important;
-}
-
-/* ===== END NUCLEAR METRICS CSS ===== */
-
-/* ===== INFO/WARNING/ERROR BOXES ===== */
-.stAlert {
+/* ===== DATAFRAMES & TABLES ===== */
+.stDataFrame,
+.dataframe {
     background-color: white !important;
-    border-left: 4px solid #2E86DE !important;
-}
-
-/* ===== DATAFRAMES ===== */
-.stDataFrame {
-    background-color: white !important;
+    border: 1px solid #E0E0E0 !important;
+    border-radius: 6px !important;
 }
 
 table {
     background-color: white !important;
 }
 
-th {
+thead tr th {
     background-color: #2E86DE !important;
     color: white !important;
+    font-weight: 600 !important;
+    padding: 12px !important;
 }
 
-td {
-    color: black !important;
+tbody tr td {
+    color: #2C3E50 !important;
+    padding: 10px !important;
+    border-bottom: 1px solid #E0E0E0 !important;
+}
+
+tbody tr:hover {
+    background-color: #F5F7FA !important;
+}
+
+/* ===== CHARTS - WHITE BACKGROUND ===== */
+.stVegaLiteChart,
+.stPlotlyChart,
+.stDeckGlJsonChart {
+    background-color: white !important;
+    border: 1px solid #E0E0E0 !important;
+    border-radius: 6px !important;
+    padding: 16px !important;
+}
+
+/* ===== INFO/WARNING/ERROR BOXES ===== */
+.stAlert {
+    background-color: white !important;
+    border-left: 4px solid #2E86DE !important;
+    border-radius: 6px !important;
+    padding: 16px !important;
+    color: #2C3E50 !important;
+}
+
+.stSuccess {
+    border-left-color: #10B981 !important;
+}
+
+.stWarning {
+    border-left-color: #F59E0B !important;
+}
+
+.stError {
+    border-left-color: #EF4444 !important;
+}
+
+.stInfo {
+    border-left-color: #2E86DE !important;
 }
 
 /* ===== EXPANDERS ===== */
 .streamlit-expanderHeader {
+    background-color: white !important;
+    color: #2C3E50 !important;
+    border: 1px solid #E0E0E0 !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+}
+
+.streamlit-expanderHeader:hover {
     background-color: #F5F7FA !important;
-    color: black !important;
 }
 
 /* ===== RADIO & CHECKBOX ===== */
 .stRadio label,
 .stCheckbox label {
-    color: black !important;
+    color: #2C3E50 !important;
 }
 
-/* ===== CLEAN BORDERS ===== */
-.stSelectbox > div,
-.stMultiSelect > div,
-.stTextInput > div,
-.stNumberInput > div {
-    border-radius: 4px !important;
+/* ===== CODE BLOCKS ===== */
+.stCodeBlock,
+pre,
+code {
+    background-color: #F8F9FA !important;
+    color: #2C3E50 !important;
+    border: 1px solid #E0E0E0 !important;
+    border-radius: 6px !important;
+}
+
+/* ===== SPINNER ===== */
+.stSpinner > div {
+    border-top-color: #2E86DE !important;
+}
+
+/* ===== PROGRESS BAR ===== */
+.stProgress > div > div {
+    background-color: #2E86DE !important;
+}
+
+/* ===== FILE UPLOADER ===== */
+[data-testid="stFileUploader"] {
+    background-color: white !important;
+    border: 2px dashed #E0E0E0 !important;
+    border-radius: 6px !important;
+}
+
+[data-testid="stFileUploader"]:hover {
+    border-color: #2E86DE !important;
+}
+
+/* ===== SLIDER ===== */
+.stSlider {
+    color: #2C3E50 !important;
+}
+
+/* ===== DOWNLOAD BUTTON ===== */
+.stDownloadButton button {
+    background-color: #10B981 !important;
+}
+
+.stDownloadButton button:hover {
+    background-color: #059669 !important;
+}
+
+/* ===== MARKDOWN ===== */
+.stMarkdown {
+    color: #2C3E50 !important;
+}
+
+/* ===== CAPTIONS ===== */
+.caption {
+    color: #6B7280 !important;
+    font-size: 14px !important;
+}
+
+/* ===== LINKS ===== */
+a {
+    color: #2E86DE !important;
+    text-decoration: none !important;
+}
+
+a:hover {
+    color: #0652DD !important;
+    text-decoration: underline !important;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F5F7FA;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #CBD5E0;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2E86DE;
 }
 </style>
 """, unsafe_allow_html=True)
 # ==================================================================================
-# END SIMPLE BLUE THEME
+# END CLEAN LIGHT THEME
 # ==================================================================================
 
-# Simple header - centered
+# Header with gradient
 st.markdown("""
 <div style="background: linear-gradient(135deg, #2E86DE 0%, #0652DD 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
     <h1 style="color: white !important; margin: 0; font-weight: 600;">☁️ Cloud Infrastructure Development Platform</h1>
@@ -423,7 +390,7 @@ def main():
     # Render main navigation
     Navigation.render()
     
-    # Simple footer
+    # Footer
     st.markdown("---")
     col1, col2, col3 = st.columns(3)
     with col1:
