@@ -1,78 +1,92 @@
 """
-Cloud Infrastructure Development Platform
-COMPATIBLE WITH NEW AWS THEME - No CSS conflicts
+ULTRA-SIMPLE TEST - Just shows colored boxes
+If you can't see these, something is very wrong with deployment
 """
 
 import streamlit as st
-from datetime import datetime
-import sys
-from pathlib import Path
 
-# Add src to path
-sys.path.append(str(Path(__file__).parent / "src"))
-
-from config_settings import AppConfig
-from core_session_manager import SessionManager
-from components_navigation import Navigation
-from components_sidebar import GlobalSidebar
-
-# Page configuration
 st.set_page_config(
-    page_title="Cloud Infrastructure Development Platform",
-    page_icon="☁️",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="SIMPLE TEST",
+    page_icon="🧪",
+    layout="wide"
 )
 
-# ==================================================================================
-# MINIMAL CSS - COMPATIBLE WITH AWS THEME
-# No CSS that interferes with metric cards!
-# ==================================================================================
+# Test 1: Pure CSS colors
 st.markdown("""
 <style>
-/* Minimal CSS that doesn't conflict with aws_theme.py */
-
-/* Ensure main background doesn't override */
-.main {
-    background-color: transparent !important;
+body {
+    background-color: #000000 !important;
 }
-
-/* Let aws_theme.py handle all styling */
 </style>
 """, unsafe_allow_html=True)
-# ==================================================================================
-# END MINIMAL CSS
-# ==================================================================================
 
-# Header
 st.markdown("""
-<div style="background: linear-gradient(135deg, #FF9900 0%, #EC7211 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 8px rgba(255, 153, 0, 0.3);">
-    <h1 style="color: #232F3E !important; margin: 0; font-weight: 700;">☁️ Cloud Infrastructure Development Platform</h1>
-    <p style="color: #232F3E !important; margin: 5px 0 0 0; font-size: 16px; font-weight: 600;">Enterprise Multi-Account Cloud Management</p>
+<div style="background: red; padding: 50px; text-align: center; margin: 20px;">
+    <h1 style="color: white; font-size: 60px;">TEST 1: RED BOX</h1>
+    <p style="color: white; font-size: 30px;">If you see this, HTML works!</p>
 </div>
 """, unsafe_allow_html=True)
 
-def main():
-    """Main application entry point"""
-    
-    # Initialize session
-    SessionManager.initialize()
-    
-    # Render global sidebar
-    GlobalSidebar.render()
-    
-    # Render main navigation
-    Navigation.render()
-    
-    # Footer
-    st.markdown("---")
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.caption(f"📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    with col2:
-        st.caption(f"🔗 Connected Accounts: {SessionManager.get_active_account_count()}")
-    with col3:
-        st.caption("☁️ Cloud Infrastructure Development Platform")
+st.markdown("""
+<div style="background: green; padding: 50px; text-align: center; margin: 20px;">
+    <h1 style="color: white; font-size: 60px;">TEST 2: GREEN BOX</h1>
+    <p style="color: white; font-size: 30px;">If you see this, colors work!</p>
+</div>
+""", unsafe_allow_html=True)
 
-if __name__ == "__main__":
-    main()
+st.markdown("""
+<div style="background: blue; padding: 50px; text-align: center; margin: 20px;">
+    <h1 style="color: white; font-size: 60px;">TEST 3: BLUE BOX</h1>
+    <p style="color: white; font-size: 30px;">If you see this, deployment works!</p>
+</div>
+""", unsafe_allow_html=True)
+
+# Metric test
+st.markdown("---")
+st.markdown("## Metric Card Tests")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("""
+    <div style="background: white; border: 5px solid black; padding: 30px; border-radius: 10px;">
+        <div style="color: black !important; font-size: 16px; font-weight: bold;">LABEL</div>
+        <div style="color: black !important; font-size: 60px; font-weight: bold;">123</div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.caption("White card - can you see 123?")
+
+with col2:
+    st.markdown("""
+    <div style="background: #333333; border: 5px solid orange; padding: 30px; border-radius: 10px;">
+        <div style="color: orange !important; font-size: 16px; font-weight: bold;">LABEL</div>
+        <div style="color: white !important; font-size: 60px; font-weight: bold;">456</div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.caption("Dark card - can you see 456?")
+
+with col3:
+    st.markdown("""
+    <div style="background: yellow; border: 5px solid red; padding: 30px; border-radius: 10px;">
+        <div style="color: red !important; font-size: 16px; font-weight: bold;">LABEL</div>
+        <div style="color: black !important; font-size: 60px; font-weight: bold;">789</div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.caption("Yellow card - can you see 789?")
+
+st.markdown("---")
+
+st.error("🔴 ULTRA-SIMPLE TEST MODE")
+st.info("""
+**TAKE A SCREENSHOT OF THIS PAGE!**
+
+Answer these questions:
+1. Can you see RED BOX at top? (Yes/No)
+2. Can you see GREEN BOX? (Yes/No)
+3. Can you see BLUE BOX? (Yes/No)
+4. Can you see 123 (white card)? (Yes/No)
+5. Can you see 456 (dark card)? (Yes/No)
+6. Can you see 789 (yellow card)? (Yes/No)
+
+Send screenshot + answers to diagnose!
+""")
