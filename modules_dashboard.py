@@ -5,13 +5,49 @@ Enterprise overview of multi-account AWS environment with AWS theming
 
 import streamlit as st
 import pandas as pd
-from typing import Dict, List
+from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 from config_settings import AppConfig
 from core_account_manager import get_account_manager
 from core_session_manager import SessionManager
 from utils_helpers import Helpers
-from metric_fix import aws_metric_card  # Fixed: White text metrics
+
+# ===== WHITE TEXT METRIC FUNCTION - NO EXTERNAL IMPORTS NEEDED =====
+def white_text_metric(label: str, value: str, icon: str = ""):
+    """
+    Metric with GUARANTEED white text - inline HTML bypasses ALL CSS
+    """
+    icon_html = f'<span style="font-size: 24px; margin-right: 8px;">{icon}</span>' if icon else ''
+    
+    st.markdown(f"""
+    <div style="
+        background-color: transparent !important;
+        padding: 12px !important;
+        margin: 0 !important;
+        min-height: 100px !important;
+    ">
+        <div style="
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            margin-bottom: 8px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+        ">
+            {icon_html}{label}
+        </div>
+        <div style="
+            color: white !important;
+            font-size: 36px !important;
+            font-weight: 600 !important;
+            line-height: 1.2 !important;
+            margin: 0 !important;
+        ">
+            {value}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+# ===== END WHITE TEXT METRIC FUNCTION =====
 
 class DashboardModule:
     """Main dashboard with enterprise overview and AWS styling"""
@@ -69,7 +105,7 @@ class DashboardModule:
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            aws_metric_card(
+            white_text_metric(
                 label="Connected Accounts",
                 value=str(len(active_accounts)),
                 icon="🔗"
@@ -93,7 +129,7 @@ class DashboardModule:
                 except:
                     pass
             
-            aws_metric_card(
+            white_text_metric(
                 label="Total Resources",
                 value=Helpers.format_number(total_resources) if total_resources > 0 else "N/A",
                 icon="📦"
@@ -102,7 +138,7 @@ class DashboardModule:
         with col3:
             # Estimated monthly cost
             estimated_cost = total_resources * 73  # $73/month per t3.micro
-            aws_metric_card(
+            white_text_metric(
                 label="Est. Monthly Cost",
                 value=Helpers.format_currency(estimated_cost),
                 icon="💰"
@@ -110,7 +146,7 @@ class DashboardModule:
         
         with col4:
             # Compliance score (placeholder)
-            aws_metric_card(
+            white_text_metric(
                 label="Compliance Score",
                 value="N/A",
                 icon="🛡️"
