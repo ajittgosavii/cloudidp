@@ -1,6 +1,6 @@
 """
-Cloud Infrastructure Development Platform - Enterprise Multi-Account Cloud Management
-Minimal Light Theme - Maximum Compatibility
+Cloud Infrastructure Development Platform
+COMPATIBLE WITH NEW AWS THEME - No CSS conflicts
 """
 
 import streamlit as st
@@ -25,98 +25,30 @@ st.set_page_config(
 )
 
 # ==================================================================================
-# MINIMAL LIGHT THEME - MAXIMUM COMPATIBILITY
+# MINIMAL CSS - COMPATIBLE WITH AWS THEME
+# No CSS that interferes with metric cards!
 # ==================================================================================
 st.markdown("""
 <style>
-/* ===== MINIMAL CLEAN THEME ===== */
+/* Minimal CSS that doesn't conflict with aws_theme.py */
 
-/* Main background - light */
+/* Ensure main background doesn't override */
 .main {
-    background-color: #F5F7FA !important;
-}
-
-/* All text dark by default */
-body, p, span, div, label {
-    color: #2C3E50 !important;
-}
-
-/* Headers */
-h1, h2, h3, h4, h5, h6 {
-    color: #2E86DE !important;
-}
-
-/* Sidebar */
-[data-testid="stSidebar"] {
-    background-color: #FFFFFF !important;
-}
-
-/* Buttons */
-.stButton button {
-    background-color: #2E86DE !important;
-    color: white !important;
-    border-radius: 6px !important;
-    padding: 10px 24px !important;
-}
-
-.stButton button:hover {
-    background-color: #0652DD !important;
-}
-
-/* Inputs and Dropdowns - WHITE with DARK text */
-input, textarea, select {
-    background-color: white !important;
-    color: #2C3E50 !important;
-    border: 1px solid #E0E0E0 !important;
-}
-
-/* Dropdown options */
-div[data-baseweb="select"],
-div[role="listbox"],
-[role="option"] {
-    background-color: white !important;
-    color: #2C3E50 !important;
-}
-
-/* Tables */
-table {
-    background-color: white !important;
-}
-
-thead tr th {
-    background-color: #2E86DE !important;
-    color: white !important;
-}
-
-tbody tr td {
-    color: #2C3E50 !important;
-}
-
-/* Tabs */
-.stTabs [data-baseweb="tab"] {
-    color: #2C3E50 !important;
-}
-
-.stTabs [aria-selected="true"] {
-    color: #2E86DE !important;
-    border-bottom: 3px solid #2E86DE !important;
-}
-
-/* Metrics - let custom components handle their own styling */
-[data-testid="stMetric"] {
     background-color: transparent !important;
 }
+
+/* Let aws_theme.py handle all styling */
 </style>
 """, unsafe_allow_html=True)
 # ==================================================================================
-# END MINIMAL THEME
+# END MINIMAL CSS
 # ==================================================================================
 
 # Header
 st.markdown("""
-<div style="background: linear-gradient(135deg, #2E86DE 0%, #0652DD 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
-    <h1 style="color: white !important; margin: 0; font-weight: 600;">☁️ Cloud Infrastructure Development Platform</h1>
-    <p style="color: white !important; margin: 5px 0 0 0; font-size: 16px;">Enterprise Multi-Account Cloud Management</p>
+<div style="background: linear-gradient(135deg, #FF9900 0%, #EC7211 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 8px rgba(255, 153, 0, 0.3);">
+    <h1 style="color: #232F3E !important; margin: 0; font-weight: 700;">☁️ Cloud Infrastructure Development Platform</h1>
+    <p style="color: #232F3E !important; margin: 5px 0 0 0; font-size: 16px; font-weight: 600;">Enterprise Multi-Account Cloud Management</p>
 </div>
 """, unsafe_allow_html=True)
 
