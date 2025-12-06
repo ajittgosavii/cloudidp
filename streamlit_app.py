@@ -43,17 +43,16 @@ st.markdown("""
     background-color: white !important;
 }
 
-/* All text - BLACK (except metrics which will be handled separately) */
-body {
-    color: black !important;
-}
+/* ===== CRITICAL: NO GLOBAL BLACK RULE ===== */
+/* We do NOT set a global black color rule because it conflicts with metrics */
+/* Instead, we set black on specific elements only */
 
-/* Most text elements - BLACK */
-p:not([data-testid*="stMetric"] *),
-span:not([data-testid*="stMetric"] *),
-div:not([data-testid*="stMetric"] *):not([style*="background"]),
-label:not([data-testid*="stMetric"] *) {
-    color: black !important;
+/* Set black on non-metric elements */
+.main > div:not([data-testid="stMetric"]),
+.main > div:not([data-testid="stMetric"]) > div:not([data-testid="stMetric"]),
+.main > div:not([data-testid="stMetric"]) > div:not([data-testid="stMetric"]) > p:not([data-testid*="stMetric"]),
+.main > div:not([data-testid="stMetric"]) > div:not([data-testid="stMetric"]) > span:not([data-testid*="stMetric"]) {
+    color: black;
 }
 
 /* ===== SIDEBAR ===== */
@@ -140,82 +139,220 @@ input, textarea {
     border-bottom: 2px solid #2E86DE !important;
 }
 
-/* ===== METRICS - FORCE WHITE TEXT IN DARK BOXES ===== */
+/* ================================
+   NUCLEAR OPTION - ULTRA AGGRESSIVE METRICS CSS
+   Uses EVERY possible selector with maximum !important
+   ================================ */
 
-/* Metric labels - MAXIMUM SPECIFICITY */
-[data-testid="stMetricLabel"],
-[data-testid="stMetric"] [data-testid="stMetricLabel"],
-div[data-testid="stMetric"] label,
-div[data-testid="stMetric"] [data-testid="stMetricLabel"],
-[data-testid="metric-container"] label {
+/* Global override - metrics get white text NO MATTER WHAT */
+[data-testid="stMetric"],
+[data-testid="stMetric"] *,
+[data-testid="stMetric"] > *,
+[data-testid="stMetric"] > * > *,
+[data-testid="stMetric"] > * > * > *,
+[data-testid="stMetric"] > * > * > * > *,
+[data-testid="stMetric"] div,
+[data-testid="stMetric"] p,
+[data-testid="stMetric"] span,
+[data-testid="stMetric"] label,
+[data-testid="stMetric"] h1,
+[data-testid="stMetric"] h2,
+[data-testid="stMetric"] h3,
+[data-testid="stMetric"] h4,
+[data-testid="stMetric"] h5,
+[data-testid="stMetric"] h6,
+div[data-testid="stMetric"],
+div[data-testid="stMetric"] *,
+div[data-testid="stMetric"] > *,
+div[data-testid="stMetric"] > * > *,
+div[data-testid="stMetric"] > * > * > *,
+div[data-testid="stMetric"] div,
+div[data-testid="stMetric"] p,
+div[data-testid="stMetric"] span,
+div[data-testid="stMetric"] label {
     color: white !important;
-    font-weight: 500 !important;
+    fill: white !important;
 }
 
-/* Metric values - MAXIMUM SPECIFICITY */
-[data-testid="stMetricValue"],
-[data-testid="stMetric"] [data-testid="stMetricValue"],
-div[data-testid="stMetric"] > div > div,
-div[data-testid="stMetric"] [data-testid="stMetricValue"],
-[data-testid="metric-container"] [data-testid="stMetricValue"] {
+/* Metric labels - EVERY possible selector */
+[data-testid="stMetricLabel"],
+div[data-testid="stMetricLabel"],
+[data-testid="stMetric"] [data-testid="stMetricLabel"],
+div[data-testid="stMetric"] [data-testid="stMetricLabel"],
+div[data-testid="stMetric"] div[data-testid="stMetricLabel"],
+[data-testid="metric-container"] [data-testid="stMetricLabel"],
+.stMetric [data-testid="stMetricLabel"],
+[class*="stMetric"] [data-testid="stMetricLabel"] {
     color: white !important;
+    fill: white !important;
+}
+
+/* Metric values - EVERY possible selector */
+[data-testid="stMetricValue"],
+div[data-testid="stMetricValue"],
+[data-testid="stMetric"] [data-testid="stMetricValue"],
+div[data-testid="stMetric"] [data-testid="stMetricValue"],
+div[data-testid="stMetric"] div[data-testid="stMetricValue"],
+[data-testid="metric-container"] [data-testid="stMetricValue"],
+.stMetric [data-testid="stMetricValue"],
+[class*="stMetric"] [data-testid="stMetricValue"] {
+    color: white !important;
+    fill: white !important;
     font-weight: 600 !important;
 }
 
 /* Metric deltas */
 [data-testid="stMetricDelta"],
-[data-testid="stMetric"] [data-testid="stMetricDelta"] {
+div[data-testid="stMetricDelta"],
+[data-testid="stMetric"] [data-testid="stMetricDelta"],
+div[data-testid="stMetric"] [data-testid="stMetricDelta"] {
     color: #B0B0B0 !important;
+    fill: #B0B0B0 !important;
 }
 
-/* ALL elements inside metrics - WHITE */
-[data-testid="stMetric"] *,
-[data-testid="stMetric"] p,
-[data-testid="stMetric"] span,
-[data-testid="stMetric"] div,
-[data-testid="stMetric"] label,
-div[data-testid="stMetric"] > div > div > *,
-div[data-testid="metric-container"] *,
-div[data-testid="metric-container"] p,
-div[data-testid="metric-container"] span,
-div[data-testid="metric-container"] div,
-div[data-testid="metric-container"] label {
-    color: white !important;
-}
-
-/* Columns containing metrics */
+/* Column containers with metrics */
+div[data-testid="column"] [data-testid="stMetric"],
 div[data-testid="column"] [data-testid="stMetric"] *,
-div[data-testid="column"] [data-testid="stMetric"] p,
-div[data-testid="column"] [data-testid="stMetric"] span,
-div[data-testid="column"] [data-testid="stMetric"] div,
-div[data-testid="column"] [data-testid="stMetric"] label {
+div[data-testid="column"] div[data-testid="stMetric"],
+div[data-testid="column"] div[data-testid="stMetric"] * {
     color: white !important;
+    fill: white !important;
 }
 
-/* Metric containers */
-.stMetric,
-div[data-testid="stMetric"] {
-    background-color: transparent !important;
+/* Vertical blocks with metrics */
+div[data-testid="stVerticalBlock"] [data-testid="stMetric"],
+div[data-testid="stVerticalBlock"] [data-testid="stMetric"] *,
+div[data-testid="stVerticalBlock"] div[data-testid="stMetric"],
+div[data-testid="stVerticalBlock"] div[data-testid="stMetric"] * {
+    color: white !important;
+    fill: white !important;
 }
 
-/* For any container with a dark background - force white text */
-div[style*="background-color: rgb(33"],
-div[style*="background-color: rgb(44"],
-div[style*="background-color: rgb(55"],
+/* Horizontal blocks with metrics */
+div[data-testid="stHorizontalBlock"] [data-testid="stMetric"],
+div[data-testid="stHorizontalBlock"] [data-testid="stMetric"] *,
+div[data-testid="stHorizontalBlock"] div[data-testid="stMetric"],
+div[data-testid="stHorizontalBlock"] div[data-testid="stMetric"] * {
+    color: white !important;
+    fill: white !important;
+}
+
+/* Element containers with metrics */
+div[class*="element-container"] [data-testid="stMetric"],
+div[class*="element-container"] [data-testid="stMetric"] *,
+div[class*="element-container"] div[data-testid="stMetric"],
+div[class*="element-container"] div[data-testid="stMetric"] * {
+    color: white !important;
+    fill: white !important;
+}
+
+/* Any div with style attribute containing background */
+div[style*="background"] [data-testid="stMetric"],
+div[style*="background"] [data-testid="stMetric"] *,
+div[style*="background"] div[data-testid="stMetric"],
+div[style*="background"] div[data-testid="stMetric"] * {
+    color: white !important;
+    fill: white !important;
+}
+
+/* Dark background colors - comprehensive list */
+div[style*="background-color: rgb(0"],
+div[style*="background-color: rgb(1"],
+div[style*="background-color: rgb(2"],
+div[style*="background-color: rgb(3"],
+div[style*="background-color: rgb(4"],
+div[style*="background-color: rgb(5"],
+div[style*="background-color: #0"],
 div[style*="background-color: #1"],
 div[style*="background-color: #2"],
-div[style*="background-color: #3"] {
+div[style*="background-color: #3"],
+div[style*="background: rgb(0"],
+div[style*="background: rgb(1"],
+div[style*="background: rgb(2"],
+div[style*="background: rgb(3"],
+div[style*="background: rgb(4"],
+div[style*="background: rgb(5"],
+div[style*="background: #0"],
+div[style*="background: #1"],
+div[style*="background: #2"],
+div[style*="background: #3"] {
     color: white !important;
 }
 
-div[style*="background-color: rgb(33"] *,
-div[style*="background-color: rgb(44"] *,
-div[style*="background-color: rgb(55"] *,
+div[style*="background-color: rgb(0"] *,
+div[style*="background-color: rgb(1"] *,
+div[style*="background-color: rgb(2"] *,
+div[style*="background-color: rgb(3"] *,
+div[style*="background-color: rgb(4"] *,
+div[style*="background-color: rgb(5"] *,
+div[style*="background-color: #0"] *,
 div[style*="background-color: #1"] *,
 div[style*="background-color: #2"] *,
-div[style*="background-color: #3"] * {
+div[style*="background-color: #3"] *,
+div[style*="background: rgb(0"] *,
+div[style*="background: rgb(1"] *,
+div[style*="background: rgb(2"] *,
+div[style*="background: rgb(3"] *,
+div[style*="background: rgb(4"] *,
+div[style*="background: rgb(5"] *,
+div[style*="background: #0"] *,
+div[style*="background: #1"] *,
+div[style*="background: #2"] *,
+div[style*="background: #3"] * {
+    color: white !important;
+    fill: white !important;
+}
+
+/* Override ANY computed black color */
+[style*="color: rgb(0, 0, 0)"][data-testid*="stMetric"],
+[style*="color: rgb(0,0,0)"][data-testid*="stMetric"],
+[style*="color: black"][data-testid*="stMetric"],
+[style*="color: #000"][data-testid*="stMetric"],
+[style*="color:#000"][data-testid*="stMetric"] {
     color: white !important;
 }
+
+/* Force white on common class patterns */
+.stMetric,
+.stMetric *,
+div.stMetric,
+div.stMetric *,
+[class*="Metric"],
+[class*="Metric"] *,
+[class*="metric"],
+[class*="metric"] * {
+    color: white !important;
+    fill: white !important;
+}
+
+/* Streamlit's CSS modules - target them directly */
+div[class^="st-"] [data-testid="stMetric"],
+div[class^="st-"] [data-testid="stMetric"] *,
+div[class*="st-"] [data-testid="stMetric"],
+div[class*="st-"] [data-testid="stMetric"] * {
+    color: white !important;
+    fill: white !important;
+}
+
+/* Last resort - target by position in DOM */
+div > div > div > [data-testid="stMetric"],
+div > div > div > [data-testid="stMetric"] *,
+div > div > div > div > [data-testid="stMetric"],
+div > div > div > div > [data-testid="stMetric"] * {
+    color: white !important;
+    fill: white !important;
+}
+
+/* ULTIMATE NUCLEAR OPTION - if nothing else works */
+* [data-testid="stMetric"],
+* [data-testid="stMetric"] *,
+* div[data-testid="stMetric"],
+* div[data-testid="stMetric"] * {
+    color: white !important;
+    fill: white !important;
+}
+
+/* ===== END NUCLEAR METRICS CSS ===== */
 
 /* ===== INFO/WARNING/ERROR BOXES ===== */
 .stAlert {
